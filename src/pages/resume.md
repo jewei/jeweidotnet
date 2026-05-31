@@ -100,4 +100,4 @@ Here's the list of my recent professional experiences:
 
 Drop me an email at [jewei@duck.com](mailto:jewei@duck.com).
 
-[Download résumé as PDF](https://jewei.net/content/files/2024/09/jewei-resume-2024.pdf)
+[Download résumé as PDF](/content/files/2024/09/jewei-resume-2024.pdf)
