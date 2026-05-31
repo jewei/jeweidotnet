@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # Ghost export files (contain private keys — do not commit)
 *.ghost.*.json
+
+# MCP config (contains API keys — do not commit)
+mcp.json
+.cursor/mcp.json
