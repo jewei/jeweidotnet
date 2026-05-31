@@ -40,14 +40,4 @@ Laravel Skeleton comes with a host of features and tools:
 
 Want more? Here's to the Github repository:
 
-[
-
-GitHub - jewei/laravel-skeleton at jewei.net
-
-Opinionated Laravel skeleton to scaffold new project configured with best practices. - GitHub - jewei/laravel-skeleton at jewei.net
-
-![](/content/images/icon/pinned-octocat-093da3e6fa40.svg)GitHubjewei
-
-![](/content/images/thumbnail/laravel-skeleton.png)
-
-](https://github.com/jewei/laravel-skeleton?ref=jewei.net)
+[![GitHub - jewei/laravel-skeleton at jewei.net](/content/images/thumbnail/laravel-skeleton.png "Opinionated Laravel skeleton to scaffold new project configured with best practices.")](https://github.com/jewei/laravel-skeleton?ref=jewei.net)
