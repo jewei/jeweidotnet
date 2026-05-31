@@ -1,0 +1,194 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const siteName = 'jewei.net';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    {description && <meta name="description" content={description} />}
+    <title>{title === siteName ? siteName : `${title} — ${siteName}`}</title>
+    <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = stored ?? preferred;
+    </script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/" class="site-name">{siteName}</a>
+        <div class="nav-links">
+          <a href="/tags/">Tags</a>
+          <a href="/about/">About</a>
+          <a href="/resume/">Résumé</a>
+          <a href="/rss.xml" aria-label="RSS feed">RSS</a>
+          <button
+            id="theme-toggle"
+            aria-label="Toggle dark mode"
+            onclick="
+              const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+              document.documentElement.dataset.theme = next;
+              localStorage.setItem('theme', next);
+            "
+          >
+            <span class="icon-light">☀</span>
+            <span class="icon-dark">☽</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>&copy; {new Date().getFullYear()} Jewei Mak</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --link: #2563eb;
+    --link-hover: #1d4ed8;
+    --code-bg: #f3f4f6;
+    --max-width: 720px;
+  }
+
+  [data-theme='dark'] {
+    --bg: #0f172a;
+    --fg: #e2e8f0;
+    --muted: #94a3b8;
+    --border: #1e293b;
+    --link: #60a5fa;
+    --link-hover: #93c5fd;
+    --code-bg: #1e293b;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0;
+    padding: 0 1rem;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+
+  nav {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    gap: 1rem;
+  }
+
+  .site-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    color: var(--fg);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .nav-links a:hover { color: var(--fg); }
+
+  #theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1;
+  }
+
+  [data-theme='light'] .icon-dark { display: none; }
+  [data-theme='dark'] .icon-light { display: none; }
+
+  main {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding-bottom: 4rem;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  a { color: var(--link); }
+  a:hover { color: var(--link-hover); }
+
+  h1, h2, h3, h4 { line-height: 1.3; margin-top: 2rem; }
+
+  code {
+    background: var(--code-bg);
+    border-radius: 4px;
+    font-size: 0.875em;
+    padding: 0.15em 0.4em;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border-radius: 8px;
+    overflow-x: auto;
+    padding: 1.25rem;
+  }
+
+  pre code { background: none; padding: 0; font-size: 0.875rem; }
+
+  img { max-width: 100%; height: auto; border-radius: 8px; }
+
+  blockquote {
+    border-left: 3px solid var(--border);
+    margin: 1.5rem 0;
+    padding: 0.5rem 0 0.5rem 1.25rem;
+    color: var(--muted);
+  }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+  th { background: var(--code-bg); }
+</style>

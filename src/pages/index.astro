@@ -1,17 +1,65 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
 
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="jewei.net" description="Personal blog by Jewei Mak">
+  <h1 class="page-title">Writing</h1>
+  <ul class="post-list">
+    {posts.map(post => (
+      <li>
+        <a href={`/${post.id.replace(/\.mdx?$/, '')}/`}>{post.data.title}</a>
+        <time datetime={post.data.pubDate.toISOString()}>
+          {dateFormatter.format(post.data.pubDate)}
+        </time>
+      </li>
+    ))}
+  </ul>
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .post-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .post-list a {
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--fg);
+  }
+
+  .post-list a:hover { color: var(--link); }
+
+  .post-list time {
+    color: var(--muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+</style>
