@@ -1,6 +1,7 @@
 ---
 title: "Introducing TypeID PHP"
 description: "Type-Safe, Sortable Identifiers for Modern Applications"
+image: /content/images/2024/09/typeid-cover.jpg
 pubDate: "2025-04-26T10:53:29.000Z"
 updatedDate: "2026-04-30T01:42:09.000Z"
 tags: ["open-source"]

@@ -102,12 +102,23 @@ const cardGradients = [
         class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
       >
         <div class="flex flex-col md:flex-row h-full">
-          <!-- Gradient thumbnail -->
-          <div class="md:w-2/5 h-48 md:h-auto relative overflow-hidden bg-gradient-to-br from-primary/20 via-secondary/10 to-tertiary/10 flex-shrink-0">
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/20 group-hover:scale-105 transition-transform duration-500"></div>
-            <svg class="absolute inset-0 m-auto w-16 h-16 text-primary/20" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
-            </svg>
+          <!-- Thumbnail: featured image or gradient fallback -->
+          <div class="md:w-2/5 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
+            {featured.data.image ? (
+              <img
+                src={featured.data.image}
+                alt={featured.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <>
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-tertiary/10"></div>
+                <div class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/20 group-hover:scale-105 transition-transform duration-500"></div>
+                <svg class="absolute inset-0 m-auto w-16 h-16 text-primary/20" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
+                </svg>
+              </>
+            )}
           </div>
           <div class="flex-1 p-6 md:p-8 flex flex-col justify-center">
             {featured.data.tags.length > 0 && (
