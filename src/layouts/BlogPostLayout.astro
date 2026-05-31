@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import type { CollectionEntry } from 'astro:content';
+import { tagColors, tagToSlug, longDateFormatter } from '../utils/blog';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -10,43 +11,49 @@ interface Props {
 }
 
 const { post, prev, next, readingTime } = Astro.props;
-const { title, description, pubDate, updatedDate, tags } = post.data;
+const { title, description, pubDate, updatedDate, tags, image } = post.data;
 
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
-
-const tagColors = [
-  'bg-primary-fixed text-on-primary-fixed',
-  'bg-secondary-fixed text-on-secondary-fixed',
-  'bg-tertiary-fixed text-on-tertiary-fixed',
-  'bg-surface-variant text-on-surface-variant',
-];
+const siteUrl = 'https://jewei.net';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  ...(description ? { description } : {}),
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  author: { '@type': 'Person', name: 'Jewei Mak', url: `${siteUrl}/about/` },
+  publisher: { '@type': 'Person', name: 'Jewei Mak', url: siteUrl },
+  ...(image ? { image: new URL(image, siteUrl).href } : {}),
+};
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  type="article"
+  pubDate={pubDate}
+  updatedDate={updatedDate}
+>
+  <!-- JSON-LD structured data -->
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+
   <div class="relative overflow-hidden">
-    <!-- Decorative ambient blob -->
     <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-fixed rounded-full filter blur-[100px] opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
 
     <article class="max-w-[672px] mx-auto relative z-10 pt-8">
 
-      <!-- Sparkle sticker -->
       <div class="absolute -top-2 -left-14 text-surface-tint opacity-70 hidden md:block" style="animation: spin 12s linear infinite;">
         <svg fill="none" height="36" viewBox="0 0 40 40" width="36">
           <path d="M20 0C20 11.046 28.954 20 40 20C28.954 20 20 28.954 20 40C20 28.954 11.046 20 0 20C11.046 20 20 11.046 20 0Z" fill="currentColor"/>
         </svg>
       </div>
 
-      <!-- Article header -->
       <header class="mb-10">
-        <!-- Tags + meta -->
         <div class="flex items-center gap-3 mb-4 flex-wrap">
           {tags.map((tag, i) => (
             <a
-              href={`/blog/${tag.toLowerCase().replace(/\s+/g, '-')}/`}
+              href={`/blog/${tagToSlug(tag)}/`}
               class={`px-3 py-1 rounded-full font-label-md text-label-md uppercase tracking-wider hover:opacity-80 transition-opacity ${tagColors[i % tagColors.length]}`}
             >
               {tag}
@@ -54,12 +61,12 @@ const tagColors = [
           ))}
           <div class="flex items-center gap-2 text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm ml-auto flex-wrap">
             <span class="material-symbols-outlined text-[16px]">calendar_today</span>
-            <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
+            <time datetime={pubDate.toISOString()}>{longDateFormatter.format(pubDate)}</time>
             {updatedDate && updatedDate > pubDate && (
               <>
                 <span class="text-outline-variant">·</span>
                 <span class="italic text-xs">
-                  Updated <time datetime={updatedDate.toISOString()}>{dateFormatter.format(updatedDate)}</time>
+                  Updated <time datetime={updatedDate.toISOString()}>{longDateFormatter.format(updatedDate)}</time>
                 </span>
               </>
             )}
@@ -69,15 +76,13 @@ const tagColors = [
           </div>
         </div>
 
-        <!-- Title -->
         <h1 class="font-display text-[32px] md:text-display text-on-surface dark:text-inverse-on-surface mb-6 leading-tight tracking-[-0.02em]">
           {title}
         </h1>
 
-        <!-- Author bar -->
         <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-6">
           <div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 bg-surface-container-highest shrink-0">
-            <img src="/content/images/2024/09/IMG_0362-1.jpg" alt="Jewei" class="w-full h-full object-cover" />
+            <img src="/content/images/2024/09/IMG_0362-1.jpg" alt="Jewei" class="w-full h-full object-cover" width="40" height="40" loading="lazy" />
           </div>
           <div>
             <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface">Jewei Mak</p>
@@ -86,19 +91,16 @@ const tagColors = [
         </div>
       </header>
 
-      <!-- Article body -->
       <div class="prose">
         <slot />
       </div>
 
-      <!-- End marker -->
       <div class="flex justify-center my-12 text-primary-fixed-dim opacity-60">
         <svg class="animate-pulse" fill="none" height="24" viewBox="0 0 24 24" width="24">
           <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="currentColor"/>
         </svg>
       </div>
 
-      <!-- Prev / Next navigation -->
       {(prev || next) && (
         <nav class="border-t border-outline-variant/30 pt-8 mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
           {prev ? (

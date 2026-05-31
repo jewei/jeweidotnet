@@ -1,11 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../utils/blog';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
-// Build tag counts for the cloud
 const tagCounts = new Map<string, number>();
 for (const post of posts) {
   for (const tag of post.data.tags) {
@@ -15,19 +15,6 @@ for (const post of posts) {
 const tagCloud = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
 const [featured, ...rest] = posts;
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-});
-
-const tagColors = [
-  'bg-primary-fixed text-on-primary-fixed',
-  'bg-secondary-fixed text-on-secondary-fixed',
-  'bg-tertiary-fixed text-on-tertiary-fixed',
-  'bg-surface-variant text-on-surface-variant',
-];
 
 const cardGradients = [
   'from-primary/10 via-surface-container to-surface-container-lowest',
@@ -98,7 +85,7 @@ const cardGradients = [
         <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface">Latest Post</h2>
       </div>
       <a
-        href={`/${featured.id.replace(/\.mdx?$/, '')}/`}
+        href={postUrl(featured.id)}
         class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
       >
         <div class="flex flex-col md:flex-row h-full">
@@ -157,7 +144,7 @@ const cardGradients = [
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {rest.map((post, index) => (
           <a
-            href={`/${post.id.replace(/\.mdx?$/, '')}/`}
+            href={postUrl(post.id)}
             class="group block rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 p-5 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden"
           >
             <!-- Corner gradient on hover -->
@@ -208,7 +195,7 @@ const cardGradients = [
       <div class="flex flex-wrap gap-3">
         {tagCloud.map(([tag, count]) => (
           <a
-            href={`/blog/${tag.toLowerCase().replace(/\s+/g, '-')}/`}
+            href={`/blog/${tagToSlug(tag)}/`}
             class="group flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:border-primary hover:bg-primary-fixed/20 hover:-translate-y-1 transition-all duration-200"
           >
             <span class="font-body-md text-body-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors">

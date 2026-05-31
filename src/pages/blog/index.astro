@@ -1,25 +1,19 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../../utils/blog';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
-// Collect all tags preserving original casing
-const tagSet = new Map<string, string>(); // slug → display name
+const tagSet = new Map<string, string>();
 for (const post of posts) {
   for (const tag of post.data.tags) {
-    const slug = tag.toLowerCase().replace(/\s+/g, '-');
+    const slug = tagToSlug(tag);
     if (!tagSet.has(slug)) tagSet.set(slug, tag);
   }
 }
 const allTags = [...tagSet.entries()].sort((a, b) => a[1].localeCompare(b[1]));
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-});
 
 const tagTextColors = [
   'text-primary dark:text-inverse-primary',
@@ -29,7 +23,7 @@ const tagTextColors = [
 ];
 ---
 
-<BaseLayout title="Blog — jewei.net" description="All posts by Jewei Mak.">
+<BaseLayout title="Blog — jewei.net" description="All posts by Jewei Mak — software engineering, system design, and the craft of building things.">
   <div class="pt-8 flex flex-col gap-10">
 
     <!-- Page header -->
@@ -61,7 +55,7 @@ const tagTextColors = [
         </a>
         {allTags.map(([slug, name]) => (
           <a
-            href={`/blog/${slug}/`}
+            href={`/blog/${tagToSlug(name)}/`}
             class="px-4 py-2 rounded-full bg-surface-container dark:bg-surface-dark text-on-surface dark:text-inverse-on-surface font-body-md text-sm border border-outline-variant/30 hover:bg-surface-variant dark:hover:bg-surface-dark/80 hover:-translate-y-0.5 transition-all duration-200"
           >
             {name}
@@ -74,7 +68,7 @@ const tagTextColors = [
     <section class="flex flex-col gap-8">
       {posts.map((post) => (
         <a
-          href={`/${post.id.replace(/\.mdx?$/, '')}/`}
+          href={postUrl(post.id)}
           class="group bg-surface/50 dark:bg-surface-dark/50 backdrop-blur-sm border border-outline-variant/30 rounded-xl p-6 md:p-8 flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
         >
           <!-- Date + tags row -->

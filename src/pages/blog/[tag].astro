@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../../utils/blog';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -8,7 +9,7 @@ export async function getStaticPaths() {
 
   for (const post of posts) {
     for (const tag of post.data.tags) {
-      const key = tag.toLowerCase().replace(/\s+/g, '-');
+      const key = tagToSlug(tag);
       if (!tagMap.has(key)) tagMap.set(key, []);
       tagMap.get(key)!.push(post);
     }
@@ -18,7 +19,7 @@ export async function getStaticPaths() {
     params: { tag: tagSlug },
     props: {
       tagName: tagPosts[0].data.tags.find(
-        t => t.toLowerCase().replace(/\s+/g, '-') === tagSlug
+        t => tagToSlug(t) === tagSlug
       ) ?? tagSlug,
       posts: tagPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()),
     },
@@ -26,22 +27,12 @@ export async function getStaticPaths() {
 }
 
 const { tagName, posts } = Astro.props;
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-});
-
-const tagColors = [
-  'bg-primary-fixed text-on-primary-fixed',
-  'bg-secondary-fixed text-on-secondary-fixed',
-  'bg-tertiary-fixed text-on-tertiary-fixed',
-  'bg-surface-variant text-on-surface-variant',
-];
 ---
 
-<BaseLayout title={`${tagName} — jewei.net`}>
+<BaseLayout
+  title={`${tagName} — jewei.net`}
+  description={`All posts tagged "${tagName}" on jewei.net.`}
+>
   <div class="pt-8">
 
     <!-- Back link + Header -->
@@ -63,7 +54,7 @@ const tagColors = [
     <div class="flex flex-col gap-4">
       {posts.map((post, index) => (
         <a
-          href={`/${post.id.replace(/\.mdx?$/, '')}/`}
+          href={postUrl(post.id)}
           class="group bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 rounded-xl p-6 flex flex-col gap-2 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
         >
           <div class="flex items-center gap-base font-code text-code text-on-surface-variant/70 dark:text-inverse-on-surface/50">

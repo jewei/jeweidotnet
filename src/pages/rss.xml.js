@@ -1,9 +1,10 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { postUrl } from '../utils/blog';
 
 export async function GET(context) {
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
-    .sort((a, b) => b.data.pubDate - a.data.pubDate);
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
   return rss({
     title: 'jewei.net',
@@ -13,7 +14,7 @@ export async function GET(context) {
       title: post.data.title,
       pubDate: post.data.pubDate,
       description: post.data.description,
-      link: `/${post.id.replace(/\.mdx?$/, '')}/`,
+      link: postUrl(post.id),
     })),
   });
 }
