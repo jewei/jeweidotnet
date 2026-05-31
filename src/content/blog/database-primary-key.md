@@ -2,7 +2,7 @@
 title: "Database Primary Key"
 description: "Choosing a database primary key between big integers, ordered UUID, and nanoid."
 pubDate: "2022-08-31T16:00:00.000Z"
-updatedDate: "2024-09-22T16:10:09.000Z"
+updatedDate: "2026-05-31T15:37:35.000Z"
 tags: ["system-design", "database"]
 ---
 
