@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+// Collect all tags preserving original casing
+const tagSet = new Map<string, string>(); // slug → display name
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    const slug = tag.toLowerCase().replace(/\s+/g, '-');
+    if (!tagSet.has(slug)) tagSet.set(slug, tag);
+  }
+}
+const allTags = [...tagSet.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const tagTextColors = [
+  'text-primary dark:text-inverse-primary',
+  'text-secondary dark:text-secondary-fixed-dim',
+  'text-tertiary dark:text-tertiary-fixed-dim',
+  'text-on-secondary-fixed-variant',
+];
+---
+
+<BaseLayout title="Blog — jewei.net" description="All posts by Jewei Mak.">
+  <div class="pt-8 flex flex-col gap-10">
+
+    <!-- Page header -->
+    <header class="relative flex flex-col gap-2">
+      <h1 class="font-display text-display text-primary dark:text-inverse-primary inline-block relative z-10 leading-tight tracking-[-0.02em]">
+        Blog
+        <svg class="absolute -top-3 -right-8 w-7 h-7 text-secondary/70 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z"/>
+        </svg>
+      </h1>
+      <p class="font-body-lg text-on-surface-variant dark:text-inverse-on-surface/70 max-w-2xl">
+        Thoughts on software development, minimal design, and trying to build things that feel good to use.
+      </p>
+      <!-- Hand-drawn underline -->
+      <svg class="absolute -bottom-1 left-0 w-28 h-3 text-primary-container/60" preserveAspectRatio="none" viewBox="0 0 100 10">
+        <path d="M0,5 Q50,-2 100,8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+      </svg>
+    </header>
+
+    <!-- Tag filters -->
+    {allTags.length > 0 && (
+      <section class="flex flex-wrap gap-2 items-center">
+        <span class="font-label-md text-on-surface-variant dark:text-inverse-on-surface/50 uppercase tracking-widest mr-2 text-xs">Filter:</span>
+        <a
+          href="/blog/"
+          class="px-4 py-2 rounded-full bg-primary text-on-primary font-body-md text-sm shadow-sm hover:-translate-y-0.5 transition-transform"
+        >
+          All
+        </a>
+        {allTags.map(([slug, name]) => (
+          <a
+            href={`/blog/${slug}/`}
+            class="px-4 py-2 rounded-full bg-surface-container dark:bg-surface-dark text-on-surface dark:text-inverse-on-surface font-body-md text-sm border border-outline-variant/30 hover:bg-surface-variant dark:hover:bg-surface-dark/80 hover:-translate-y-0.5 transition-all duration-200"
+          >
+            {name}
+          </a>
+        ))}
+      </section>
+    )}
+
+    <!-- Post list -->
+    <section class="flex flex-col gap-8">
+      {posts.map((post) => (
+        <a
+          href={`/${post.id.replace(/\.mdx?$/, '')}/`}
+          class="group bg-surface/50 dark:bg-surface-dark/50 backdrop-blur-sm border border-outline-variant/30 rounded-xl p-6 md:p-8 flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+        >
+          <!-- Date + tags row -->
+          <div class="flex items-center gap-2 font-code text-code text-on-surface-variant/70 dark:text-inverse-on-surface/50 flex-wrap">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {dateFormatter.format(post.data.pubDate)}
+            </time>
+            {post.data.tags.length > 0 && (
+              <>
+                <span class="w-1 h-1 rounded-full bg-primary/30"></span>
+                <div class="flex gap-2 flex-wrap">
+                  {post.data.tags.map((tag, i) => (
+                    <span class={`${tagTextColors[i % tagTextColors.length]}`}>
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          <!-- Title -->
+          <h2 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors">
+            {post.data.title}
+          </h2>
+
+          <!-- Description -->
+          {post.data.description && (
+            <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 line-clamp-2 max-w-3xl">
+              {post.data.description}
+            </p>
+          )}
+
+          <!-- CTA -->
+          <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
+            Read Post
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </div>
+        </a>
+      ))}
+    </section>
+
+  </div>
+</BaseLayout>

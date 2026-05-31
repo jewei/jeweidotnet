@@ -3,7 +3,7 @@ title: "Database Primary Key"
 description: "Choosing a database primary key between big integers, ordered UUID, and nanoid."
 pubDate: "2022-08-31T16:00:00.000Z"
 updatedDate: "2024-09-22T16:10:09.000Z"
-tags: []
+tags: ["system-design", "database"]
 ---
 
 TLDR: Use Both Integer (as PK) and UUID/ULID.

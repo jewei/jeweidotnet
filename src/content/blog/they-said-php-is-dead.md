@@ -3,7 +3,7 @@ title: "They said PHP is dead"
 description: "PHP in the Modern Web: A Relic or a Resilient Force. Here's my 2 cents."
 pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:52:22.000Z"
-tags: []
+tags: ["php"]
 ---
 
 In the ever-evolving landscape of web development, one question arises time and again: **Is PHP dead?**

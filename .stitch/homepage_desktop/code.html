@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Jewei.net - Thoughts, stories and ideas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&amp;family=Geist:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#630ed4",
+                        "surface-tint": "#732ee4",
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface-dark": "#1A1429",
+                        "on-surface": "#151c27",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "bg-dark": "#0F071D",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-fixed": "#91f8b6",
+                        "secondary-container": "#2170e4",
+                        "secondary": "#0058be",
+                        "tertiary": "#005b33",
+                        "inverse-on-surface": "#ebf1ff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#dce2f3",
+                        "on-primary-container": "#ede0ff",
+                        "tertiary-container": "#007644",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#4a4455",
+                        "tertiary-fixed-dim": "#75db9b",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "text-main": "#1A1A1A",
+                        "surface-container-low": "#f0f3ff",
+                        "bg-light": "#F9FAFB",
+                        "outline": "#7b7487",
+                        "on-secondary-fixed": "#001a42",
+                        "on-secondary-container": "#fefcff",
+                        "on-tertiary-fixed": "#00210f",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#00522e",
+                        "inverse-primary": "#d2bbff",
+                        "surface-dim": "#d3daea",
+                        "inverse-surface": "#2a313d",
+                        "background": "#f9f9ff",
+                        "primary-container": "#7c3aed",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#ccc3d8",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#f9f9ff",
+                        "primary-fixed-dim": "#d2bbff",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#eaddff",
+                        "surface-container-high": "#e2e8f8",
+                        "on-primary-fixed": "#25005a",
+                        "on-background": "#151c27",
+                        "on-tertiary-container": "#94fbb8",
+                        "surface-container": "#e7eefe",
+                        "surface-container-highest": "#dce2f3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "64px",
+                        "container-max": "1100px",
+                        "base": "8px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "stack-sm": "12px",
+                        "stack-md": "32px"
+                    },
+                    "fontFamily": {
+                        "display": ["Lexend"],
+                        "label-md": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "headline-lg-mobile": ["Lexend"],
+                        "body-md": ["Geist"],
+                        "headline-md": ["Lexend"],
+                        "headline-lg": ["Lexend"],
+                        "code": ["jetbrainsMono"]
+                    },
+                    "fontSize": {
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.7", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "code": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .sparkle-doodle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.6;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+        .blob-bg {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.08;
+            z-index: -1;
+            border-radius: 50%;
+            animation: morph 15s ease-in-out infinite alternate;
+        }
+        @keyframes morph {
+            0% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
+            34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+            67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+            100% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col">
+<!-- Decorative Background Blobs -->
+<div class="blob-bg bg-primary w-96 h-96 top-20 left-10"></div>
+<div class="blob-bg bg-secondary w-80 h-80 top-40 right-20" style="animation-delay: -5s;"></div>
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-4 max-w-container-max mx-auto bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm shadow-primary/5">
+<div class="font-display text-headline-md font-bold text-primary">
+            Jewei
+        </div>
+<ul class="hidden md:flex items-center gap-gutter">
+<li>
+<a class="font-body-md text-body-md text-primary font-semibold border-b-2 border-primary pb-1 active:scale-95 duration-150 inline-block" href="#">Home</a>
+</li>
+<li>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200 active:scale-95 duration-150 inline-block" href="#">Blog</a>
+</li>
+<li>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200 active:scale-95 duration-150 inline-block" href="#">About</a>
+</li>
+</ul>
+<div class="flex items-center gap-base">
+<button class="text-primary hover:text-primary-container transition-colors duration-200 active:scale-95 duration-150 p-2 rounded-full hover:bg-surface-variant/50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">light_mode</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-container-max mx-auto px-6 md:px-gutter pt-[100px] pb-stack-lg z-10 relative">
+<!-- Hero Section -->
+<section class="flex flex-col-reverse md:flex-row items-center justify-between gap-stack-md py-stack-lg relative">
+<!-- Sparkle Doodles -->
+<svg class="sparkle-doodle text-primary/40 w-8 h-8 top-10 left-0" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"></path>
+</svg>
+<svg class="sparkle-doodle text-secondary/40 w-6 h-6 bottom-10 right-1/2" fill="currentColor" style="animation-delay: -2s;" viewbox="0 0 24 24">
+<path d="M12 0l1.5 10.5L24 12l-10.5 1.5L12 24l-1.5-10.5L0 12l10.5-1.5z"></path>
+</svg>
+<div class="flex-1 space-y-stack-sm max-w-2xl relative z-10">
+<h1 class="font-display text-display text-on-surface">
+                    Hi, I'm <span class="text-primary">Jewei.</span>
+</h1>
+<h2 class="font-headline-md text-headline-md text-on-surface-variant">
+                    Thoughts, stories and ideas.
+                </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-4">
+                    A developer building polished corners of the internet. Welcome to my personal space where I share what I'm learning and building.
+                </p>
+<div class="pt-base flex gap-base">
+<a class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary to-surface-tint text-on-primary font-label-md text-label-md rounded-xl shadow-[0_4px_20px_-4px_rgba(99,14,212,0.4)] hover:-translate-y-1 hover:shadow-[0_8px_25px_-4px_rgba(99,14,212,0.5)] transition-all duration-300" href="#">
+                        Read the Blog
+                    </a>
+<a class="inline-flex items-center justify-center px-6 py-3 border border-secondary text-secondary font-label-md text-label-md rounded-xl hover:-translate-y-1 hover:bg-secondary/5 transition-all duration-300" href="#">
+                        About Me
+                    </a>
+</div>
+</div>
+<div class="flex-shrink-0 relative z-10">
+<div class="w-48 h-48 md:w-64 md:h-64 rounded-[30%_70%_70%_30%/30%_30%_70%_70%] overflow-hidden shadow-lg shadow-primary/20 border border-outline-variant/30 relative bg-surface-container-highest">
+<img alt="Avatar" class="w-full h-full object-cover" data-alt="A stylized, playful 3D avatar of a friendly developer in a bright, soft-lit minimal studio setting. The color palette features whites and soft primary purples (#630ed4). The mood is approachable and modern, fitting a 'Cute but Premium' tech blog aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTdzo8ApH7XvtkurHuudCqDHM07MzgnIN_h2KkPQYevpDwA_ngqqvyYpwPRXAiO9UnwjDWcqjp8lVVeZ1c1Khq6IeZrdP2iCc-3q34I93xiGlmkVM0Hyx5vS4Ti5BRbwtF7O91o_FlHb7-LuUG0rVhKu64cr99g6MKSH1ju0SP-fJn-bQFS4Fkq03YCeqJKucEefywlxtjuddo82QRt4__VKMPOgOShVSxiTm1Abg8A9G6C-1pOGQZBVVhwMIPbrBMakdVaW4oojc"/>
+</div>
+<!-- Cute sticker overlapping avatar -->
+<div class="absolute -bottom-4 -right-4 bg-surface-container-lowest p-2 rounded-full shadow-sm shadow-primary/10 border border-outline-variant/20 transform rotate-12">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">code</span>
+</div>
+</div>
+</section>
+<!-- Featured Post Section -->
+<section class="py-stack-md mt-stack-md">
+<div class="flex items-center gap-base mb-stack-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">star</span>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Featured Post</h3>
+</div>
+<a class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest border border-outline-variant/30 shadow-[0_4px_20px_-4px_rgba(99,14,212,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_25px_-4px_rgba(99,14,212,0.1)] transition-all duration-300" href="#">
+<div class="flex flex-col md:flex-row h-full">
+<div class="md:w-1/2 h-64 md:h-auto relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-secondary/10 group-hover:scale-105 transition-transform duration-500 z-0"></div>
+<img alt="Featured Article" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A premium, conceptual flat-lay illustration of a modern web development environment. Clean desk, floating geometric UI components, soft pastel lighting with primary purple and secondary blue accents. Minimalist, organized, and playful aesthetic representing 'building a faster web'." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBBvAS5aEoLkMrJCok5L14duSM2FBjyLxu5U2WH4VrqKW6lOk2Qni9jPJEpaxmARYC5sGGTgotii1quJQVtwtJz90Z4i2yoPchXCbkNDe-sWSbL6ZhpcS6gLdmhIqflzIz-r5ZBqY03DRbt4Vq-D16Pz7ooWp82kUXjlTsbNnWJH0xWoRzHzkvhZ8YJmrlnInjpOd38vWzZiyQCJOZ-sHmwPmSje89vVSrmM-r_QwMfXtegNM6tTfEjdaEauqkLSVdvZhJHHzFZBg"/>
+</div>
+<div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-center relative z-10 bg-surface-container-lowest/90 backdrop-blur-sm md:bg-transparent md:backdrop-blur-none">
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-xs">Astro</span>
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-xs">Performance</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors duration-200 mb-2">Building a faster web with Astro</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-3">
+                            Exploring how static site generation and island architecture can drastically reduce load times while maintaining a rich interactive experience. A deep dive into my recent migration.
+                        </p>
+<div class="mt-auto flex items-center text-on-surface-variant font-label-md text-sm gap-2">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+<span>Oct 24, 2024</span>
+</div>
+</div>
+</div>
+</a>
+</section>
+<!-- Latest Posts Grid -->
+<section class="py-stack-md mt-stack-sm">
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-stack-sm">Latest Writing</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Card 1 -->
+<a class="group block rounded-xl bg-surface-container-lowest border border-outline-variant/30 p-4 md:p-5 shadow-[0_4px_20px_-4px_rgba(99,14,212,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_25px_-4px_rgba(99,14,212,0.1)] transition-all duration-300 flex flex-col h-full relative overflow-hidden" href="#">
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+<div class="flex gap-2 mb-3">
+<span class="px-2 py-1 rounded-md bg-secondary-fixed text-on-secondary-fixed font-label-md text-xs">CSS</span>
+<span class="px-2 py-1 rounded-md bg-primary-fixed text-on-primary-fixed font-label-md text-xs">Design</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors duration-200 mb-2 leading-tight">The joy of CSS Grid</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2 flex-grow">
+                        Why I stopped fighting with flexbox for complex layouts and learned to love the explicit nature of grid templates.
+                    </p>
+<div class="flex items-center text-on-surface-variant font-label-md text-xs gap-1 mt-auto pt-4 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Oct 15, 2024</span>
+</div>
+</a>
+<!-- Card 2 -->
+<a class="group block rounded-xl bg-surface-container-lowest border border-outline-variant/30 p-4 md:p-5 shadow-[0_4px_20px_-4px_rgba(99,14,212,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_25px_-4px_rgba(99,14,212,0.1)] transition-all duration-300 flex flex-col h-full relative overflow-hidden" href="#">
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-secondary/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+<div class="flex gap-2 mb-3">
+<span class="px-2 py-1 rounded-md bg-primary-fixed text-on-primary-fixed font-label-md text-xs">Web</span>
+<span class="px-2 py-1 rounded-md bg-tertiary-fixed text-on-tertiary-fixed font-label-md text-xs">Performance</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors duration-200 mb-2 leading-tight">Why I switched to Astro</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2 flex-grow">
+                        A retrospective on moving away from heavy SPAs for content-driven sites and the immediate benefits observed.
+                    </p>
+<div class="flex items-center text-on-surface-variant font-label-md text-xs gap-1 mt-auto pt-4 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Sep 28, 2024</span>
+</div>
+</a>
+<!-- Card 3 -->
+<a class="group block rounded-xl bg-surface-container-lowest border border-outline-variant/30 p-4 md:p-5 shadow-[0_4px_20px_-4px_rgba(99,14,212,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_25px_-4px_rgba(99,14,212,0.1)] transition-all duration-300 flex flex-col h-full relative overflow-hidden" href="#">
+<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-tertiary/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+<div class="flex gap-2 mb-3">
+<span class="px-2 py-1 rounded-md bg-surface-variant text-on-surface-variant font-label-md text-xs">Philosophy</span>
+</div>
+<h4 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface group-hover:text-primary transition-colors duration-200 mb-2 leading-tight">Minimalism in Code</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-2 flex-grow">
+                        Applying principles of visual minimalism to architecture and logic. Less code, fewer bugs, clearer intent.
+                    </p>
+<div class="flex items-center text-on-surface-variant font-label-md text-xs gap-1 mt-auto pt-4 border-t border-outline-variant/20">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Sep 12, 2024</span>
+</div>
+</a>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full max-w-container-max mx-auto px-6 py-stack-md flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant/20 bg-surface mt-auto z-10">
+<div class="font-display text-body-lg font-semibold text-primary">
+            Jewei
+        </div>
+<div class="font-body-md text-body-md text-on-surface-variant">
+            © 2024 Jewei
+        </div>
+<ul class="flex items-center gap-4">
+<li>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary-container transition-colors active:opacity-80" href="#">RSS</a>
+</li>
+<li>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary-container transition-colors active:opacity-80" href="#">GitHub</a>
+</li>
+<li>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-secondary-container transition-colors active:opacity-80" href="#">Twitter</a>
+</li>
+</ul>
+</footer>
+</body></html>

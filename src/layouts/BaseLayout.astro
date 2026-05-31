@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 interface Props {
   title: string;
   description?: string;
@@ -6,6 +8,12 @@ interface Props {
 
 const { title, description } = Astro.props;
 const siteName = 'jewei.net';
+const currentPath = Astro.url.pathname;
+
+function isActive(path: string) {
+  if (path === '/') return currentPath === '/';
+  return currentPath.startsWith(path);
+}
 ---
 
 <!doctype html>
@@ -17,178 +25,99 @@ const siteName = 'jewei.net';
     {description && <meta name="description" content={description} />}
     <title>{title === siteName ? siteName : `${title} — ${siteName}`}</title>
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+      rel="stylesheet"
+    />
     <script is:inline>
       const stored = localStorage.getItem('theme');
       const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      document.documentElement.dataset.theme = stored ?? preferred;
+      if ((stored ?? preferred) === 'dark') document.documentElement.classList.add('dark');
     </script>
   </head>
-  <body>
-    <header>
-      <nav>
-        <a href="/" class="site-name">{siteName}</a>
-        <div class="nav-links">
-          <a href="/tags/">Tags</a>
-          <a href="/about/">About</a>
-          <a href="/resume/">Résumé</a>
-          <a href="/rss.xml" aria-label="RSS feed">RSS</a>
+  <body class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col">
+
+    <!-- Decorative blobs -->
+    <div class="blob-bg bg-primary w-96 h-96 top-20 left-10 dark:opacity-5"></div>
+    <div class="blob-bg bg-secondary w-80 h-80 top-40 right-20 dark:opacity-5" style="animation-delay: -5s;"></div>
+
+    <!-- Header / Nav -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-outline-variant/30">
+      <nav class="max-w-[1100px] mx-auto px-6 py-4 flex justify-between items-center gap-8">
+
+        <!-- Brand -->
+        <a href="/" class="font-display text-headline-md font-bold text-primary dark:text-inverse-primary shrink-0 hover:opacity-80 transition-opacity">
+          jewei.net
+        </a>
+
+        <!-- Links -->
+        <ul class="hidden md:flex items-center gap-7 flex-1">
+          {[
+            { href: '/',        label: 'Home' },
+            { href: '/blog/',   label: 'Blog' },
+            { href: '/about/',  label: 'About' },
+            { href: '/resume/', label: 'Résumé' },
+          ].map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class:list={[
+                  'font-body-md text-body-md transition-colors duration-200',
+                  isActive(href)
+                    ? 'text-primary dark:text-inverse-primary font-semibold'
+                    : 'text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary',
+                ]}
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <!-- Trailing actions -->
+        <div class="flex items-center gap-2">
+          <a
+            href="/rss.xml"
+            aria-label="RSS feed"
+            class="text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50"
+          >
+            <span class="material-symbols-outlined text-[20px]">rss_feed</span>
+          </a>
           <button
             id="theme-toggle"
             aria-label="Toggle dark mode"
+            class="text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer"
             onclick="
-              const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-              document.documentElement.dataset.theme = next;
-              localStorage.setItem('theme', next);
+              const isDark = document.documentElement.classList.toggle('dark');
+              localStorage.setItem('theme', isDark ? 'dark' : 'light');
             "
           >
-            <span class="icon-light">☀</span>
-            <span class="icon-dark">☽</span>
+            <span class="material-symbols-outlined icon-light text-[20px]">light_mode</span>
+            <span class="material-symbols-outlined icon-dark text-[20px]">dark_mode</span>
           </button>
         </div>
+
       </nav>
     </header>
-    <main>
+
+    <!-- Main content -->
+    <main class="flex-grow w-full max-w-[1100px] mx-auto px-6 pt-24 pb-16 z-10 relative">
       <slot />
     </main>
-    <footer>
-      <p>&copy; {new Date().getFullYear()} Jewei Mak</p>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-[1100px] mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant/20 mt-auto z-10">
+      <div class="font-display text-body-lg font-semibold text-primary dark:text-inverse-primary">jewei.net</div>
+      <div class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/60">
+        &copy; {new Date().getFullYear()} Jewei Mak
+      </div>
+      <div class="flex gap-6 font-body-md text-body-md">
+        <a href="/rss.xml" class="text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">RSS</a>
+        <a href="https://github.com/jewei" class="text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">GitHub</a>
+      </div>
     </footer>
+
   </body>
 </html>
-
-<style is:global>
-  :root {
-    --bg: #ffffff;
-    --fg: #1a1a1a;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    --link: #2563eb;
-    --link-hover: #1d4ed8;
-    --code-bg: #f3f4f6;
-    --max-width: 720px;
-  }
-
-  [data-theme='dark'] {
-    --bg: #0f172a;
-    --fg: #e2e8f0;
-    --muted: #94a3b8;
-    --border: #1e293b;
-    --link: #60a5fa;
-    --link-hover: #93c5fd;
-    --code-bg: #1e293b;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 1rem;
-    line-height: 1.7;
-    margin: 0;
-    padding: 0 1rem;
-    transition: background 0.2s, color 0.2s;
-  }
-
-  header {
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 2rem;
-  }
-
-  nav {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 0;
-    gap: 1rem;
-  }
-
-  .site-name {
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-decoration: none;
-    color: var(--fg);
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-  }
-
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-  }
-
-  .nav-links a:hover { color: var(--fg); }
-
-  #theme-toggle {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-    line-height: 1;
-  }
-
-  [data-theme='light'] .icon-dark { display: none; }
-  [data-theme='dark'] .icon-light { display: none; }
-
-  main {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding-bottom: 4rem;
-  }
-
-  footer {
-    border-top: 1px solid var(--border);
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 2rem 0;
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-
-  a { color: var(--link); }
-  a:hover { color: var(--link-hover); }
-
-  h1, h2, h3, h4 { line-height: 1.3; margin-top: 2rem; }
-
-  code {
-    background: var(--code-bg);
-    border-radius: 4px;
-    font-size: 0.875em;
-    padding: 0.15em 0.4em;
-  }
-
-  pre {
-    background: var(--code-bg);
-    border-radius: 8px;
-    overflow-x: auto;
-    padding: 1.25rem;
-  }
-
-  pre code { background: none; padding: 0; font-size: 0.875rem; }
-
-  img { max-width: 100%; height: auto; border-radius: 8px; }
-
-  blockquote {
-    border-left: 3px solid var(--border);
-    margin: 1.5rem 0;
-    padding: 0.5rem 0 0.5rem 1.25rem;
-    color: var(--muted);
-  }
-
-  hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-
-  table { width: 100%; border-collapse: collapse; }
-  th, td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
-  th { background: var(--code-bg); }
-</style>

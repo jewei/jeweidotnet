@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tagMap = new Map<string, typeof posts>();
+
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const key = tag.toLowerCase().replace(/\s+/g, '-');
+      if (!tagMap.has(key)) tagMap.set(key, []);
+      tagMap.get(key)!.push(post);
+    }
+  }
+
+  return [...tagMap.entries()].map(([tagSlug, tagPosts]) => ({
+    params: { tag: tagSlug },
+    props: {
+      tagName: tagPosts[0].data.tags.find(
+        t => t.toLowerCase().replace(/\s+/g, '-') === tagSlug
+      ) ?? tagSlug,
+      posts: tagPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()),
+    },
+  }));
+}
+
+const { tagName, posts } = Astro.props;
+
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const tagColors = [
+  'bg-primary-fixed text-on-primary-fixed',
+  'bg-secondary-fixed text-on-secondary-fixed',
+  'bg-tertiary-fixed text-on-tertiary-fixed',
+  'bg-surface-variant text-on-surface-variant',
+];
+---
+
+<BaseLayout title={`${tagName} — jewei.net`}>
+  <div class="pt-8">
+
+    <!-- Back link + Header -->
+    <a href="/blog/" class="inline-flex items-center gap-1 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-sm mb-6">
+      <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+      All posts
+    </a>
+
+    <header class="mb-10">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md">
+          #{tagName}
+        </span>
+        <span class="text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm">{posts.length} post{posts.length !== 1 ? 's' : ''}</span>
+      </div>
+    </header>
+
+    <!-- Post list -->
+    <div class="flex flex-col gap-4">
+      {posts.map((post, index) => (
+        <a
+          href={`/${post.id.replace(/\.mdx?$/, '')}/`}
+          class="group bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 rounded-xl p-6 flex flex-col gap-2 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+        >
+          <div class="flex items-center gap-base font-code text-code text-on-surface-variant/70 dark:text-inverse-on-surface/50">
+            <time datetime={post.data.pubDate.toISOString()}>
+              {dateFormatter.format(post.data.pubDate)}
+            </time>
+            {post.data.tags.length > 1 && (
+              <>
+                <span class="w-1 h-1 rounded-full bg-primary/30"></span>
+                <div class="flex gap-2 flex-wrap">
+                  {post.data.tags.filter(t => t !== tagName).slice(0, 2).map((tag, i) => (
+                    <span class={`text-xs px-2 py-0.5 rounded-md ${tagColors[(i + index) % tagColors.length]}`}>{tag}</span>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          <h2 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors leading-snug">
+            {post.data.title}
+          </h2>
+
+          {post.data.description && (
+            <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 line-clamp-2 max-w-3xl">
+              {post.data.description}
+            </p>
+          )}
+
+          <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
+            Read Post
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</BaseLayout>

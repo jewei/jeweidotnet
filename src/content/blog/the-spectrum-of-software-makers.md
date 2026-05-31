@@ -3,7 +3,7 @@ title: "The Spectrum of Software Makers"
 description: "From no-code to Python to assembly language. As a software maker aspiring to build a business, what's your game plan?"
 pubDate: "2023-10-27T16:00:00.000Z"
 updatedDate: "2024-09-22T16:41:48.000Z"
-tags: []
+tags: ["entrepreneurship"]
 ---
 
 The realm of software development is vast, and the skills within it stretch far beyond just writing code. Whether you're crafting marketing forms through drag-and-drop builders or optimizing performance-critical systems, each type of software maker plays a unique role in this ecosystem.

@@ -3,7 +3,7 @@ title: "Introducing TypeID PHP"
 description: "Type-Safe, Sortable Identifiers for Modern Applications"
 pubDate: "2025-04-26T10:53:29.000Z"
 updatedDate: "2026-04-30T01:42:09.000Z"
-tags: []
+tags: ["open-source"]
 ---
 
 TypeID PHP brings type-safe, globally unique identifiers to your PHP projects. This library implements TypeIDs - an elegant extension of UUIDv7 that adds descriptive type prefixes to identifiers.

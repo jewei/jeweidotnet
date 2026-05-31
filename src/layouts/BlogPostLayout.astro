@@ -4,9 +4,12 @@ import type { CollectionEntry } from 'astro:content';
 
 interface Props {
   post: CollectionEntry<'blog'>;
+  prev: CollectionEntry<'blog'> | null;
+  next: CollectionEntry<'blog'> | null;
+  readingTime: number;
 }
 
-const { post } = Astro.props;
+const { post, prev, next, readingTime } = Astro.props;
 const { title, description, pubDate, updatedDate, tags } = post.data;
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -14,72 +17,116 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'long',
   day: 'numeric',
 });
+
+const tagColors = [
+  'bg-primary-fixed text-on-primary-fixed',
+  'bg-secondary-fixed text-on-secondary-fixed',
+  'bg-tertiary-fixed text-on-tertiary-fixed',
+  'bg-surface-variant text-on-surface-variant',
+];
 ---
 
 <BaseLayout title={title} description={description}>
-  <article>
-    <header class="post-header">
-      <h1>{title}</h1>
-      <div class="post-meta">
-        <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
-        {updatedDate && updatedDate > pubDate && (
-          <span class="updated">
-            · Updated <time datetime={updatedDate.toISOString()}>{dateFormatter.format(updatedDate)}</time>
-          </span>
-        )}
+  <div class="relative overflow-hidden">
+    <!-- Decorative ambient blob -->
+    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-fixed rounded-full filter blur-[100px] opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+
+    <article class="max-w-[672px] mx-auto relative z-10 pt-8">
+
+      <!-- Sparkle sticker -->
+      <div class="absolute -top-2 -left-14 text-surface-tint opacity-70 hidden md:block" style="animation: spin 12s linear infinite;">
+        <svg fill="none" height="36" viewBox="0 0 40 40" width="36">
+          <path d="M20 0C20 11.046 28.954 20 40 20C28.954 20 20 28.954 20 40C20 28.954 11.046 20 0 20C11.046 20 20 11.046 20 0Z" fill="currentColor"/>
+        </svg>
       </div>
-      {tags.length > 0 && (
-        <div class="post-tags">
-          {tags.map(tag => (
-            <a href={`/tags/${tag.toLowerCase().replace(/\s+/g, '-')}/`} class="tag">{tag}</a>
+
+      <!-- Article header -->
+      <header class="mb-10">
+        <!-- Tags + meta -->
+        <div class="flex items-center gap-3 mb-4 flex-wrap">
+          {tags.map((tag, i) => (
+            <a
+              href={`/blog/${tag.toLowerCase().replace(/\s+/g, '-')}/`}
+              class={`px-3 py-1 rounded-full font-label-md text-label-md uppercase tracking-wider hover:opacity-80 transition-opacity ${tagColors[i % tagColors.length]}`}
+            >
+              {tag}
+            </a>
           ))}
+          <div class="flex items-center gap-2 text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm ml-auto flex-wrap">
+            <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+            <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
+            {updatedDate && updatedDate > pubDate && (
+              <>
+                <span class="text-outline-variant">·</span>
+                <span class="italic text-xs">
+                  Updated <time datetime={updatedDate.toISOString()}>{dateFormatter.format(updatedDate)}</time>
+                </span>
+              </>
+            )}
+            <span class="text-outline-variant">·</span>
+            <span class="material-symbols-outlined text-[16px]">schedule</span>
+            <span>{readingTime} min read</span>
+          </div>
         </div>
+
+        <!-- Title -->
+        <h1 class="font-display text-[32px] md:text-display text-on-surface dark:text-inverse-on-surface mb-6 leading-tight tracking-[-0.02em]">
+          {title}
+        </h1>
+
+        <!-- Author bar -->
+        <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-6">
+          <div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 bg-surface-container-highest shrink-0">
+            <img src="/content/images/2024/09/IMG_0362-1.jpg" alt="Jewei" class="w-full h-full object-cover" />
+          </div>
+          <div>
+            <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface">Jewei Mak</p>
+            <p class="text-[13px] text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md">Software Engineer</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Article body -->
+      <div class="prose">
+        <slot />
+      </div>
+
+      <!-- End marker -->
+      <div class="flex justify-center my-12 text-primary-fixed-dim opacity-60">
+        <svg class="animate-pulse" fill="none" height="24" viewBox="0 0 24 24" width="24">
+          <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <!-- Prev / Next navigation -->
+      {(prev || next) && (
+        <nav class="border-t border-outline-variant/30 pt-8 mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
+          {prev ? (
+            <a href={`/${prev.id.replace(/\.mdx?$/, '')}/`} class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors max-w-xs">
+              <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
+                <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+              </div>
+              <div>
+                <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">Previous</span>
+                <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">{prev.data.title}</span>
+              </div>
+            </a>
+          ) : <div />}
+
+          {next ? (
+            <a href={`/${next.id.replace(/\.mdx?$/, '')}/`} class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors text-right sm:flex-row-reverse max-w-xs">
+              <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
+                <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+              </div>
+              <div class="text-left sm:text-right">
+                <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">Next</span>
+                <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">{next.data.title}</span>
+              </div>
+            </a>
+          ) : <div />}
+        </nav>
       )}
-    </header>
-    <div class="post-body">
-      <slot />
-    </div>
-  </article>
+
+    </article>
+  </div>
 </BaseLayout>
-
-<style>
-  .post-header {
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .post-header h1 {
-    font-size: 2rem;
-    margin: 0 0 0.75rem;
-  }
-
-  .post-meta {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  .updated { font-style: italic; }
-
-  .post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .tag {
-    background: var(--code-bg);
-    border-radius: 4px;
-    color: var(--muted);
-    font-size: 0.8rem;
-    padding: 0.2rem 0.6rem;
-    text-decoration: none;
-  }
-
-  .tag:hover { color: var(--fg); }
-
-  .post-body :global(h2) { font-size: 1.4rem; }
-  .post-body :global(h3) { font-size: 1.15rem; }
-  .post-body :global(p) { margin: 1rem 0; }
-</style>

@@ -3,7 +3,7 @@ title: "Laravel Skeleton"
 description: "The Laravel Skeleton offers a rapid and efficient way to start a new project by scaffolding a Laravel app with minimal setup."
 pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:30:30.000Z"
-tags: []
+tags: ["open-source"]
 ---
 
 ![](/content/images/2024/09/laravel-skeleton-1.png)

@@ -3,17 +3,25 @@ import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../layouts/BlogPostLayout.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map(post => ({
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+  return posts.map((post, index) => ({
     params: { slug: post.id.replace(/\.mdx?$/, '') },
-    props: { post },
+    props: {
+      post,
+      prev: posts[index + 1] ?? null,
+      next: posts[index - 1] ?? null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prev, next } = Astro.props;
 const { Content } = await render(post);
+
+const readingTime = Math.max(1, Math.round((post.body?.split(/\s+/).length ?? 0) / 200));
 ---
 
-<BlogPostLayout post={post}>
+<BlogPostLayout post={post} prev={prev} next={next} readingTime={readingTime}>
   <Content />
 </BlogPostLayout>

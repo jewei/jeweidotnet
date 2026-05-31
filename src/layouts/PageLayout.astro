@@ -12,24 +12,24 @@ const { frontmatter } = Astro.props;
 ---
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>
-  <article class="page-body">
-    <h1>{frontmatter.title}</h1>
-    <slot />
-  </article>
+  <div class="max-w-[720px] mx-auto pt-8">
+    <!-- Page header -->
+    <header class="mb-10 pb-8 border-b border-outline-variant/30 relative">
+      <h1 class="font-display text-[36px] md:text-display text-on-surface dark:text-inverse-on-surface leading-tight tracking-[-0.02em] mb-3">
+        {frontmatter.title}
+      </h1>
+      {frontmatter.description && (
+        <p class="font-body-lg text-body-lg text-on-surface-variant">{frontmatter.description}</p>
+      )}
+      <!-- Underline doodle -->
+      <svg class="absolute -bottom-1 left-0 w-28 h-3 text-primary/30" preserveAspectRatio="none" viewBox="0 0 100 10">
+        <path d="M0,5 Q50,-2 100,8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
+      </svg>
+    </header>
+
+    <!-- Content -->
+    <div class="prose">
+      <slot />
+    </div>
+  </div>
 </BaseLayout>
-
-<style>
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .page-body :global(h3) { font-size: 1.15rem; margin-top: 2rem; }
-  .page-body :global(p) { margin: 1rem 0; }
-  .page-body :global(ul), .page-body :global(ol) { padding-left: 1.5rem; }
-  .page-body :global(li) { margin: 0.35rem 0; }
-  .page-body :global(img) { max-width: 100%; height: auto; border-radius: 8px; margin: 1rem 0; }
-  .page-body :global(em) { display: block; font-size: 0.875rem; color: var(--muted); margin-top: 0.25rem; }
-</style>

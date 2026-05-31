@@ -3,7 +3,7 @@ title: "Scale to Millions of Users"
 description: "How to design a system that supports millions of users? What are the challenges to scaling it up to serve millions of users?"
 pubDate: "2022-11-10T16:00:00.000Z"
 updatedDate: "2024-09-22T16:25:01.000Z"
-tags: []
+tags: ["system-design", "infrastructure"]
 ---
 
 ### Designing a Scalable System to Support Millions of Users
