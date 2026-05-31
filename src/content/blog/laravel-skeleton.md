@@ -6,7 +6,7 @@ updatedDate: "2024-09-22T16:30:30.000Z"
 tags: []
 ---
 
-![](https://jewei.net/content/images/2024/09/laravel-skeleton-1.png)
+![](/content/images/2024/09/laravel-skeleton-1.png)
 
 My version of Laravel Skeleton is live on GitHub
 
@@ -46,8 +46,8 @@ GitHub - jewei/laravel-skeleton at jewei.net
 
 Opinionated Laravel skeleton to scaffold new project configured with best practices. - GitHub - jewei/laravel-skeleton at jewei.net
 
-![](https://jewei.net/content/images/icon/pinned-octocat-093da3e6fa40.svg)GitHubjewei
+![](/content/images/icon/pinned-octocat-093da3e6fa40.svg)GitHubjewei
 
-![](https://jewei.net/content/images/thumbnail/laravel-skeleton)
+![](/content/images/thumbnail/laravel-skeleton.png)
 
 ](https://github.com/jewei/laravel-skeleton?ref=jewei.net)

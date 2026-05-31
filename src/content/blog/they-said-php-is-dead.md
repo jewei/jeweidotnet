@@ -34,7 +34,7 @@ And yes, we can’t overlook **WordPress**. As an incredibly popular CMS and bl
 
 ### The Modern Face of PHP: Vital, Fast, and Ever-Improving
 
-![](https://jewei.net/content/images/2024/09/midwit-php.jpeg)
+![](/content/images/2024/09/midwit-php.jpeg)
 
 Midwit PHP/JS
 

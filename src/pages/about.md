@@ -7,7 +7,7 @@ Hello. 你好。Apa Khabar.
 今日は. Bonjour. 안녕하세요.  
 Hola. नमस्ते. γεια σας.
 
-![](https://jewei.net/content/images/2024/09/IMG_0362-1.jpg)
+![](/content/images/2024/09/IMG_0362-1.jpg)
 *The jewei in unknown parallel universe.*
 
 ---
@@ -20,12 +20,12 @@ Hey there! 👋 My name is **Jewei**, I'm a **Software Engineer** with a passion
 
 According to the good ol' **Myers-Briggs Type Indicator**, I'm the rational thinkers, capable of applying endless creativity and logic to improve not only tech but life itself.
 
-![](https://jewei.net/content/images/2024/09/intj.jpg)
+![](/content/images/2024/09/intj.jpg)
 *These thoughtful tacticians love perfecting the details of life, applying creativity and rationality to everything they do. Their inner world is often a private, complex one.*
 
 The Myers–Briggs Type Indicator says I'm an [assertive](https://www.16personalities.com/articles/assertive-architect-intj-a-vs-turbulent-architect-intj-t?ref=jewei.net) [architect](https://www.16personalities.com/intj-personality?ref=jewei.net).
 
-![](https://jewei.net/content/images/2024/09/enneagram5.jpg)
+![](/content/images/2024/09/enneagram5.jpg)
 *The thinker, the innovative, the observer. The ones who want to reveal how the world works and to unveil the mystery of life, but are afraid of the biggest mystery: themselves.*
 
 On Enneagram type test, I'm [the investigator](https://www.enneagraminstitute.com/type-5?ref=jewei.net), or [5w6](https://enneagramuniverse.com/enneagram/learn/enneagram-wings/enneagram_5w6/?ref=jewei.net) — the problem solver.

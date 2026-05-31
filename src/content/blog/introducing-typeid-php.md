@@ -36,8 +36,8 @@ GitHub - jewei/typeid-php: PHP implementation of TypeIDs: type-safe, K-sortable,
 
 PHP implementation of TypeIDs: type-safe, K-sortable, and globally unique identifiers inspired by Stripe IDs - jewei/typeid-php
 
-![](https://jewei.net/content/images/icon/pinned-octocat-093da3e6fa40-1.svg)GitHubjewei
+![](/content/images/icon/pinned-octocat-093da3e6fa40-1.svg)GitHubjewei
 
-![](https://jewei.net/content/images/thumbnail/typeid-php)
+![](/content/images/thumbnail/typeid-php.png)
 
 ](https://github.com/jewei/typeid-php)
