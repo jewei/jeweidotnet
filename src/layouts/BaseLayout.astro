@@ -18,7 +18,7 @@ const canonicalUrl = new URL(currentPath, siteUrl).href;
 const pageTitle = title === siteName ? siteName : `${title} — ${siteName}`;
 const ogImage = image
   ? new URL(image, siteUrl).href
-  : `${siteUrl}/android-chrome-512x512.png`;
+  : `${siteUrl}/og-image.jpg`;
 
 function isActive(path: string) {
   if (path === '/') return currentPath === '/';
