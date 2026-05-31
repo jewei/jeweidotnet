@@ -1,43 +1,86 @@
-# Astro Starter Kit: Minimal
+# jewei.toString()
 
-```sh
-bun create astro@latest -- --template minimal
+Personal blog at [jewei.net](https://jewei.net) — thoughts on software engineering, system design, and the craft of building things.
+
+Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.com), and deployed on [Cloudflare Pages](https://pages.cloudflare.com).
+
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Astro 6 (static output) |
+| Styling | Tailwind CSS v4 + custom design system |
+| Fonts | Lexend · Geist · JetBrains Mono |
+| Deployment | Cloudflare Pages |
+| Package manager | Bun |
+
+## Project structure
+
+```
+src/
+├── content/
+│   └── blog/          # Markdown blog posts
+├── layouts/
+│   ├── BaseLayout.astro      # HTML shell, nav, SEO meta, OG tags
+│   ├── BlogPostLayout.astro  # Article layout + JSON-LD
+│   └── PageLayout.astro      # Static pages (About, Résumé)
+├── pages/
+│   ├── index.astro           # Homepage
+│   ├── [slug].astro          # Blog post pages
+│   ├── blog/
+│   │   ├── index.astro       # Blog index with tag filters
+│   │   └── [tag].astro       # Posts filtered by tag
+│   ├── about.md
+│   ├── resume.md
+│   └── rss.xml.js
+├── styles/
+│   └── global.css     # Tailwind + design system tokens
+└── utils/
+    └── blog.ts        # Shared helpers (tagColors, postUrl, formatters)
+public/
+├── content/images/    # Post and page images
+├── og-image.jpg       # Default social card image
+└── robots.txt
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Writing a post
 
-## 🚀 Project Structure
+Create a `.md` (or `.mdx`) file in `src/content/blog/`:
 
-Inside of your Astro project, you'll see the following folders and files:
+```markdown
+---
+title: "Your Post Title"
+description: "A short summary shown in listings and meta tags."
+pubDate: "2026-01-15"
+tags: ["php", "open-source"]
+image: /content/images/2026/01/cover.jpg   # optional, used as og:image
+draft: false
+---
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+Post content here…
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+The filename becomes the URL slug: `my-post.md` → `/my-post/`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Commands
 
-Any static assets, like images, can be placed in the `public/` directory.
+Run from the project root:
 
-## 🧞 Commands
+| Command | Action |
+|---------|--------|
+| `bun install` | Install dependencies |
+| `bun run dev` | Start dev server at `localhost:4321` |
+| `bun run build` | Build to `./dist/` |
+| `bun run preview` | Preview the production build locally |
 
-All commands are run from the root of the project, from a terminal:
+## Deployment
 
-| Command               | Action                                           |
-| :-------------------- | :----------------------------------------------- |
-| `bun install`         | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
+Deployed automatically to Cloudflare Pages on every push to `main`.
 
-## 👀 Want to learn more?
+**Build settings** (configured in Cloudflare Pages dashboard):
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Setting | Value |
+|---------|-------|
+| Build command | `bun install && bun run build` |
+| Build output directory | `dist` |
+| Environment variable `BUN_VERSION` | `1` |
