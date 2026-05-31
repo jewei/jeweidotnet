@@ -6,13 +6,13 @@ Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.c
 
 ## Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Astro 6 (static output) |
-| Styling | Tailwind CSS v4 + custom design system |
-| Fonts | Lexend · Geist · JetBrains Mono |
-| Deployment | Cloudflare Pages |
-| Package manager | Bun |
+| Layer           | Technology                             |
+| --------------- | -------------------------------------- |
+| Framework       | Astro 6 (static output)                |
+| Styling         | Tailwind CSS v4 + custom design system |
+| Fonts           | Lexend · Geist · JetBrains Mono        |
+| Deployment      | Cloudflare Pages                       |
+| Package manager | Bun                                    |
 
 ## Project structure
 
@@ -53,7 +53,7 @@ title: "Your Post Title"
 description: "A short summary shown in listings and meta tags."
 pubDate: "2026-01-15"
 tags: ["php", "open-source"]
-image: /content/images/2026/01/cover.jpg   # optional, used as og:image
+image: /content/images/2026/01/cover.jpg # optional, used as og:image
 draft: false
 ---
 
@@ -66,11 +66,11 @@ The filename becomes the URL slug: `my-post.md` → `/my-post/`.
 
 Run from the project root:
 
-| Command | Action |
-|---------|--------|
-| `bun install` | Install dependencies |
-| `bun run dev` | Start dev server at `localhost:4321` |
-| `bun run build` | Build to `./dist/` |
+| Command           | Action                               |
+| ----------------- | ------------------------------------ |
+| `bun install`     | Install dependencies                 |
+| `bun run dev`     | Start dev server at `localhost:4321` |
+| `bun run build`   | Build to `./dist/`                   |
 | `bun run preview` | Preview the production build locally |
 
 ## Deployment
@@ -79,8 +79,8 @@ Deployed automatically to Cloudflare Pages on every push to `main`.
 
 **Build settings** (configured in Cloudflare Pages dashboard):
 
-| Setting | Value |
-|---------|-------|
-| Build command | `bun install && bun run build` |
-| Build output directory | `dist` |
-| Environment variable `BUN_VERSION` | `1` |
+| Setting                            | Value                          |
+| ---------------------------------- | ------------------------------ |
+| Build command                      | `bun install && bun run build` |
+| Build output directory             | `dist`                         |
+| Environment variable `BUN_VERSION` | `1`                            |
