@@ -7,7 +7,7 @@ Hello. 你好。Apa Khabar.
 今日は. Bonjour. 안녕하세요.  
 Hola. नमस्ते. γεια σας.
 
-![](/content/images/2024/09/IMG_0362-1.jpg)
+![The jewei in unknown parallel universe](../assets/jewei.jpg)
 *The jewei in unknown parallel universe.*
 
 ---

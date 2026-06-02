@@ -1,6 +1,8 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import { Image } from 'astro:assets';
+import avatar from '../assets/jewei.jpg';
 import type { CollectionEntry } from 'astro:content';
 import { tagColors, tagToSlug, longDateFormatter } from '../utils/blog';
 
@@ -83,7 +85,7 @@ const jsonLd = {
 
         <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-6">
           <div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 bg-surface-container-highest shrink-0">
-            <img src="/content/images/2024/09/IMG_0362-1.jpg" alt="Jewei" class="w-full h-full object-cover" width="40" height="40" loading="lazy" />
+            <Image src={avatar} alt="Jewei" class="w-full h-full object-cover" width={40} height={40} densities={[2, 3]} format="webp" loading="lazy" />
           </div>
           <div>
             <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface">Jewei Mak</p>
