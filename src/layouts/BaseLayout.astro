@@ -26,6 +26,13 @@ function isActive(path: string) {
   if (path === '/') return currentPath === '/';
   return currentPath.startsWith(path);
 }
+
+const navLinks = [
+  { href: '/',        label: 'Home' },
+  { href: '/blog/',   label: 'Blog' },
+  { href: '/about/',  label: 'About' },
+  { href: '/resume/', label: 'Résumé' },
+];
 ---
 
 <!doctype html>
@@ -92,12 +99,7 @@ function isActive(path: string) {
         </a>
 
         <ul class="hidden md:flex items-center gap-7 flex-1">
-          {[
-            { href: '/',        label: 'Home' },
-            { href: '/blog/',   label: 'Blog' },
-            { href: '/about/',  label: 'About' },
-            { href: '/resume/', label: 'Résumé' },
-          ].map(({ href, label }) => (
+          {navLinks.map(({ href, label }) => (
             <li>
               <a
                 href={href}
@@ -134,9 +136,46 @@ function isActive(path: string) {
             <Icon name="light_mode" class="icon-light text-[20px]" />
             <Icon name="dark_mode" class="icon-dark text-[20px]" />
           </button>
+          <button
+            id="menu-toggle"
+            aria-label="Toggle navigation menu"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+            class="md:hidden text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer"
+            onclick="
+              const isHidden = document.getElementById('mobile-menu').classList.toggle('hidden');
+              this.setAttribute('aria-expanded', String(!isHidden));
+              this.querySelector('.icon-menu-open').classList.toggle('hidden', !isHidden);
+              this.querySelector('.icon-menu-close').classList.toggle('hidden', isHidden);
+            "
+          >
+            <Icon name="menu" class="icon-menu-open text-[24px]" />
+            <Icon name="close" class="icon-menu-close hidden text-[24px]" />
+          </button>
         </div>
 
       </nav>
+
+      <!-- Mobile menu (toggled by #menu-toggle) -->
+      <div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/30 bg-surface/95 dark:bg-surface-dark/95 backdrop-blur-md">
+        <ul class="max-w-[1100px] mx-auto px-6 py-3 flex flex-col">
+          {navLinks.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class:list={[
+                  'block py-3 font-body-md text-body-lg transition-colors duration-200',
+                  isActive(href)
+                    ? 'text-primary dark:text-inverse-primary font-semibold'
+                    : 'text-on-surface-variant dark:text-inverse-on-surface/80 hover:text-primary dark:hover:text-inverse-primary',
+                ]}
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </header>
 
     <main class="flex-grow w-full max-w-[1100px] mx-auto px-6 pt-24 pb-16 z-10 relative">
