@@ -1,4 +1,6 @@
 ---
+import { Font } from 'astro:assets';
+import Icon from '../components/Icon.astro';
 import '../styles/global.css';
 
 interface Props {
@@ -60,13 +62,10 @@ function isActive(path: string) {
     <!-- Feeds -->
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
 
-    <!-- Fonts: preconnect + load (Material Symbols narrowed to values actually used) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=swap"
-      rel="stylesheet"
-    />
+    <!-- Fonts: self-hosted via Astro Fonts API (preloaded, no render-blocking 3rd-party request) -->
+    <Font cssVariable="--font-lexend" preload />
+    <Font cssVariable="--font-geist" preload />
+    <Font cssVariable="--font-jetbrains-mono" />
 
     <!-- Per-page head additions (e.g. JSON-LD) -->
     <slot name="head" />
@@ -121,7 +120,7 @@ function isActive(path: string) {
             aria-label="RSS feed"
             class="text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50"
           >
-            <span class="material-symbols-outlined text-[20px]">rss_feed</span>
+            <Icon name="rss_feed" class="text-[20px]" />
           </a>
           <button
             id="theme-toggle"
@@ -132,8 +131,8 @@ function isActive(path: string) {
               localStorage.setItem('theme', isDark ? 'dark' : 'light');
             "
           >
-            <span class="material-symbols-outlined icon-light text-[20px]">light_mode</span>
-            <span class="material-symbols-outlined icon-dark text-[20px]">dark_mode</span>
+            <Icon name="light_mode" class="icon-light text-[20px]" />
+            <Icon name="dark_mode" class="icon-dark text-[20px]" />
           </button>
         </div>
 
@@ -151,7 +150,7 @@ function isActive(path: string) {
       </div>
       <div class="flex gap-6 font-body-md text-body-md">
         <a href="/rss.xml" class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">
-          <span class="material-symbols-outlined text-[18px]" aria-hidden="true">rss_feed</span>
+          <Icon name="rss_feed" class="text-[18px]" />
           RSS
         </a>
         <a href="https://x.com/jewei" class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">

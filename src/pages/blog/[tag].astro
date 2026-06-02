@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
 import { getCollection } from 'astro:content';
 import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../../utils/blog';
 
@@ -37,7 +38,7 @@ const { tagName, posts } = Astro.props;
 
     <!-- Back link + Header -->
     <a href="/blog/" class="inline-flex items-center gap-1 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-sm mb-6">
-      <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+      <Icon name="arrow_back" class="text-[16px]" />
       All posts
     </a>
 
@@ -85,7 +86,7 @@ const { tagName, posts } = Astro.props;
 
           <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
             Read Post
-            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            <Icon name="arrow_forward" class="text-sm" />
           </div>
         </a>
       ))}

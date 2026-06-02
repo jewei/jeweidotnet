@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import { getCollection } from 'astro:content';
 import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../utils/blog';
 
@@ -72,7 +73,7 @@ const cardGradients = [
         />
       </div>
       <div class="absolute -bottom-3 -right-3 bg-surface-container-lowest dark:bg-surface-dark p-2 rounded-full shadow-md border border-outline-variant/20 rotate-12">
-        <span class="material-symbols-outlined text-primary dark:text-inverse-primary text-2xl" style="font-variation-settings: 'FILL' 1;">code</span>
+        <Icon name="code" class="text-primary dark:text-inverse-primary text-2xl" />
       </div>
     </div>
   </section>
@@ -81,7 +82,7 @@ const cardGradients = [
   {featured && (
     <section class="py-8 mt-4" id="writing">
       <div class="flex items-center gap-2 mb-5">
-        <span class="material-symbols-outlined text-primary dark:text-inverse-primary text-xl" style="font-variation-settings: 'FILL' 1;">star</span>
+        <Icon name="star" class="text-primary dark:text-inverse-primary text-xl" />
         <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface">Latest Post</h2>
       </div>
       <a
@@ -126,7 +127,7 @@ const cardGradients = [
               </p>
             )}
             <div class="mt-auto flex items-center text-on-surface-variant dark:text-inverse-on-surface/60 font-label-md text-sm gap-2">
-              <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+              <Icon name="calendar_month" class="text-[16px]" />
               <time datetime={featured.data.pubDate.toISOString()}>
                 {dateFormatter.format(featured.data.pubDate)}
               </time>
@@ -171,7 +172,7 @@ const cardGradients = [
             )}
 
             <div class="flex items-center text-on-surface-variant dark:text-inverse-on-surface/60 font-label-md text-xs gap-1 mt-auto pt-4 border-t border-outline-variant/20">
-              <span class="material-symbols-outlined text-[14px]">schedule</span>
+              <Icon name="schedule" class="text-[14px]" />
               <time datetime={post.data.pubDate.toISOString()}>
                 {dateFormatter.format(post.data.pubDate)}
               </time>

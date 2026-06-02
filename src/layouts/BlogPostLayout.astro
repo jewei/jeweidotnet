@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import Icon from '../components/Icon.astro';
 import type { CollectionEntry } from 'astro:content';
 import { tagColors, tagToSlug, longDateFormatter } from '../utils/blog';
 
@@ -60,7 +61,7 @@ const jsonLd = {
             </a>
           ))}
           <div class="flex items-center gap-2 text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm ml-auto flex-wrap">
-            <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+            <Icon name="calendar_today" class="text-[16px]" />
             <time datetime={pubDate.toISOString()}>{longDateFormatter.format(pubDate)}</time>
             {updatedDate && updatedDate > pubDate && (
               <>
@@ -71,7 +72,7 @@ const jsonLd = {
               </>
             )}
             <span class="text-outline-variant">·</span>
-            <span class="material-symbols-outlined text-[16px]">schedule</span>
+            <Icon name="schedule" class="text-[16px]" />
             <span>{readingTime} min read</span>
           </div>
         </div>
@@ -106,7 +107,7 @@ const jsonLd = {
           {prev ? (
             <a href={`/${prev.id.replace(/\.mdx?$/, '')}/`} class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors max-w-xs">
               <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
-                <span class="material-symbols-outlined text-[20px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                <Icon name="arrow_back" class="text-[20px] group-hover:-translate-x-1 transition-transform" />
               </div>
               <div>
                 <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">Previous</span>
@@ -118,7 +119,7 @@ const jsonLd = {
           {next ? (
             <a href={`/${next.id.replace(/\.mdx?$/, '')}/`} class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors text-right sm:flex-row-reverse max-w-xs">
               <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
-                <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                <Icon name="arrow_forward" class="text-[20px] group-hover:translate-x-1 transition-transform" />
               </div>
               <div class="text-left sm:text-right">
                 <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">Next</span>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
 import { getCollection } from 'astro:content';
 import { tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../../utils/blog';
 
@@ -105,7 +106,7 @@ const tagTextColors = [
           <!-- CTA -->
           <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
             Read Post
-            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            <Icon name="arrow_forward" class="text-sm" />
           </div>
         </a>
       ))}
