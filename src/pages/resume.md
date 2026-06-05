@@ -4,7 +4,7 @@ title: Résumé
 description: Senior Laravel/PHP backend engineer with 15+ years of experience building scalable products, APIs, integrations, and engineering delivery systems.
 ---
 
-> [Download résumé as PDF ⬇️](/content/files/2026/06/jewei-resume-2026.pdf)
+> [<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download-icon lucide-download" style="display:inline-block;vertical-align:-0.3em;margin-right:0.375em"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download résumé as PDF](/content/files/2026/06/jewei-resume-2026.pdf)
 
 ## Senior Laravel/PHP Backend Engineer
 
@@ -101,4 +101,4 @@ Strong senior individual contributor who partners with product, design, platform
 
 Email [jewei@duck.com](mailto:jewei@duck.com).
 
-[Download résumé as PDF ⬇️](/content/files/2026/06/jewei-resume-2026.pdf)
+[Download résumé as PDF<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download-icon lucide-download" style="display:inline-block;vertical-align:-0.3em;margin-left:0.375em"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>](/content/files/2026/06/jewei-resume-2026.pdf)
