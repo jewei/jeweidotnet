@@ -44,6 +44,7 @@ When I’m not deep in code, hunting bugs, or shaping another product idea, I tr
 1. 📸 **Photography:** Capturing the right light, expression, or quiet detail at the right moment. Portraits, landscapes, everyday scenes; all of it helps me notice more.
 2. 📚 **Books:** Psychology, systems thinking, philosophy, sci-fi, and anything that makes the world feel stranger, wider, or more understandable.
 3. 🍳 **Cooking:** Cooking feels a lot like coding: precision matters, but so does instinct, timing, and knowing when to stop tinkering.
+4. 🎵 **Music:** The right song can reset a mood, sharpen a thought, or turn an ordinary stretch of time into something cinematic.
 
 ---
 
