@@ -21,10 +21,6 @@ const { frontmatter } = Astro.props;
       {frontmatter.description && (
         <p class="font-body-lg text-body-lg text-on-surface-variant">{frontmatter.description}</p>
       )}
-      <!-- Underline doodle -->
-      <svg class="absolute -bottom-1 left-0 w-28 h-3 text-primary/30" preserveAspectRatio="none" viewBox="0 0 100 10">
-        <path d="M0,5 Q50,-2 100,8" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="3"/>
-      </svg>
     </header>
 
     <!-- Content -->
