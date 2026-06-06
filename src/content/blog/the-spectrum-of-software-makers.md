@@ -21,7 +21,7 @@ As a software maker with entrepreneurial ambitions, your chosen tools and approa
 
 Let’s dive into the **Spectrum of Software Makers** and explore the various pathways you can take.
 
-![](/content/images/2024/09/spectrum-of-software-makers-2x.png)
+![Diagram showing the spectrum of software makers from no-code to systems programming](/content/images/2024/09/spectrum-of-software-makers-2x.png)
 
 ---
 

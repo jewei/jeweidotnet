@@ -6,7 +6,7 @@ updatedDate: "2024-09-22T16:30:30.000Z"
 tags: ["open-source"]
 ---
 
-![](/content/images/2024/09/laravel-skeleton-1.png)
+![Laravel Skeleton project screenshot](/content/images/2024/09/laravel-skeleton-1.png)
 
 My version of Laravel Skeleton is live on GitHub
 

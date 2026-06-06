@@ -31,7 +31,7 @@ src/
 │   │   ├── index.astro       # Blog index with tag filters
 │   │   └── [tag].astro       # Posts filtered by tag
 │   ├── about.md
-│   ├── resume.md
+│   ├── resume.astro
 │   └── rss.xml.js
 ├── styles/
 │   └── global.css     # Tailwind + design system tokens

@@ -133,6 +133,13 @@
   50%       { transform: translateY(-10px) rotate(5deg); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .blob-bg,
+  .sparkle-doodle {
+    animation: none;
+  }
+}
+
 /* Dark mode icon toggle */
 html:not(.dark) .icon-dark { display: none; }
 html.dark .icon-light { display: none; }

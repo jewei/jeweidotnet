@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
 import { getCollection } from 'astro:content';
 import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../../utils/blog';
+import { siteName } from '../../utils/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -31,8 +32,8 @@ const { tagName, posts } = Astro.props;
 ---
 
 <BaseLayout
-  title={`${tagName} — jewei.net`}
-  description={`All posts tagged "${tagName}" on jewei.net.`}
+  title={tagName}
+  description={`All posts tagged "${tagName}" on ${siteName}.`}
 >
   <div class="pt-8">
 
