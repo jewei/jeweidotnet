@@ -39,7 +39,7 @@ const jsonLd = {
   updatedDate={updatedDate}
 >
   <!-- JSON-LD structured data -->
-  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
   <Font cssVariable="--font-jetbrains-mono" slot="head" />
 
   <div class="relative overflow-hidden">

@@ -52,7 +52,7 @@ const tagTextColors = [
         </a>
         {allTags.map(([slug, name]) => (
           <a
-            href={`/blog/${tagToSlug(name)}/`}
+            href={`/blog/${slug}/`}
             class="px-4 py-2 rounded-full bg-surface-container dark:bg-surface-dark text-on-surface dark:text-inverse-on-surface font-body-md text-sm border border-outline-variant/30 hover:bg-surface-variant dark:hover:bg-surface-dark/80 hover:-translate-y-0.5 transition-all duration-200"
           >
             {name}
