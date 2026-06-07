@@ -1,5 +1,6 @@
 ---
 import { Font } from 'astro:assets';
+import { ClientRouter, fade } from 'astro:transitions';
 import Icon from '../components/Icon.astro';
 import { siteName, pageTitle } from '../utils/site';
 import '../styles/global.css';
@@ -37,7 +38,7 @@ const navLinks = [
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate={fade()}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -85,11 +86,17 @@ const navLinks = [
     <!-- Per-page head additions (e.g. JSON-LD) -->
     <slot name="head" />
 
+    <ClientRouter />
+
     <!-- Dark mode: apply class before paint to avoid flash -->
     <script is:inline>
-      const stored = localStorage.getItem('theme');
-      const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      if ((stored ?? preferred) === 'dark') document.documentElement.classList.add('dark');
+      function applyTheme() {
+        const stored = localStorage.getItem('theme');
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.classList.toggle('dark', (stored ?? preferred) === 'dark');
+      }
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
   <body class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col">
