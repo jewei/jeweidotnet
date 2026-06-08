@@ -1,7 +1,6 @@
 ---
 import { Font } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import { ClientRouter, fade } from 'astro:transitions';
 import Icon from '../components/Icon.astro';
 import { siteName, pageTitle, twitterHandle, authorName } from '../support/site';
 import { resolveSocialImage } from '../support/social-image';
@@ -41,7 +40,7 @@ const navLinks = [
 ---
 
 <!doctype html>
-<html lang="en" transition:animate={fade()}>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -97,8 +96,6 @@ const navLinks = [
     <!-- Per-page head additions (e.g. JSON-LD, hero preload) -->
     <slot name="head" />
 
-    <ClientRouter />
-
     <!-- Dark mode: apply class before paint to avoid flash -->
     <script is:inline>
       function applyTheme() {
@@ -109,7 +106,6 @@ const navLinks = [
         document.documentElement.classList.toggle('dark', (stored ?? preferred) === 'dark');
       }
       applyTheme();
-      document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
   <body
@@ -135,7 +131,6 @@ const navLinks = [
       >
         <a
           href="/"
-          data-astro-prefetch
           class="nav-link font-display text-headline-md font-bold text-primary dark:text-inverse-primary shrink-0 hover:opacity-80 transition-opacity"
         >
           jewei.toString()
@@ -147,7 +142,6 @@ const navLinks = [
               <li>
                 <a
                   href={href}
-                  data-astro-prefetch
                   class:list={[
                     'nav-link font-body-md text-body-md transition-colors duration-200',
                     isActive(href)
@@ -204,7 +198,6 @@ const navLinks = [
               <li>
                 <a
                   href={href}
-                  data-astro-prefetch
                   class:list={[
                     'nav-link block py-3 font-body-md text-body-lg transition-colors duration-200',
                     isActive(href)
@@ -288,9 +281,8 @@ const navLinks = [
     </footer>
 
     <script>
-      // Delegate from `document` (which survives view-transition swaps) rather
-      // than binding to the buttons directly — the nav DOM is replaced on each
-      // client-side navigation, which would otherwise drop the listeners.
+      // Delegate from `document` so the controls keep working if future
+      // partial-page navigation is added back.
       document.addEventListener('click', (e) => {
         const target = e.target;
         if (!(target instanceof Element)) return;

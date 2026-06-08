@@ -12,7 +12,7 @@ module.exports = {
         'categories:accessibility': ['warn', { minScore: 0.9 }],
         'categories:best-practices': ['warn', { minScore: 0.9 }],
         'categories:seo': ['warn', { minScore: 0.9 }],
-        'resource-summary:script:size': ['warn', { maxNumericValue: 25000 }],
+        'resource-summary:script:size': ['warn', { maxNumericValue: 10000 }],
         'resource-summary:total:size': ['warn', { maxNumericValue: 500000 }],
       },
     },

@@ -86,13 +86,13 @@ The filename becomes the URL slug: `my-post.md` → `/my-post/`.
 
 Run from the project root:
 
-| Command              | Action                                   |
-| -------------------- | ---------------------------------------- |
-| `bun install`        | Install dependencies                     |
-| `bun run dev`        | Start dev server at `localhost:4321`     |
-| `bun run build`      | Build to `./dist/`                       |
-| `bun run preview`    | Preview the production build locally     |
-| `bun run test:smoke` | Verify build output (run after `build`)  |
+| Command              | Action                                  |
+| -------------------- | --------------------------------------- |
+| `bun install`        | Install dependencies                    |
+| `bun run dev`        | Start dev server at `localhost:4321`    |
+| `bun run build`      | Build to `./dist/`                      |
+| `bun run preview`    | Preview the production build locally    |
+| `bun run test:smoke` | Verify build output (run after `build`) |
 
 ## CI
 
@@ -114,10 +114,10 @@ Deployed automatically to Cloudflare Pages on every push to `main`.
 
 **Build settings** (configured in Cloudflare Pages dashboard):
 
-| Setting                            | Value                          |
-| ---------------------------------- | ------------------------------ |
-| Build command                      | `bun install && bun run build` |
-| Build output directory             | `dist`                         |
-| Environment variable `BUN_VERSION` | `1.3.14` (match CI)            |
+| Setting                            | Value                                            |
+| ---------------------------------- | ------------------------------------------------ |
+| Build command                      | `bun install --frozen-lockfile && bun run build` |
+| Build output directory             | `dist`                                           |
+| Environment variable `BUN_VERSION` | `1.3.14` (match CI)                              |
 
 `wrangler.toml` sets `pages_build_output_dir = "./dist"` for local Wrangler tooling.

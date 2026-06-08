@@ -9,7 +9,14 @@ export const tagColors = [
 ] as const;
 
 export function tagToSlug(tag: string): string {
-  return tag.toLowerCase().replace(/\s+/g, '-');
+  return (
+    tag
+      .normalize('NFKD')
+      .toLowerCase()
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '') || 'tag'
+  );
 }
 
 export function postUrl(id: string): string {
