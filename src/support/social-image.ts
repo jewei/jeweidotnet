@@ -14,6 +14,7 @@ export async function resolveSocialImage(
 ): Promise<SocialImage> {
   const optimized = await getImage({
     src: image ?? defaultOgImage,
+    layout: 'none',
     width: 1200,
     format: 'jpg',
   });
