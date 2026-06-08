@@ -10,10 +10,15 @@ const posts = await getPublishedPosts();
 const tagCloud = getTagCloud(posts);
 const [featured, ...rest] = posts;
 
+// Preload the hero avatar with a srcset that matches the <Image> below exactly,
+// so the browser preloads the same candidate it will actually render (no waste).
+const heroSizes = '(min-width: 768px) 240px, 176px';
 const heroImage = await getImage({
   src: avatar,
   format: 'webp',
-  width: 480,
+  layout: 'none',
+  widths: [176, 240, 352, 480, 720],
+  sizes: heroSizes,
 });
 
 const siteJsonLd = [
@@ -41,7 +46,14 @@ const cardGradients = [
 ---
 
 <BaseLayout title={siteName} description="Personal blog by Jewei Mak — thoughts on software, systems, and the craft of building things.">
-  <link slot="head" rel="preload" as="image" href={heroImage.src} type="image/webp" />
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    type="image/webp"
+    imagesrcset={heroImage.srcSet.attribute}
+    imagesizes={heroSizes}
+  />
   <script is:inline type="application/ld+json" set:html={JSON.stringify(siteJsonLd)} slot="head" />
 
   <!-- Hero -->
@@ -90,8 +102,9 @@ const cardGradients = [
             src={avatar}
             alt="Jewei"
             class="w-full h-full object-cover avatar-image"
+            layout="none"
             widths={[176, 240, 352, 480, 720]}
-            sizes="(min-width: 768px) 240px, 176px"
+            sizes={heroSizes}
             format="webp"
             loading="eager"
             fetchpriority="high"
@@ -122,6 +135,7 @@ const cardGradients = [
               <Image
                 src={featured.data.image}
                 alt={featured.data.title}
+                layout="none"
                 widths={[400, 600, 800]}
                 sizes="(min-width: 768px) 40vw, 100vw"
                 format="webp"

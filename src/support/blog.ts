@@ -39,7 +39,17 @@ export function hasCodeBlocks(body: string | undefined): boolean {
 }
 
 export function getReadingTime(body: string | undefined): number {
-  return Math.max(1, Math.round((body?.split(/\s+/).length ?? 0) / 200));
+  if (!body) return 1;
+
+  // Strip non-prose noise so reading time reflects readable words, not syntax:
+  // fenced/inline code and MDX import/export statements.
+  const prose = body
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`[^`]*`/g, '')
+    .replace(/^\s*(?:import|export)\s.*$/gm, '');
+
+  const words = prose.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
 }
 
 export function getTagCloud(posts: CollectionEntry<'blog'>[]): [string, number][] {

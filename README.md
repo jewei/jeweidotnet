@@ -99,10 +99,14 @@ Run from the project root:
 GitHub Actions on every push and pull request to `main`:
 
 1. `bun install --frozen-lockfile`
-2. `bun run build`
-3. `bun run test:smoke`
-4. Link check (Lychee) on built HTML
-5. Lighthouse CI
+2. `bun run check` (type checks `.astro`/TS via `astro check`)
+3. `bun run build`
+4. `bun run test:smoke`
+5. Link check (Lychee) on built HTML
+6. Lighthouse CI
+
+The CI Bun version is pinned (`bun-version: 1.3.14` in `ci.yml`) to match the
+`BUN_VERSION` deploy setting below. Bump both together.
 
 ## Deployment
 
@@ -114,6 +118,6 @@ Deployed automatically to Cloudflare Pages on every push to `main`.
 | ---------------------------------- | ------------------------------ |
 | Build command                      | `bun install && bun run build` |
 | Build output directory             | `dist`                         |
-| Environment variable `BUN_VERSION` | `1`                            |
+| Environment variable `BUN_VERSION` | `1.3.14` (match CI)            |
 
 `wrangler.toml` sets `pages_build_output_dir = "./dist"` for local Wrangler tooling.

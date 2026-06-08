@@ -6,7 +6,17 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-/** @returns {Record<string, string>} */
+/**
+ * Build a map of `/{slug}/` → ISO `lastmod` for the sitemap.
+ *
+ * The sitemap integration's `serialize` hook runs in the config context, where
+ * `astro:content` (and therefore the blog collection) is unavailable. Reading
+ * the frontmatter from disk here is the only way to attach accurate `lastmod`
+ * dates. Draft handling is kept in sync with `getPublishedPosts()` in
+ * `src/support/blog.ts` so the sitemap never lists an unpublished post.
+ *
+ * @returns {Record<string, string>}
+ */
 function loadSitemapDates() {
   /** @type {Record<string, string>} */
   const dates = {};
@@ -22,14 +32,18 @@ function loadSitemapDates() {
     if (!match) continue;
 
     const frontmatter = match[1];
+    if (/^draft:\s*true\b/m.test(frontmatter)) continue;
+
     const updated = frontmatter.match(/^updatedDate:\s*["']?([^"'\n]+)["']?/m)?.[1];
     const published = frontmatter.match(/^pubDate:\s*["']?([^"'\n]+)["']?/m)?.[1];
     const lastmod = updated ?? published;
+    if (!lastmod) continue;
 
-    if (lastmod) {
-      const slug = file.replace(/\.mdx?$/, '');
-      dates[`/${slug}/`] = new Date(lastmod).toISOString();
-    }
+    const date = new Date(lastmod);
+    if (Number.isNaN(date.getTime())) continue;
+
+    const slug = file.replace(/\.mdx?$/, '');
+    dates[`/${slug}/`] = date.toISOString();
   }
 
   const postDates = Object.values(dates).sort();
@@ -47,6 +61,13 @@ const sitemapDates = loadSitemapDates();
 export default defineConfig({
   site: 'https://jewei.net',
   output: 'static',
+  // Make Markdown `![]()` images responsive (auto srcset + sizes). Hand-tuned
+  // component images opt out with `layout="none"` to keep their explicit
+  // `widths`/`densities`, which are incompatible with a layout.
+  image: {
+    layout: 'constrained',
+    responsiveStyles: true,
+  },
   integrations: [
     mdx(),
     sitemap({
