@@ -4,6 +4,7 @@ description: "PHP in the Modern Web: A Relic or a Resilient Force. Here's my 2 c
 pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:52:22.000Z"
 tags: ["php"]
+image: ../../assets/content/midwit-php.jpeg
 ---
 
 In the ever-evolving landscape of web development, one question arises time and again: **Is PHP dead?**
@@ -34,7 +35,7 @@ And yes, we can’t overlook **WordPress**. As an incredibly popular CMS and bl
 
 ### The Modern Face of PHP: Vital, Fast, and Ever-Improving
 
-![Midwit meme comparing PHP and JavaScript](/content/images/2024/09/midwit-php.jpeg)
+![Midwit meme comparing PHP and JavaScript](../../assets/content/midwit-php.jpeg)
 
 Midwit PHP/JS
 

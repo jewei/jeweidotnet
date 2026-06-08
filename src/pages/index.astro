@@ -1,24 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import avatar from '../assets/jewei.jpg';
-import { getCollection } from 'astro:content';
-import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../support/blog';
-import { siteName } from '../support/site';
+import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter, getPublishedPosts, getTagCloud } from '../support/blog';
+import { siteName, siteUrl, authorName } from '../support/site';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
-
-const tagCounts = new Map<string, number>();
-for (const post of posts) {
-  for (const tag of post.data.tags) {
-    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
-  }
-}
-const tagCloud = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-
+const posts = await getPublishedPosts();
+const tagCloud = getTagCloud(posts);
 const [featured, ...rest] = posts;
+
+const heroImage = await getImage({
+  src: avatar,
+  format: 'webp',
+  width: 480,
+});
+
+const siteJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: siteName,
+    url: siteUrl,
+    description: 'Personal blog by Jewei Mak — thoughts on software, systems, and the craft of building things.',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: authorName,
+    url: `${siteUrl}/about/`,
+    sameAs: ['https://github.com/jewei', 'https://x.com/jewei'],
+  },
+];
 
 const cardGradients = [
   'from-primary/10 via-surface-container to-surface-container-lowest',
@@ -28,6 +41,8 @@ const cardGradients = [
 ---
 
 <BaseLayout title={siteName} description="Personal blog by Jewei Mak — thoughts on software, systems, and the craft of building things.">
+  <link slot="head" rel="preload" as="image" href={heroImage.src} type="image/webp" />
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(siteJsonLd)} slot="head" />
 
   <!-- Hero -->
   <section class="flex flex-col-reverse md:flex-row items-center justify-between gap-10 py-12 md:py-16 relative">
@@ -101,14 +116,15 @@ const cardGradients = [
         class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
       >
         <div class="flex flex-col md:flex-row h-full">
-          <!-- Thumbnail: featured image or gradient fallback -->
+          {/* Thumbnail: featured image or gradient fallback */}
           <div class="md:w-2/5 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
             {featured.data.image ? (
-              <img
+              <Image
                 src={featured.data.image}
                 alt={featured.data.title}
-                width="800"
-                height="450"
+                widths={[400, 600, 800]}
+                sizes="(min-width: 768px) 40vw, 100vw"
+                format="webp"
                 loading="lazy"
                 decoding="async"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -163,7 +179,7 @@ const cardGradients = [
             href={postUrl(post.id)}
             class="group block rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 p-5 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden"
           >
-            <!-- Corner gradient on hover -->
+            {/* Corner gradient on hover */}
             <div class={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl ${cardGradients[index % cardGradients.length]} rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
 
             {post.data.tags.length > 0 && (

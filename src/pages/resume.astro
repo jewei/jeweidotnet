@@ -12,19 +12,26 @@ import {
 ---
 
 <BaseLayout title={resumeMeta.title} description={resumeMeta.description}>
-
   <!-- Hero -->
   <section class="mb-10 md:mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="space-y-4">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 text-primary dark:text-inverse-primary">
+      <div
+        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 text-primary dark:text-inverse-primary"
+      >
         <Icon name="spark" class="text-[18px]" />
         <span class="font-label-md text-label-md">Available for Work</span>
       </div>
-      <h1 class="font-display text-[36px] md:text-display text-on-surface dark:text-inverse-on-surface leading-tight tracking-[-0.02em]">
+      <h1
+        class="font-display text-[36px] md:text-display text-on-surface dark:text-inverse-on-surface leading-tight tracking-[-0.02em]"
+      >
         Jewei Mak
       </h1>
-      <p class="font-headline-md text-headline-md text-on-surface-variant dark:text-inverse-on-surface/80 max-w-2xl">
-        {resumeMeta.headline} with <span class="text-primary dark:text-inverse-primary italic">15+ years of experience</span> building scalable products, APIs, integrations, and engineering delivery systems.
+      <p
+        class="font-headline-md text-headline-md text-on-surface-variant dark:text-inverse-on-surface/80 max-w-2xl"
+      >
+        {resumeMeta.headline} with <span class="text-primary dark:text-inverse-primary italic"
+          >15+ years of experience</span
+        > building scalable products, APIs, integrations, and engineering delivery systems.
       </p>
     </div>
     <div class="shrink-0">
@@ -41,28 +48,26 @@ import {
 
   <!-- Bento grid -->
   <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-gutter">
-
     <!-- Sidebar -->
     <div class="md:col-span-4 space-y-6 md:space-y-gutter">
-
       <!-- Summary -->
       <section class="resume-card group">
         <div class="resume-card-decoration" aria-hidden="true">
           <svg class="resume-sparkle resume-sparkle--lg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z" />
+            <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"></path>
           </svg>
           <svg class="resume-sparkle resume-sparkle--sm" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0l1.5 10.5L24 12l-10.5 1.5L12 24l-1.5-10.5L0 12l10.5-1.5z" />
+            <path d="M12 0l1.5 10.5L24 12l-10.5 1.5L12 24l-1.5-10.5L0 12l10.5-1.5z"></path>
           </svg>
         </div>
         <h2 class="resume-section-title">
           <Icon name="person" />
           Summary
         </h2>
-        <div class="space-y-4 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
-          {resumeMeta.summary.map((paragraph) => (
-            <p>{paragraph}</p>
-          ))}
+        <div
+          class="space-y-4 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75"
+        >
+          {resumeMeta.summary.map((paragraph) => <p>{paragraph}</p>)}
         </div>
       </section>
 
@@ -73,11 +78,13 @@ import {
           Tech Stack
         </h2>
         <ul class="flex flex-wrap gap-2 list-none p-0 m-0">
-          {techStack.map((tech) => (
-            <li>
-              <span class="resume-tag">{tech}</span>
-            </li>
-          ))}
+          {
+            techStack.map((tech) => (
+              <li>
+                <span class="resume-tag">{tech}</span>
+              </li>
+            ))
+          }
         </ul>
       </section>
 
@@ -88,20 +95,27 @@ import {
           Education
         </h2>
         <div class="space-y-4">
-          {education.map((entry) => (
-            <div>
-              <p class="font-label-md text-label-md text-on-surface-variant dark:text-inverse-on-surface/60">{entry.period}</p>
-              <h3 class="font-headline-md text-body-lg text-on-surface dark:text-inverse-on-surface font-semibold">{entry.degree}</h3>
-              <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">{entry.institution}</p>
-            </div>
-          ))}
+          {
+            education.map((entry) => (
+              <div>
+                <p class="font-label-md text-label-md text-on-surface-variant dark:text-inverse-on-surface/60">
+                  {entry.period}
+                </p>
+                <h3 class="font-headline-md text-body-lg text-on-surface dark:text-inverse-on-surface font-semibold">
+                  {entry.degree}
+                </h3>
+                <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
+                  {entry.institution}
+                </p>
+              </div>
+            ))
+          }
         </div>
       </section>
     </div>
 
     <!-- Main column -->
     <div class="md:col-span-8 space-y-6 md:space-y-gutter">
-
       <!-- Core strengths -->
       <section class="resume-card md:p-8">
         <h2 class="resume-section-title">
@@ -109,12 +123,19 @@ import {
           Core Strengths
         </h2>
         <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-x-8 list-none p-0 m-0">
-          {coreStrengths.map((strength) => (
-            <li class="flex gap-2 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
-              <span class="text-primary dark:text-inverse-primary mt-1 shrink-0" aria-hidden="true">✦</span>
-              <span>{strength}</span>
-            </li>
-          ))}
+          {
+            coreStrengths.map((strength) => (
+              <li class="flex gap-2 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
+                <span
+                  class="text-primary dark:text-inverse-primary mt-1 shrink-0"
+                  aria-hidden="true"
+                >
+                  ✦
+                </span>
+                <span>{strength}</span>
+              </li>
+            ))
+          }
         </ul>
       </section>
 
@@ -125,75 +146,99 @@ import {
           Experience
         </h2>
         <div class="space-y-8">
-          {experience.map((role, index) => (
-            <article
-              class="resume-timeline-item"
-              class:list={{ 'resume-timeline-item--last': index === experience.length - 1 }}
-              style={`--timeline-opacity: ${Math.max(0.2, 1 - index * 0.12)}`}
-            >
-              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
-                <div>
-                  <h3 class="font-display text-headline-md text-on-surface dark:text-inverse-on-surface">
-                    {role.title}
-                  </h3>
-                  {role.companyUrl ? (
-                    <a
-                      href={role.companyUrl}
-                      class="font-body-lg text-primary dark:text-inverse-primary font-medium hover:underline underline-offset-2"
-                    >
-                      {role.company}
-                    </a>
-                  ) : (
-                    <p class="font-body-lg text-primary dark:text-inverse-primary font-medium">{role.company}</p>
-                  )}
+          {
+            experience.map((role, index) => (
+              <article
+                class="resume-timeline-item"
+                class:list={{ 'resume-timeline-item--last': index === experience.length - 1 }}
+                style={`--timeline-opacity: ${Math.max(0.2, 1 - index * 0.12)}`}
+              >
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+                  <div>
+                    <h3 class="font-display text-headline-md text-on-surface dark:text-inverse-on-surface">
+                      {role.title}
+                    </h3>
+                    {role.companyUrl ? (
+                      <a
+                        href={role.companyUrl}
+                        class="font-body-lg text-primary dark:text-inverse-primary font-medium hover:underline underline-offset-2"
+                      >
+                        {role.company}
+                      </a>
+                    ) : (
+                      <p class="font-body-lg text-primary dark:text-inverse-primary font-medium">
+                        {role.company}
+                      </p>
+                    )}
+                  </div>
+                  <span class="resume-period">{role.period}</span>
                 </div>
-                <span class="resume-period">{role.period}</span>
-              </div>
-              <ul class="mt-4 space-y-3 list-none p-0 m-0">
-                {role.highlights.map((highlight) => (
-                  <li class="flex gap-2 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
-                    <span class="text-primary dark:text-inverse-primary mt-1 shrink-0" aria-hidden="true">✦</span>
-                    <span>{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-              {(role.stack || role.tools) && (
-                <div class="mt-4 space-y-1 font-body-md text-sm text-on-surface-variant dark:text-inverse-on-surface/60">
-                  {role.stack && (
-                    <p><strong class="text-on-surface dark:text-inverse-on-surface/90">Stack:</strong> {role.stack}</p>
-                  )}
-                  {role.tools && (
-                    <p><strong class="text-on-surface dark:text-inverse-on-surface/90">Tools:</strong> {role.tools}</p>
-                  )}
-                </div>
-              )}
-            </article>
-          ))}
+                <ul class="mt-4 space-y-3 list-none p-0 m-0">
+                  {role.highlights.map((highlight) => (
+                    <li class="flex gap-2 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
+                      <span
+                        class="text-primary dark:text-inverse-primary mt-1 shrink-0"
+                        aria-hidden="true"
+                      >
+                        ✦
+                      </span>
+                      <span>{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+                {(role.stack || role.tools) && (
+                  <div class="mt-4 space-y-1 font-body-md text-sm text-on-surface-variant dark:text-inverse-on-surface/60">
+                    {role.stack && (
+                      <p>
+                        <strong class="text-on-surface dark:text-inverse-on-surface/90">
+                          Stack:
+                        </strong>{' '}
+                        {role.stack}
+                      </p>
+                    )}
+                    {role.tools && (
+                      <p>
+                        <strong class="text-on-surface dark:text-inverse-on-surface/90">
+                          Tools:
+                        </strong>{' '}
+                        {role.tools}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </article>
+            ))
+          }
         </div>
       </section>
     </div>
   </div>
 
   <!-- CTA -->
-  <section class="resume-card resume-cta mt-10 md:mt-14 p-8 md:p-10 text-center relative overflow-hidden">
+  <section
+    class="resume-card resume-cta mt-10 md:mt-14 p-8 md:p-10 text-center relative overflow-hidden"
+  >
     <div class="resume-cta-decoration" aria-hidden="true">
       <Icon name="star" class="text-[100px] absolute top-6 left-6 md:top-10 md:left-10" />
-      <Icon name="favorite" class="text-[120px] absolute bottom-6 right-6 md:bottom-10 md:right-10" />
+      <Icon
+        name="favorite"
+        class="text-[120px] absolute bottom-6 right-6 md:bottom-10 md:right-10"
+      />
     </div>
-    <h2 class="font-display text-headline-lg text-on-surface dark:text-inverse-on-surface mb-4 relative z-10">
+    <h2
+      class="font-display text-headline-lg text-on-surface dark:text-inverse-on-surface mb-4 relative z-10"
+    >
       Interested in working together?
     </h2>
-    <p class="font-body-lg text-body-lg text-on-surface-variant dark:text-inverse-on-surface/75 mb-8 max-w-xl mx-auto relative z-10">
-      I'm open to senior backend roles, consulting, and interesting product engineering challenges. Let's build something reliable.
+    <p
+      class="font-body-lg text-body-lg text-on-surface-variant dark:text-inverse-on-surface/75 mb-8 max-w-xl mx-auto relative z-10"
+    >
+      I'm open to senior backend roles, consulting, and interesting product engineering challenges.
+      Let's build something reliable.
     </p>
     <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
-      <a href="mailto:jewei@duck.com" class="resume-btn-primary">
-        Send a Message
-      </a>
-      <a href="/about/" class="resume-btn-secondary">
-        About Me
-      </a>
+      <a href="mailto:jewei@duck.com" class="resume-btn-primary"> Send a Message </a>
+      <a href="/about/" class="resume-btn-secondary"> About Me </a>
     </div>
   </section>
-
 </BaseLayout>

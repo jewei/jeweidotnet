@@ -4,7 +4,8 @@ import Icon from '../components/Icon.astro';
 import { Font, Image } from 'astro:assets';
 import avatar from '../assets/jewei.jpg';
 import type { CollectionEntry } from 'astro:content';
-import { tagColors, tagToSlug, longDateFormatter } from '../support/blog';
+import { tagColors, tagToSlug, longDateFormatter, postUrl, hasCodeBlocks } from '../support/blog';
+import { resolveSocialImage } from '../support/social-image';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -15,8 +16,10 @@ interface Props {
 
 const { post, prev, next, readingTime } = Astro.props;
 const { title, description, pubDate, updatedDate, tags, image } = post.data;
+const showCodeFont = hasCodeBlocks(post.body);
 
 const siteUrl = Astro.site!.href;
+const socialImageMeta = image ? await resolveSocialImage(image, siteUrl) : undefined;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -26,71 +29,105 @@ const jsonLd = {
   dateModified: (updatedDate ?? pubDate).toISOString(),
   author: { '@type': 'Person', name: 'Jewei Mak', url: `${siteUrl}/about/` },
   publisher: { '@type': 'Person', name: 'Jewei Mak', url: siteUrl },
-  ...(image ? { image: new URL(image, siteUrl).href } : {}),
+  ...(socialImageMeta ? { image: socialImageMeta.url } : {}),
 };
 ---
 
 <BaseLayout
   title={title}
   description={description}
-  image={image}
+  socialImage={image}
   type="article"
   pubDate={pubDate}
   updatedDate={updatedDate}
 >
-  <!-- JSON-LD structured data -->
   <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
-  <Font cssVariable="--font-jetbrains-mono" slot="head" />
+  {showCodeFont && <Font cssVariable="--font-jetbrains-mono" slot="head" />}
 
   <div class="relative overflow-hidden">
-    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-fixed rounded-full filter blur-[100px] opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+    <div
+      class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-fixed rounded-full filter blur-[100px] opacity-20 pointer-events-none -translate-y-1/2 translate-x-1/4"
+    >
+    </div>
 
     <article class="max-w-[672px] mx-auto relative z-10 pt-8">
-
-      <div class="absolute -top-2 -left-14 text-surface-tint opacity-70 hidden md:block" style="animation: spin 12s linear infinite;">
+      <div
+        class="absolute -top-2 -left-14 text-surface-tint opacity-70 hidden md:block"
+        style="animation: spin 12s linear infinite;"
+      >
         <svg fill="none" height="36" viewBox="0 0 40 40" width="36">
-          <path d="M20 0C20 11.046 28.954 20 40 20C28.954 20 20 28.954 20 40C20 28.954 11.046 20 0 20C11.046 20 20 11.046 20 0Z" fill="currentColor"/>
+          <path
+            d="M20 0C20 11.046 28.954 20 40 20C28.954 20 20 28.954 20 40C20 28.954 11.046 20 0 20C11.046 20 20 11.046 20 0Z"
+            fill="currentColor"></path>
         </svg>
       </div>
 
       <header class="mb-10">
         <div class="flex items-center gap-3 mb-4 flex-wrap">
-          {tags.map((tag, i) => (
-            <a
-              href={`/blog/${tagToSlug(tag)}/`}
-              class={`px-3 py-1 rounded-full font-label-md text-label-md uppercase tracking-wider hover:opacity-80 transition-opacity ${tagColors[i % tagColors.length]}`}
-            >
-              {tag}
-            </a>
-          ))}
-          <div class="flex items-center gap-2 text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm ml-auto flex-wrap">
+          {
+            tags.map((tag, i) => (
+              <a
+                href={`/blog/${tagToSlug(tag)}/`}
+                class={`px-3 py-1 rounded-full font-label-md text-label-md uppercase tracking-wider hover:opacity-80 transition-opacity ${tagColors[i % tagColors.length]}`}
+              >
+                {tag}
+              </a>
+            ))
+          }
+          <div
+            class="flex items-center gap-2 text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm ml-auto flex-wrap"
+          >
             <Icon name="calendar_today" class="text-[16px]" />
             <time datetime={pubDate.toISOString()}>{longDateFormatter.format(pubDate)}</time>
-            {updatedDate && updatedDate > pubDate && (
-              <>
-                <span class="text-outline-variant">·</span>
-                <span class="italic text-xs">
-                  Updated <time datetime={updatedDate.toISOString()}>{longDateFormatter.format(updatedDate)}</time>
-                </span>
-              </>
-            )}
+            {
+              updatedDate && updatedDate > pubDate && (
+                <>
+                  <span class="text-outline-variant">·</span>
+                  <span class="italic text-xs">
+                    Updated{' '}
+                    <time datetime={updatedDate.toISOString()}>
+                      {longDateFormatter.format(updatedDate)}
+                    </time>
+                  </span>
+                </>
+              )
+            }
             <span class="text-outline-variant">·</span>
             <Icon name="schedule" class="text-[16px]" />
             <span>{readingTime} min read</span>
           </div>
         </div>
 
-        <h1 class="font-display text-[32px] md:text-display text-on-surface dark:text-inverse-on-surface mb-6 leading-tight tracking-[-0.02em]">
+        <h1
+          class="font-display text-[32px] md:text-display text-on-surface dark:text-inverse-on-surface mb-6 leading-tight tracking-[-0.02em]"
+        >
           {title}
         </h1>
 
         <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-6">
-          <div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 bg-surface-container-highest shrink-0">
-            <Image src={avatar} alt="Jewei" class="w-full h-full object-cover" width={40} height={40} densities={[2, 3]} format="webp" loading="lazy" />
+          <div
+            class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 bg-surface-container-highest shrink-0"
+          >
+            <Image
+              src={avatar}
+              alt="Jewei"
+              class="w-full h-full object-cover"
+              width={40}
+              height={40}
+              densities={[2, 3]}
+              format="webp"
+              loading="lazy"
+            />
           </div>
           <div>
-            <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface">Jewei Mak</p>
-            <p class="text-[13px] text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md">Software Engineer</p>
+            <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface">
+              Jewei Mak
+            </p>
+            <p
+              class="text-[13px] text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md"
+            >
+              Software Engineer
+            </p>
           </div>
         </div>
       </header>
@@ -101,38 +138,65 @@ const jsonLd = {
 
       <div class="flex justify-center my-12 text-primary-fixed-dim opacity-60">
         <svg class="animate-pulse" fill="none" height="24" viewBox="0 0 24 24" width="24">
-          <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" fill="currentColor"/>
+          <path
+            d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"
+            fill="currentColor"></path>
         </svg>
       </div>
 
-      {(prev || next) && (
-        <nav class="border-t border-outline-variant/30 pt-8 mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
-          {prev ? (
-            <a href={`/${prev.id.replace(/\.mdx?$/, '')}/`} class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors max-w-xs">
-              <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
-                <Icon name="arrow_back" class="text-[20px] group-hover:-translate-x-1 transition-transform" />
-              </div>
-              <div>
-                <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">Previous</span>
-                <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">{prev.data.title}</span>
-              </div>
-            </a>
-          ) : <div />}
+      {
+        (prev || next) && (
+          <nav class="border-t border-outline-variant/30 pt-8 mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
+            {prev ? (
+              <a
+                href={postUrl(prev.id)}
+                class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors max-w-xs"
+              >
+                <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
+                  <Icon
+                    name="arrow_back"
+                    class="text-[20px] group-hover:-translate-x-1 transition-transform"
+                  />
+                </div>
+                <div>
+                  <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">
+                    Previous
+                  </span>
+                  <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">
+                    {prev.data.title}
+                  </span>
+                </div>
+              </a>
+            ) : (
+              <div />
+            )}
 
-          {next ? (
-            <a href={`/${next.id.replace(/\.mdx?$/, '')}/`} class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors text-right sm:flex-row-reverse max-w-xs">
-              <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
-                <Icon name="arrow_forward" class="text-[20px] group-hover:translate-x-1 transition-transform" />
-              </div>
-              <div class="text-left sm:text-right">
-                <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">Next</span>
-                <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">{next.data.title}</span>
-              </div>
-            </a>
-          ) : <div />}
-        </nav>
-      )}
-
+            {next ? (
+              <a
+                href={postUrl(next.id)}
+                class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors text-right sm:flex-row-reverse max-w-xs"
+              >
+                <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary-fixed/20 transition-all shrink-0">
+                  <Icon
+                    name="arrow_forward"
+                    class="text-[20px] group-hover:translate-x-1 transition-transform"
+                  />
+                </div>
+                <div class="text-left sm:text-right">
+                  <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">
+                    Next
+                  </span>
+                  <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">
+                    {next.data.title}
+                  </span>
+                </div>
+              </a>
+            ) : (
+              <div />
+            )}
+          </nav>
+        )
+      }
     </article>
   </div>
 </BaseLayout>

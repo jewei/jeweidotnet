@@ -4,6 +4,7 @@ description: "How to design a system that supports millions of users? What are t
 pubDate: "2022-11-10T16:00:00.000Z"
 updatedDate: "2024-09-22T16:25:01.000Z"
 tags: ["system-design", "infrastructure"]
+image: ../../assets/og-image.jpg
 ---
 
 ### Designing a Scalable System to Support Millions of Users

@@ -1,27 +1,30 @@
 ---
 import { Font } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import { ClientRouter, fade } from 'astro:transitions';
 import Icon from '../components/Icon.astro';
-import { siteName, pageTitle } from '../support/site';
+import { siteName, pageTitle, twitterHandle, authorName } from '../support/site';
+import { resolveSocialImage } from '../support/social-image';
 import '../styles/global.css';
 
 interface Props {
   title: string;
   description?: string;
-  image?: string;
+  socialImage?: ImageMetadata;
   type?: 'website' | 'article';
   pubDate?: Date;
   updatedDate?: Date;
 }
 
-const { title, description, image, type = 'website', pubDate, updatedDate } = Astro.props;
-const siteUrl = Astro.site!.href;
+const { title, description, socialImage, type = 'website', pubDate, updatedDate } = Astro.props;
+const canonicalSiteUrl = Astro.site!.href;
 const currentPath = Astro.url.pathname;
-const canonicalUrl = new URL(currentPath, siteUrl).href;
+const canonicalUrl = new URL(currentPath, canonicalSiteUrl).href;
 const fullTitle = pageTitle(title);
-const ogImage = image
-  ? new URL(image, siteUrl).href
-  : new URL('/og-image.jpg', siteUrl).href;
+const { url: ogImage, width: ogImageWidth, height: ogImageHeight } = await resolveSocialImage(
+  socialImage,
+  canonicalSiteUrl,
+);
 
 function isActive(path: string) {
   if (path === '/') return currentPath === '/';
@@ -29,11 +32,11 @@ function isActive(path: string) {
 }
 
 const navLinks = [
-  { href: '/',          label: 'Home' },
-  { href: '/blog/',     label: 'Blog' },
-  { href: '/about/',    label: 'About' },
+  { href: '/',             label: 'Home' },
+  { href: '/blog/',        label: 'Blog' },
+  { href: '/about/',       label: 'About' },
   { href: '/collections/', label: 'Collections' },
-  { href: '/resume/',   label: 'Hire Me' },
+  { href: '/resume/',      label: 'Hire Me' },
 ];
 ---
 
@@ -63,15 +66,23 @@ const navLinks = [
     <meta property="og:type" content={type} />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:image" content={ogImage} />
-    {type === 'article' && pubDate && (
-      <meta property="article:published_time" content={pubDate.toISOString()} />
-    )}
-    {type === 'article' && updatedDate && (
-      <meta property="article:modified_time" content={updatedDate.toISOString()} />
-    )}
+    <meta property="og:image:width" content={String(ogImageWidth)} />
+    <meta property="og:image:height" content={String(ogImageHeight)} />
+    {
+      type === 'article' && pubDate && (
+        <meta property="article:published_time" content={pubDate.toISOString()} />
+      )
+    }
+    {
+      type === 'article' && updatedDate && (
+        <meta property="article:modified_time" content={updatedDate.toISOString()} />
+      )
+    }
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={twitterHandle} />
+    <meta name="twitter:creator" content={twitterHandle} />
     <meta name="twitter:title" content={fullTitle} />
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={ogImage} />
@@ -83,7 +94,7 @@ const navLinks = [
     <Font cssVariable="--font-lexend" preload />
     <Font cssVariable="--font-geist" preload />
 
-    <!-- Per-page head additions (e.g. JSON-LD) -->
+    <!-- Per-page head additions (e.g. JSON-LD, hero preload) -->
     <slot name="head" />
 
     <ClientRouter />
@@ -92,137 +103,207 @@ const navLinks = [
     <script is:inline>
       function applyTheme() {
         const stored = localStorage.getItem('theme');
-        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
         document.documentElement.classList.toggle('dark', (stored ?? preferred) === 'dark');
       }
       applyTheme();
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
-  <body class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col">
+  <body
+    class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col"
+  >
+    <a href="#main-content" class="skip-link">Skip to content</a>
 
     <!-- Decorative blobs -->
     <div class="blob-bg bg-primary w-96 h-96 top-20 left-10 dark:opacity-5"></div>
-    <div class="blob-bg bg-secondary w-80 h-80 top-40 right-20 dark:opacity-5" style="animation-delay: -5s;"></div>
+    <div
+      class="blob-bg bg-secondary w-80 h-80 top-40 right-20 dark:opacity-5"
+      style="animation-delay: -5s;"
+    >
+    </div>
 
     <!-- Header / Nav -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-outline-variant/30">
-      <nav class="max-w-[1100px] mx-auto px-6 py-4 flex justify-between items-center gap-8">
-
-        <a href="/" class="font-display text-headline-md font-bold text-primary dark:text-inverse-primary shrink-0 hover:opacity-80 transition-opacity">
+    <header
+      class="fixed top-0 left-0 right-0 z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-outline-variant/30"
+    >
+      <nav
+        class="max-w-[1100px] mx-auto px-6 py-4 flex justify-between items-center gap-8"
+        aria-label="Main"
+      >
+        <a
+          href="/"
+          data-astro-prefetch
+          class="nav-link font-display text-headline-md font-bold text-primary dark:text-inverse-primary shrink-0 hover:opacity-80 transition-opacity"
+        >
           jewei.toString()
         </a>
 
         <ul class="hidden md:flex items-center gap-7 flex-1">
-          {navLinks.map(({ href, label }) => (
-            <li>
-              <a
-                href={href}
-                class:list={[
-                  'font-body-md text-body-md transition-colors duration-200',
-                  isActive(href)
-                    ? 'text-primary dark:text-inverse-primary font-semibold'
-                    : 'text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary',
-                ]}
-              >
-                {label}
-              </a>
-            </li>
-          ))}
+          {
+            navLinks.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  data-astro-prefetch
+                  class:list={[
+                    'nav-link font-body-md text-body-md transition-colors duration-200',
+                    isActive(href)
+                      ? 'text-primary dark:text-inverse-primary font-semibold'
+                      : 'text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary',
+                  ]}
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
 
         <div class="flex items-center gap-2">
           <a
             href="/rss.xml"
             aria-label="RSS feed"
-            class="text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50"
+            class="nav-link text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50"
           >
             <Icon name="rss_feed" class="text-[20px]" />
           </a>
           <button
             id="theme-toggle"
+            type="button"
             aria-label="Toggle dark mode"
-            class="text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer"
-            onclick="
-              const isDark = document.documentElement.classList.toggle('dark');
-              localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            "
+            class="nav-link text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer"
           >
             <Icon name="light_mode" class="icon-light text-[20px]" />
             <Icon name="dark_mode" class="icon-dark text-[20px]" />
           </button>
           <button
             id="menu-toggle"
+            type="button"
             aria-label="Toggle navigation menu"
             aria-controls="mobile-menu"
             aria-expanded="false"
-            class="md:hidden text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer"
-            onclick="
-              const isHidden = document.getElementById('mobile-menu').classList.toggle('hidden');
-              this.setAttribute('aria-expanded', String(!isHidden));
-              this.querySelector('.icon-menu-open').classList.toggle('hidden', !isHidden);
-              this.querySelector('.icon-menu-close').classList.toggle('hidden', isHidden);
-            "
+            class="nav-link md:hidden text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2 rounded-full hover:bg-surface-variant/50 cursor-pointer"
           >
             <Icon name="menu" class="icon-menu-open text-[24px]" />
             <Icon name="close" class="icon-menu-close hidden text-[24px]" />
           </button>
         </div>
-
       </nav>
 
       <!-- Mobile menu (toggled by #menu-toggle) -->
-      <div id="mobile-menu" class="hidden md:hidden border-t border-outline-variant/30 bg-surface/95 dark:bg-surface-dark/95 backdrop-blur-md">
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden border-t border-outline-variant/30 bg-surface/95 dark:bg-surface-dark/95 backdrop-blur-md"
+      >
         <ul class="max-w-[1100px] mx-auto px-6 py-3 flex flex-col">
-          {navLinks.map(({ href, label }) => (
-            <li>
-              <a
-                href={href}
-                class:list={[
-                  'block py-3 font-body-md text-body-lg transition-colors duration-200',
-                  isActive(href)
-                    ? 'text-primary dark:text-inverse-primary font-semibold'
-                    : 'text-on-surface-variant dark:text-inverse-on-surface/80 hover:text-primary dark:hover:text-inverse-primary',
-                ]}
-              >
-                {label}
-              </a>
-            </li>
-          ))}
+          {
+            navLinks.map(({ href, label }) => (
+              <li>
+                <a
+                  href={href}
+                  data-astro-prefetch
+                  class:list={[
+                    'nav-link block py-3 font-body-md text-body-lg transition-colors duration-200',
+                    isActive(href)
+                      ? 'text-primary dark:text-inverse-primary font-semibold'
+                      : 'text-on-surface-variant dark:text-inverse-on-surface/80 hover:text-primary dark:hover:text-inverse-primary',
+                  ]}
+                >
+                  {label}
+                </a>
+              </li>
+            ))
+          }
         </ul>
       </div>
     </header>
 
-    <main class="flex-grow w-full max-w-[1100px] mx-auto px-6 pt-24 pb-16 z-10 relative">
+    <main
+      id="main-content"
+      class="flex-grow w-full max-w-[1100px] mx-auto px-6 pt-24 pb-16 z-10 relative"
+    >
       <slot />
     </main>
 
-    <footer class="w-full max-w-[1100px] mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant/20 mt-auto z-10">
-      <div class="font-display text-body-lg font-semibold text-primary dark:text-inverse-primary">jewei.toString()</div>
-      <div class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/60">
-        &copy; 2022 - {new Date().getFullYear()} Jewei Mak
+    <footer
+      class="w-full max-w-[1100px] mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant/20 mt-auto z-10"
+    >
+      <div class="font-display text-body-lg font-semibold text-primary dark:text-inverse-primary">
+        jewei.toString()
+      </div>
+      <div
+        class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/60"
+      >
+        &copy; 2022 - {new Date().getFullYear()}
+        {authorName}
       </div>
       <div class="flex gap-6 font-body-md text-body-md">
-        <a href="/rss.xml" class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">
+        <a
+          href="/rss.xml"
+          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+        >
           <Icon name="rss_feed" class="text-[18px]" />
           RSS
         </a>
-        <a href="https://x.com/jewei" rel="noopener noreferrer" target="_blank" class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">
-          <svg class="w-[18px] h-[18px] shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        <a
+          href="https://x.com/jewei"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+        >
+          <svg
+            class="w-[18px] h-[18px] shrink-0"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+            ></path>
           </svg>
           Twitter/X
         </a>
-        <a href="https://github.com/jewei" rel="noopener noreferrer" target="_blank" class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors">
-          <svg class="w-[18px] h-[18px] shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+        <a
+          href="https://github.com/jewei"
+          rel="noopener noreferrer"
+          target="_blank"
+          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/60 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+        >
+          <svg
+            class="w-[18px] h-[18px] shrink-0"
+            fill="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            ></path>
           </svg>
           GitHub
         </a>
       </div>
     </footer>
 
-    <script is:inline>
+    <script>
+      const themeToggle = document.getElementById('theme-toggle');
+      themeToggle?.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      });
+
+      const menuToggle = document.getElementById('menu-toggle');
+      menuToggle?.addEventListener('click', () => {
+        const menu = document.getElementById('mobile-menu');
+        if (!menu || !menuToggle) return;
+        const isHidden = menu.classList.toggle('hidden');
+        menuToggle.setAttribute('aria-expanded', String(!isHidden));
+        menuToggle.querySelector('.icon-menu-open')?.classList.toggle('hidden', !isHidden);
+        menuToggle.querySelector('.icon-menu-close')?.classList.toggle('hidden', isHidden);
+      });
+
       document.addEventListener('keydown', (e) => {
         if (e.key !== 'Escape') return;
         const menu = document.getElementById('mobile-menu');
@@ -234,6 +315,5 @@ const navLinks = [
         toggle?.querySelector('.icon-menu-close')?.classList.add('hidden');
       });
     </script>
-
   </body>
 </html>

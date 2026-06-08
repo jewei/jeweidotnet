@@ -6,22 +6,25 @@ Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.c
 
 ## Stack
 
-| Layer           | Technology                                      |
-| --------------- | ----------------------------------------------- |
-| Framework       | Astro 6 (static output)                         |
-| Content         | Astro Content Collections (Markdown + MDX)      |
-| Integrations    | MDX · RSS · Sitemap                             |
-| Styling         | Tailwind CSS v4 + custom design system          |
-| Fonts           | Lexend · Geist · JetBrains Mono (self-hosted)   |
-| Deployment      | Cloudflare Pages                                |
-| Package manager | Bun                                             |
-| Runtime         | Node.js ≥ 22.12                                 |
+| Layer           | Technology                                    |
+| --------------- | --------------------------------------------- |
+| Framework       | Astro 6 (static output)                       |
+| Content         | Astro Content Collections (Markdown + MDX)    |
+| Integrations    | MDX · RSS · Sitemap                           |
+| Styling         | Tailwind CSS v4 + custom design system        |
+| Fonts           | Lexend · Geist · JetBrains Mono (self-hosted) |
+| Deployment      | Cloudflare Pages                              |
+| Package manager | Bun                                           |
+| Runtime         | Bun ≥ 1.3                                     |
 
 ## Project structure
 
 ```
 src/
-├── assets/            # Optimized images (404 illustration, etc.)
+├── assets/            # Images optimized by Astro at build time
+│   ├── content/       # Blog and page illustrations
+│   ├── og-image.jpg   # Default social card image
+│   └── …              # Site UI images (avatar, 404 art, etc.)
 ├── components/
 │   └── Icon.astro     # Shared SVG icon component
 ├── content/
@@ -48,10 +51,10 @@ src/
 │   └── global.css     # Tailwind + design system tokens
 └── support/
     ├── blog.ts        # Shared helpers (tagColors, postUrl, formatters)
-    └── site.ts        # Site name and page title helpers
+    ├── site.ts        # Site name and page title helpers
+    └── social-image.ts # OG/Twitter image resolution
 public/
-├── content/images/    # Post and page images
-├── og-image.jpg       # Default social card image
+├── content/files/     # Static downloads (e.g. résumé PDF)
 ├── _headers           # Cloudflare Pages cache and security headers
 ├── site.webmanifest
 └── robots.txt
@@ -68,11 +71,13 @@ description: "A short summary shown in listings and meta tags."
 pubDate: "2026-01-15"
 updatedDate: "2026-06-01" # optional
 tags: ["php", "open-source"]
-image: /content/images/2026/01/cover.jpg # optional, used as og:image
+image: ../../assets/content/my-cover.jpg # optional, path relative to this file
 draft: false # optional, defaults to false
 ---
 
 Post content here…
+
+Use `../../assets/content/...` for inline images in the post body as well. Astro optimizes them at build time.
 ```
 
 The filename becomes the URL slug: `my-post.md` → `/my-post/`.
@@ -81,16 +86,23 @@ The filename becomes the URL slug: `my-post.md` → `/my-post/`.
 
 Run from the project root:
 
-| Command           | Action                               |
-| ----------------- | ------------------------------------ |
-| `bun install`     | Install dependencies                 |
-| `bun run dev`     | Start dev server at `localhost:4321` |
-| `bun run build`   | Build to `./dist/`                   |
-| `bun run preview` | Preview the production build locally |
+| Command              | Action                                   |
+| -------------------- | ---------------------------------------- |
+| `bun install`        | Install dependencies                     |
+| `bun run dev`        | Start dev server at `localhost:4321`     |
+| `bun run build`      | Build to `./dist/`                       |
+| `bun run preview`    | Preview the production build locally     |
+| `bun run test:smoke` | Verify build output (run after `build`)  |
 
 ## CI
 
-GitHub Actions runs `bun install --frozen-lockfile` and `bun run build` on every push and pull request to `main`.
+GitHub Actions on every push and pull request to `main`:
+
+1. `bun install --frozen-lockfile`
+2. `bun run build`
+3. `bun run test:smoke`
+4. Link check (Lychee) on built HTML
+5. Lighthouse CI
 
 ## Deployment
 

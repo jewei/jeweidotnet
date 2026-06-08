@@ -18,3 +18,16 @@ jobs:
 
       - run: bun install --frozen-lockfile
       - run: bun run build
+      - run: bun run test:smoke
+
+      - name: Link check
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-concurrency 4 './dist/**/*.html'
+          fail: true
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.cjs
+          uploadArtifacts: true

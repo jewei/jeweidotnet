@@ -1,7 +1,38 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Class-based dark mode */
 @custom-variant dark (&:is(.dark, .dark *));
+
+/* Skip link (A1) */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-family: var(--font-geist), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* Focus styles (A2) */
+.nav-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.dark .nav-link:focus-visible {
+  outline-color: var(--color-inverse-primary);
+}
 
 @theme {
   /* Colors — Luminous Developer Narrative */
@@ -11,7 +42,7 @@
   --color-surface-container-lowest: #ffffff;
   --color-surface: #f9f9ff;
   --color-bg-dark: #18181b;
-  --color-surface-dark: #1A1429;
+  --color-surface-dark: #1a1429;
   --color-on-primary-fixed-variant: #5a00c6;
   --color-secondary-fixed: #d8e2ff;
   --color-tertiary-fixed: #91f8b6;
@@ -27,9 +58,9 @@
   --color-on-surface-variant: #4a4455;
   --color-tertiary-fixed-dim: #75db9b;
   --color-secondary-fixed-dim: #adc6ff;
-  --color-text-main: #1A1A1A;
+  --color-text-main: #1a1a1a;
   --color-surface-container-low: #f0f3ff;
-  --color-bg-light: #F9FAFB;
+  --color-bg-light: #f9fafb;
   --color-outline: #7b7487;
   --color-on-secondary-fixed: #001a42;
   --color-on-secondary-container: #fefcff;
@@ -114,10 +145,18 @@
 }
 
 @keyframes morph {
-  0%   { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
-  34%  { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
-  67%  { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
-  100% { border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%; }
+  0% {
+    border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
+  }
+  34% {
+    border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+  }
+  67% {
+    border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%;
+  }
+  100% {
+    border-radius: 40% 60% 70% 30% / 40% 40% 60% 50%;
+  }
 }
 
 /* Sparkle sticker */
@@ -129,8 +168,13 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50%       { transform: translateY(-10px) rotate(5deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(5deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -141,8 +185,12 @@
 }
 
 /* Dark mode icon toggle */
-html:not(.dark) .icon-dark { display: none; }
-html.dark .icon-light { display: none; }
+html:not(.dark) .icon-dark {
+  display: none;
+}
+html.dark .icon-light {
+  display: none;
+}
 
 /* Prose — blog post body */
 .prose {
@@ -166,7 +214,9 @@ html.dark .icon-light { display: none; }
   color: var(--color-on-surface);
 }
 
-.dark .prose h2 { color: var(--color-inverse-on-surface); }
+.dark .prose h2 {
+  color: var(--color-inverse-on-surface);
+}
 
 .prose h3 {
   font-family: var(--font-lexend), sans-serif;
@@ -178,7 +228,9 @@ html.dark .icon-light { display: none; }
   color: var(--color-on-surface);
 }
 
-.dark .prose h3 { color: var(--color-inverse-on-surface); }
+.dark .prose h3 {
+  color: var(--color-inverse-on-surface);
+}
 
 .prose h4 {
   font-family: var(--font-lexend), sans-serif;
@@ -189,9 +241,13 @@ html.dark .icon-light { display: none; }
   color: var(--color-on-surface);
 }
 
-.dark .prose h4 { color: var(--color-inverse-on-surface); }
+.dark .prose h4 {
+  color: var(--color-inverse-on-surface);
+}
 
-.prose p { margin: 1.25rem 0; }
+.prose p {
+  margin: 1.25rem 0;
+}
 
 .prose a {
   color: var(--color-secondary);
@@ -199,17 +255,30 @@ html.dark .icon-light { display: none; }
   text-underline-offset: 3px;
 }
 
-.dark .prose a { color: var(--color-secondary-fixed-dim); }
+.dark .prose a {
+  color: var(--color-secondary-fixed-dim);
+}
 
-.prose a:hover { color: var(--color-secondary-container); }
+.prose a:hover {
+  color: var(--color-secondary-container);
+}
 
-.dark .prose a:hover { color: var(--color-secondary-fixed); }
+.dark .prose a:hover {
+  color: var(--color-secondary-fixed);
+}
 
-.prose strong { font-weight: 700; color: var(--color-on-surface); }
+.prose strong {
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
 
-.dark .prose strong { color: var(--color-inverse-on-surface); }
+.dark .prose strong {
+  color: var(--color-inverse-on-surface);
+}
 
-.prose em { font-style: italic; }
+.prose em {
+  font-style: italic;
+}
 
 .prose code {
   background: var(--color-surface-container);
@@ -252,9 +321,15 @@ html.dark .icon-light { display: none; }
   margin: 1rem 0;
 }
 
-.prose ul { list-style: disc; }
-.prose ol { list-style: decimal; }
-.prose li { margin: 0.4rem 0; }
+.prose ul {
+  list-style: disc;
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose li {
+  margin: 0.4rem 0;
+}
 
 .prose blockquote {
   border-left: 4px solid var(--color-primary-container);
@@ -354,7 +429,9 @@ html.dark .icon-light { display: none; }
   line-height: 1.25;
   border-radius: 12px;
   box-shadow: 0 10px 20px -8px color-mix(in srgb, var(--color-primary) 45%, transparent);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .prose a.download-btn:hover {
@@ -386,7 +463,10 @@ html.dark .icon-light { display: none; }
   font-size: 14px;
   font-weight: 500;
   line-height: 1.25;
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .dark .prose a.download-btn-subtle {
@@ -530,7 +610,11 @@ html.dark .icon-light { display: none; }
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--color-primary) calc(var(--timeline-opacity, 1) * 100%), transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-primary) calc(var(--timeline-opacity, 1) * 100%),
+    transparent
+  );
   border: 4px solid var(--color-surface);
 }
 
@@ -573,7 +657,9 @@ html.dark .icon-light { display: none; }
   letter-spacing: 0.05em;
   text-decoration: none;
   box-shadow: 0 10px 20px -8px color-mix(in srgb, var(--color-primary) 45%, transparent);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .resume-btn-primary:hover {
@@ -596,7 +682,9 @@ html.dark .icon-light { display: none; }
   font-weight: 600;
   letter-spacing: 0.05em;
   text-decoration: none;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .dark .resume-btn-secondary {

@@ -4,9 +4,10 @@ description: "The Laravel Skeleton offers a rapid and efficient way to start a n
 pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:30:30.000Z"
 tags: ["open-source"]
+image: ../../assets/content/laravel-skeleton-1.png
 ---
 
-![Laravel Skeleton project screenshot](/content/images/2024/09/laravel-skeleton-1.png)
+![Laravel Skeleton project screenshot](../../assets/content/laravel-skeleton-1.png)
 
 My version of Laravel Skeleton is live on GitHub
 
@@ -40,4 +41,4 @@ Laravel Skeleton comes with a host of features and tools:
 
 Want more? Here's to the Github repository:
 
-[![GitHub - jewei/laravel-skeleton at jewei.net](/content/images/thumbnail/laravel-skeleton.png "Opinionated Laravel skeleton to scaffold new project configured with best practices.")](https://github.com/jewei/laravel-skeleton?ref=jewei.net)
+[![GitHub - jewei/laravel-skeleton at jewei.net](../../assets/content/laravel-skeleton-thumb.png "Opinionated Laravel skeleton to scaffold new project configured with best practices.")](https://github.com/jewei/laravel-skeleton?ref=jewei.net)

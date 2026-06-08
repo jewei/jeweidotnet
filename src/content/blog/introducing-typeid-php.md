@@ -1,7 +1,7 @@
 ---
 title: "Introducing TypeID PHP"
 description: "Type-Safe, Sortable Identifiers for Modern Applications"
-image: /content/images/2024/09/typeid-cover.jpg
+image: ../../assets/content/typeid-cover.jpg
 pubDate: "2025-04-26T10:53:29.000Z"
 updatedDate: "2026-05-31T15:36:55.000Z"
 tags: ["open-source"]
@@ -33,4 +33,4 @@ $productId = TypeID::fromUuid('product', $uuid);
 
 TypeID PHP integrates seamlessly with existing systems while enhancing readability and safety. Install today with *`composer require jewei/typeid-php`* and bring more clarity to your identifiers.
 
-[![TypeID PHP (TypeID logo thumbnail)](/content/images/thumbnail/typeid-php.png "PHP implementation of TypeIDs: type-safe, K-sortable, and globally unique identifiers inspired by Stripe IDs")](https://github.com/jewei/typeid-php)
+[![TypeID PHP (TypeID logo thumbnail)](../../assets/content/typeid-php-thumb.png "PHP implementation of TypeIDs: type-safe, K-sortable, and globally unique identifiers inspired by Stripe IDs")](https://github.com/jewei/typeid-php)

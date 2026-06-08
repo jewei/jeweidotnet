@@ -9,7 +9,7 @@ Hello. 你好。Apa khabar.
 Hola. नमस्ते. Γεια σας.
 
 ![Jewei in an unknown parallel universe](../assets/jewei.jpg)
-*Jewei in an unknown parallel universe.*
+_Jewei in an unknown parallel universe._
 
 ---
 
@@ -25,15 +25,15 @@ Most of my work lives in the practical world of backend systems, product archite
 
 According to the good old **Myers-Briggs Type Indicator**, I’m an INTJ: analytical, independent, and happiest when turning tangled problems into clear systems.
 
-![INTJ personality illustration](/content/images/2024/09/intj.jpg)
+![INTJ personality illustration](../assets/content/intj.jpg)
 
-*These thoughtful tacticians love perfecting the details of life, applying creativity and rationality to everything they do. Their inner world is often a private, complex one.*
+_These thoughtful tacticians love perfecting the details of life, applying creativity and rationality to everything they do. Their inner world is often a private, complex one._
 
 More specifically, the test says I’m an [assertive](https://www.16personalities.com/articles/assertive-architect-intj-a-vs-turbulent-architect-intj-t?ref=jewei.net) [architect](https://www.16personalities.com/intj-personality?ref=jewei.net).
 
-![Enneagram type 5 illustration](/content/images/2024/09/enneagram5.jpg)
+![Enneagram type 5 illustration](../assets/content/enneagram5.jpg)
 
-*The thinker, the innovator, the observer. The one who wants to reveal how the world works and unveil the mystery of life, while quietly avoiding the biggest mystery: themselves.*
+_The thinker, the innovator, the observer. The one who wants to reveal how the world works and unveil the mystery of life, while quietly avoiding the biggest mystery: themselves._
 
 On the Enneagram, I’m [the investigator](https://www.enneagraminstitute.com/type-5?ref=jewei.net), or [5w6](https://enneagramuniverse.com/enneagram/learn/enneagram-wings/enneagram_5w6/?ref=jewei.net): the problem solver.
 
@@ -52,9 +52,9 @@ When I’m not deep in code, hunting bugs, or shaping another product idea, I tr
 
 I enjoy collaborating on complex problems, sharing ideas, and having the kind of conversations that stretch how we think. Reach out if you:
 
-* Have an interesting software problem to discuss
-* Want to **collaborate** on something useful, thoughtful, or delightfully weird
-* Just want to talk about code, products, books, photography, or food
+- Have an interesting software problem to discuss
+- Want to **collaborate** on something useful, thoughtful, or delightfully weird
+- Just want to talk about code, products, books, photography, or food
 
 I’m just an email away at **[jewei@duck.com](mailto:jewei@duck.com)**.
 

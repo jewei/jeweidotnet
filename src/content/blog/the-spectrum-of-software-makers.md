@@ -4,6 +4,7 @@ description: "From no-code to Python to assembly language. As a software maker a
 pubDate: "2023-10-27T16:00:00.000Z"
 updatedDate: "2024-09-22T16:41:48.000Z"
 tags: ["entrepreneurship"]
+image: ../../assets/content/spectrum-of-software-makers-2x.png
 ---
 
 The realm of software development is vast, and the skills within it stretch far beyond just writing code. Whether you're crafting marketing forms through drag-and-drop builders or optimizing performance-critical systems, each type of software maker plays a unique role in this ecosystem.
@@ -21,7 +22,7 @@ As a software maker with entrepreneurial ambitions, your chosen tools and approa
 
 Let’s dive into the **Spectrum of Software Makers** and explore the various pathways you can take.
 
-![Diagram showing the spectrum of software makers from no-code to systems programming](/content/images/2024/09/spectrum-of-software-makers-2x.png)
+![Diagram showing the spectrum of software makers from no-code to systems programming](../../assets/content/spectrum-of-software-makers-2x.png)
 
 ---
 

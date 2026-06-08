@@ -1,28 +1,22 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import { getCollection } from 'astro:content';
-import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../../support/blog';
+import {
+  tagColors,
+  tagToSlug,
+  postUrl,
+  shortDateFormatter as dateFormatter,
+  getPostsByTag,
+} from '../../support/blog';
 import { siteName } from '../../support/site';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  const tagMap = new Map<string, typeof posts>();
-
-  for (const post of posts) {
-    for (const tag of post.data.tags) {
-      const key = tagToSlug(tag);
-      if (!tagMap.has(key)) tagMap.set(key, []);
-      tagMap.get(key)!.push(post);
-    }
-  }
+  const tagMap = await getPostsByTag();
 
   return [...tagMap.entries()].map(([tagSlug, tagPosts]) => ({
     params: { tag: tagSlug },
     props: {
-      tagName: tagPosts[0].data.tags.find(
-        t => tagToSlug(t) === tagSlug
-      ) ?? tagSlug,
+      tagName: tagPosts[0].data.tags.find((t) => tagToSlug(t) === tagSlug) ?? tagSlug,
       posts: tagPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()),
     },
   }));
@@ -31,67 +25,76 @@ export async function getStaticPaths() {
 const { tagName, posts } = Astro.props;
 ---
 
-<BaseLayout
-  title={tagName}
-  description={`All posts tagged "${tagName}" on ${siteName}.`}
->
+<BaseLayout title={tagName} description={`All posts tagged "${tagName}" on ${siteName}.`}>
   <div class="pt-8">
-
-    <!-- Back link + Header -->
-    <a href="/blog/" class="inline-flex items-center gap-1 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-sm mb-6">
+    <a
+      href="/blog/"
+      class="inline-flex items-center gap-1 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-sm mb-6"
+    >
       <Icon name="arrow_back" class="text-[16px]" />
       All posts
     </a>
 
     <header class="mb-10">
       <div class="flex items-center gap-3 mb-2">
-        <span class="px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md">
+        <span
+          class="px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md"
+        >
           #{tagName}
         </span>
-        <span class="text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm">{posts.length} post{posts.length !== 1 ? 's' : ''}</span>
+        <span class="text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm"
+          >{posts.length} post{posts.length !== 1 ? 's' : ''}</span
+        >
       </div>
     </header>
 
-    <!-- Post list -->
     <div class="flex flex-col gap-4">
-      {posts.map((post, index) => (
-        <a
-          href={postUrl(post.id)}
-          class="group bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 rounded-xl p-6 flex flex-col gap-2 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
-        >
-          <div class="flex items-center gap-base font-code text-code text-on-surface-variant/70 dark:text-inverse-on-surface/50">
-            <time datetime={post.data.pubDate.toISOString()}>
-              {dateFormatter.format(post.data.pubDate)}
-            </time>
-            {post.data.tags.length > 1 && (
-              <>
-                <span class="w-1 h-1 rounded-full bg-primary/30"></span>
-                <div class="flex gap-2 flex-wrap">
-                  {post.data.tags.filter(t => t !== tagName).slice(0, 2).map((tag, i) => (
-                    <span class={`text-xs px-2 py-0.5 rounded-md ${tagColors[(i + index) % tagColors.length]}`}>{tag}</span>
-                  ))}
-                </div>
-              </>
+      {
+        posts.map((post, index) => (
+          <a
+            href={postUrl(post.id)}
+            class="group bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 rounded-xl p-6 flex flex-col gap-2 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+          >
+            <div class="flex items-center gap-base font-code text-code text-on-surface-variant/70 dark:text-inverse-on-surface/50">
+              <time datetime={post.data.pubDate.toISOString()}>
+                {dateFormatter.format(post.data.pubDate)}
+              </time>
+              {post.data.tags.length > 1 && (
+                <>
+                  <span class="w-1 h-1 rounded-full bg-primary/30" />
+                  <div class="flex gap-2 flex-wrap">
+                    {post.data.tags
+                      .filter((t) => t !== tagName)
+                      .slice(0, 2)
+                      .map((tag, i) => (
+                        <span
+                          class={`text-xs px-2 py-0.5 rounded-md ${tagColors[(i + index) % tagColors.length]}`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <h2 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors leading-snug">
+              {post.data.title}
+            </h2>
+
+            {post.data.description && (
+              <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 line-clamp-2 max-w-3xl">
+                {post.data.description}
+              </p>
             )}
-          </div>
 
-          <h2 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors leading-snug">
-            {post.data.title}
-          </h2>
-
-          {post.data.description && (
-            <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 line-clamp-2 max-w-3xl">
-              {post.data.description}
-            </p>
-          )}
-
-          <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
-            Read Post
-            <Icon name="arrow_forward" class="text-sm" />
-          </div>
-        </a>
-      ))}
+            <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
+              Read Post
+              <Icon name="arrow_forward" class="text-sm" />
+            </div>
+          </a>
+        ))
+      }
     </div>
-
   </div>
 </BaseLayout>
