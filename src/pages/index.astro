@@ -4,8 +4,8 @@ import Icon from '../components/Icon.astro';
 import { Image } from 'astro:assets';
 import avatar from '../assets/jewei.jpg';
 import { getCollection } from 'astro:content';
-import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../utils/blog';
-import { siteName } from '../utils/site';
+import { tagColors, tagToSlug, postUrl, shortDateFormatter as dateFormatter } from '../support/blog';
+import { siteName } from '../support/site';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
