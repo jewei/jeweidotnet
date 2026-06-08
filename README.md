@@ -6,24 +6,33 @@ Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.c
 
 ## Stack
 
-| Layer           | Technology                             |
-| --------------- | -------------------------------------- |
-| Framework       | Astro 6 (static output)                |
-| Styling         | Tailwind CSS v4 + custom design system |
-| Fonts           | Lexend · Geist · JetBrains Mono        |
-| Deployment      | Cloudflare Pages                       |
-| Package manager | Bun                                    |
+| Layer           | Technology                                      |
+| --------------- | ----------------------------------------------- |
+| Framework       | Astro 6 (static output)                         |
+| Content         | Astro Content Collections (Markdown + MDX)      |
+| Integrations    | MDX · RSS · Sitemap                             |
+| Styling         | Tailwind CSS v4 + custom design system          |
+| Fonts           | Lexend · Geist · JetBrains Mono (self-hosted)   |
+| Deployment      | Cloudflare Pages                                |
+| Package manager | Bun                                             |
+| Runtime         | Node.js ≥ 22.12                                 |
 
 ## Project structure
 
 ```
 src/
+├── assets/            # Optimized images (404 illustration, etc.)
+├── components/
+│   └── Icon.astro     # Shared SVG icon component
 ├── content/
-│   └── blog/          # Markdown blog posts
+│   └── blog/          # Markdown / MDX blog posts
+├── content.config.ts  # Blog collection schema
+├── data/
+│   └── resume.ts      # Résumé content
 ├── layouts/
 │   ├── BaseLayout.astro      # HTML shell, nav, SEO meta, OG tags
 │   ├── BlogPostLayout.astro  # Article layout + JSON-LD
-│   └── PageLayout.astro      # Static pages (About, Résumé)
+│   └── PageLayout.astro      # Static pages (About)
 ├── pages/
 │   ├── index.astro           # Homepage
 │   ├── [slug].astro          # Blog post pages
@@ -31,15 +40,20 @@ src/
 │   │   ├── index.astro       # Blog index with tag filters
 │   │   └── [tag].astro       # Posts filtered by tag
 │   ├── about.md
+│   ├── collections.astro     # Curated quotes and links
 │   ├── resume.astro
+│   ├── 404.astro
 │   └── rss.xml.js
 ├── styles/
 │   └── global.css     # Tailwind + design system tokens
-└── utils/
-    └── blog.ts        # Shared helpers (tagColors, postUrl, formatters)
+└── support/
+    ├── blog.ts        # Shared helpers (tagColors, postUrl, formatters)
+    └── site.ts        # Site name and page title helpers
 public/
 ├── content/images/    # Post and page images
 ├── og-image.jpg       # Default social card image
+├── _headers           # Cloudflare Pages cache and security headers
+├── site.webmanifest
 └── robots.txt
 ```
 
@@ -52,9 +66,10 @@ Create a `.md` (or `.mdx`) file in `src/content/blog/`:
 title: "Your Post Title"
 description: "A short summary shown in listings and meta tags."
 pubDate: "2026-01-15"
+updatedDate: "2026-06-01" # optional
 tags: ["php", "open-source"]
 image: /content/images/2026/01/cover.jpg # optional, used as og:image
-draft: false
+draft: false # optional, defaults to false
 ---
 
 Post content here…
@@ -73,6 +88,10 @@ Run from the project root:
 | `bun run build`   | Build to `./dist/`                   |
 | `bun run preview` | Preview the production build locally |
 
+## CI
+
+GitHub Actions runs `bun install --frozen-lockfile` and `bun run build` on every push and pull request to `main`.
+
 ## Deployment
 
 Deployed automatically to Cloudflare Pages on every push to `main`.
@@ -84,3 +103,5 @@ Deployed automatically to Cloudflare Pages on every push to `main`.
 | Build command                      | `bun install && bun run build` |
 | Build output directory             | `dist`                         |
 | Environment variable `BUN_VERSION` | `1`                            |
+
+`wrangler.toml` sets `pages_build_output_dir = "./dist"` for local Wrangler tooling.
