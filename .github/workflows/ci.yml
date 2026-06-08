@@ -22,16 +22,23 @@ jobs:
       - run: bun run build
       - run: bun run test:smoke
 
+      - name: Install lychee
+        run: |
+          curl --fail --location --retry 3 --retry-all-errors --silent --show-error \
+            https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz \
+            --output "${RUNNER_TEMP}/lychee.tar.gz"
+          tar -xzf "${RUNNER_TEMP}/lychee.tar.gz" -C "${RUNNER_TEMP}"
+          install -Dm755 \
+            "${RUNNER_TEMP}/lychee-x86_64-unknown-linux-gnu/lychee" \
+            "${HOME}/.local/bin/lychee"
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+
       - name: Link check
-        uses: lycheeverse/lychee-action@v2.7.0
-        with:
-          lycheeVersion: v0.24.2
-          args: >-
-            --no-progress --max-concurrency 4
-            --root-dir "${{ github.workspace }}/dist"
-            --exclude '^https://femmily\.com'
-            './dist/**/*.html'
-          fail: true
+        run: >-
+          lychee --no-progress --max-concurrency 4
+          --root-dir "${{ github.workspace }}/dist"
+          --exclude '^https://femmily\.com'
+          './dist/**/*.html'
 
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
