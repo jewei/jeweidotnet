@@ -5,14 +5,16 @@ import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { parse } from 'yaml';
 
 /**
  * Build a map of `/{slug}/` → ISO `lastmod` for the sitemap.
  *
  * The sitemap integration's `serialize` hook runs in the config context, where
  * `astro:content` (and therefore the blog collection) is unavailable. Reading
- * the frontmatter from disk here is the only way to attach accurate `lastmod`
- * dates. Draft handling is kept in sync with `getPublishedPosts()` in
+ * and parsing the frontmatter from disk here attaches accurate `lastmod`
+ * dates without duplicating YAML parsing rules. Draft handling is kept in sync
+ * with `getPublishedPosts()` in
  * `src/support/blog.ts` so the sitemap never lists an unpublished post.
  *
  * @returns {Record<string, string>}
@@ -31,13 +33,14 @@ function loadSitemapDates() {
     const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     if (!match) continue;
 
-    const frontmatter = match[1];
-    if (/^draft:\s*true\b/m.test(frontmatter)) continue;
+    const frontmatter = parse(match[1]);
+    if (!frontmatter || typeof frontmatter !== 'object' || Array.isArray(frontmatter)) continue;
+    if (frontmatter.draft === true) continue;
 
-    const updated = frontmatter.match(/^updatedDate:\s*["']?([^"'\n]+)["']?/m)?.[1];
-    const published = frontmatter.match(/^pubDate:\s*["']?([^"'\n]+)["']?/m)?.[1];
+    const updated = frontmatter.updatedDate;
+    const published = frontmatter.pubDate;
     const lastmod = updated ?? published;
-    if (!lastmod) continue;
+    if (typeof lastmod !== 'string' && !(lastmod instanceof Date)) continue;
 
     const date = new Date(lastmod);
     if (Number.isNaN(date.getTime())) continue;
