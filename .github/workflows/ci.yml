@@ -23,8 +23,9 @@ jobs:
       - run: bun run test:smoke
 
       - name: Link check
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@v2.7.0
         with:
+          lycheeVersion: v0.21.0
           args: >-
             --no-progress --max-concurrency 4
             --root-dir "${{ github.workspace }}/dist"
