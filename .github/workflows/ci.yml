@@ -30,7 +30,7 @@ jobs:
           restore-keys: cache-lychee-
 
       - name: Link Checker
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@master
         with:
           lycheeVersion: v0.24.2
           format: "markdown"
