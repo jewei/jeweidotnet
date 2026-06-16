@@ -8,7 +8,9 @@ import { siteName, siteUrl, authorName } from '../support/site';
 
 const posts = await getPublishedPosts();
 const tagCloud = getTagCloud(posts);
-const [featured, ...rest] = posts;
+// posts are already sorted by pubDate (newest first) in getPublishedPosts.
+const pinned = posts.filter((post) => post.data.pinned);
+const rest = posts.filter((post) => !post.data.pinned);
 
 // Preload the hero avatar with a srcset that matches the <Image> below exactly,
 // so the browser preloads the same candidate it will actually render (no waste).
@@ -117,69 +119,73 @@ const cardGradients = [
     </div>
   </section>
 
-  <!-- Featured Post -->
-  {featured && (
+  <!-- Pinned Posts -->
+  {pinned.length > 0 && (
     <section class="py-8 mt-4" id="writing">
       <div class="flex items-center gap-2 mb-5">
         <Icon name="star" class="text-primary dark:text-inverse-primary text-xl" />
-        <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface">Latest Post</h2>
+        <h2 class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface">Pinned Posts</h2>
       </div>
-      <a
-        href={postUrl(featured.id)}
-        class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-      >
-        <div class="flex flex-col md:flex-row h-full">
-          {/* Thumbnail: featured image or gradient fallback */}
-          <div class="md:w-2/5 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
-            {featured.data.image ? (
-              <Image
-                src={featured.data.image}
-                alt={featured.data.title}
-                layout="none"
-                widths={[400, 600, 800]}
-                sizes="(min-width: 768px) 40vw, 100vw"
-                format="webp"
-                loading="lazy"
-                decoding="async"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            ) : (
-              <>
-                <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-tertiary/10"></div>
-                <div class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/20 group-hover:scale-105 transition-transform duration-500"></div>
-                <svg class="absolute inset-0 m-auto w-16 h-16 text-primary/20" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
-                </svg>
-              </>
-            )}
-          </div>
-          <div class="flex-1 p-6 md:p-8 flex flex-col justify-center">
-            {featured.data.tags.length > 0 && (
-              <div class="flex gap-2 mb-4 flex-wrap">
-                {featured.data.tags.slice(0, 3).map((tag, i) => (
-                  <span class={`px-3 py-1 rounded-full font-label-md text-xs ${tagColors[i % tagColors.length]}`}>
-                    {tag}
-                  </span>
-                ))}
+      <div class="flex flex-col gap-6">
+        {pinned.map((post) => (
+          <a
+            href={postUrl(post.id)}
+            class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+          >
+            <div class="flex flex-col md:flex-row h-full">
+              {/* Thumbnail: featured image or gradient fallback */}
+              <div class="md:w-2/5 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
+                {post.data.image ? (
+                  <Image
+                    src={post.data.image}
+                    alt={post.data.title}
+                    layout="none"
+                    widths={[400, 600, 800]}
+                    sizes="(min-width: 768px) 40vw, 100vw"
+                    format="webp"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <>
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-tertiary/10"></div>
+                    <div class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-secondary/20 group-hover:scale-105 transition-transform duration-500"></div>
+                    <svg class="absolute inset-0 m-auto w-16 h-16 text-primary/20" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
+                    </svg>
+                  </>
+                )}
               </div>
-            )}
-            <h3 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors duration-200 mb-2">
-              {featured.data.title}
-            </h3>
-            {featured.data.description && (
-              <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 mb-5 line-clamp-3">
-                {featured.data.description}
-              </p>
-            )}
-            <div class="mt-auto flex items-center text-on-surface-variant dark:text-inverse-on-surface/60 font-label-md text-sm gap-2">
-              <Icon name="calendar_month" class="text-[16px]" />
-              <time datetime={featured.data.pubDate.toISOString()}>
-                {dateFormatter.format(featured.data.pubDate)}
-              </time>
+              <div class="flex-1 p-6 md:p-8 flex flex-col justify-center">
+                {post.data.tags.length > 0 && (
+                  <div class="flex gap-2 mb-4 flex-wrap">
+                    {post.data.tags.slice(0, 3).map((tag, i) => (
+                      <span class={`px-3 py-1 rounded-full font-label-md text-xs ${tagColors[i % tagColors.length]}`}>
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <h3 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors duration-200 mb-2">
+                  {post.data.title}
+                </h3>
+                {post.data.description && (
+                  <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 mb-5 line-clamp-3">
+                    {post.data.description}
+                  </p>
+                )}
+                <div class="mt-auto flex items-center text-on-surface-variant dark:text-inverse-on-surface/60 font-label-md text-sm gap-2">
+                  <Icon name="calendar_month" class="text-[16px]" />
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {dateFormatter.format(post.data.pubDate)}
+                  </time>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </a>
+          </a>
+        ))}
+      </div>
     </section>
   )}
 

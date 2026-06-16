@@ -5,6 +5,7 @@ image: ../../assets/content/typeid-cover.jpg
 pubDate: "2025-04-26T10:53:29.000Z"
 updatedDate: "2026-05-31T15:36:55.000Z"
 tags: ["open-source"]
+pinned: true
 ---
 
 > Update (May 2026): v1.1 has been released! The minimum supported PHP version is now 8.4, and all tests fully pass against the official specification.
