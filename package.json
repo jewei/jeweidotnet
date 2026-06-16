@@ -23,7 +23,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
-    "test:smoke": "bun scripts/smoke-test.mjs"
+    "test:smoke": "bun scripts/smoke-test.mjs",
+    "optimize:og": "bun scripts/optimize-og-image.mjs"
   },
   "type": "module"
 }
