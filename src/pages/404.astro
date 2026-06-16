@@ -1,15 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { Font, Image } from 'astro:assets';
+import { Image } from 'astro:assets';
 import illustration from '../assets/404-illustration.webp';
 ---
 
 <BaseLayout
   title="Page Not Found"
   description="The page you're looking for doesn't exist or has been moved."
+  robots="noindex, nofollow"
 >
-  <Font cssVariable="--font-jetbrains-mono" slot="head" />
 
   <div
     class="not-found flex flex-col items-center justify-center min-h-[calc(100vh-14rem)] py-8 relative overflow-hidden"

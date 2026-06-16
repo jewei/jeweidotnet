@@ -10,12 +10,23 @@ interface Props {
   title: string;
   description?: string;
   socialImage?: ImageMetadata;
+  socialImageAlt?: string;
   type?: 'website' | 'article';
   pubDate?: Date;
   updatedDate?: Date;
+  robots?: string;
 }
 
-const { title, description, socialImage, type = 'website', pubDate, updatedDate } = Astro.props;
+const {
+  title,
+  description,
+  socialImage,
+  socialImageAlt,
+  type = 'website',
+  pubDate,
+  updatedDate,
+  robots,
+} = Astro.props;
 const canonicalSiteUrl = Astro.site!.href;
 const currentPath = Astro.url.pathname;
 const canonicalUrl = new URL(currentPath, canonicalSiteUrl).href;
@@ -48,6 +59,7 @@ const navLinks = [
     <!-- Primary meta -->
     <title>{fullTitle}</title>
     {description && <meta name="description" content={description} />}
+    {robots && <meta name="robots" content={robots} />}
     <link rel="canonical" href={canonicalUrl} />
     <meta name="theme-color" content="#630ed4" />
 
@@ -63,10 +75,12 @@ const navLinks = [
     <meta property="og:title" content={fullTitle} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:type" content={type} />
+    <meta property="og:locale" content="en_US" />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content={String(ogImageWidth)} />
     <meta property="og:image:height" content={String(ogImageHeight)} />
+    {socialImageAlt && <meta property="og:image:alt" content={socialImageAlt} />}
     {
       type === 'article' && pubDate && (
         <meta property="article:published_time" content={pubDate.toISOString()} />
@@ -85,28 +99,20 @@ const navLinks = [
     <meta name="twitter:title" content={fullTitle} />
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={ogImage} />
+    {socialImageAlt && <meta name="twitter:image:alt" content={socialImageAlt} />}
 
     <!-- Feeds -->
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
 
-    <!-- Fonts: self-hosted via Astro Fonts API (preloaded, no render-blocking 3rd-party request) -->
+    <!-- Fonts: self-hosted via Astro Fonts API (Lexend preloaded for display headings) -->
     <Font cssVariable="--font-lexend" preload />
-    <Font cssVariable="--font-geist" preload />
+    <Font cssVariable="--font-geist" />
 
     <!-- Per-page head additions (e.g. JSON-LD, hero preload) -->
     <slot name="head" />
 
     <!-- Dark mode: apply class before paint to avoid flash -->
-    <script is:inline>
-      function applyTheme() {
-        const stored = localStorage.getItem('theme');
-        const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light';
-        document.documentElement.classList.toggle('dark', (stored ?? preferred) === 'dark');
-      }
-      applyTheme();
-    </script>
+    <script is:inline src="/theme.js"></script>
   </head>
   <body
     class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col"

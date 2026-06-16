@@ -1,13 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Icon from '../../components/Icon.astro';
-import {
-  tagColors,
-  tagToSlug,
-  postUrl,
-  shortDateFormatter as dateFormatter,
-  getPostsByTag,
-} from '../../support/blog';
+import PostCard from '../../components/PostCard.astro';
+import { tagToSlug, getPostsByTag } from '../../support/blog';
 import { siteName } from '../../support/site';
 
 export async function getStaticPaths() {
@@ -49,52 +44,9 @@ const { tagName, posts } = Astro.props;
     </header>
 
     <div class="flex flex-col gap-4">
-      {
-        posts.map((post, index) => (
-          <a
-            href={postUrl(post.id)}
-            class="group bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 rounded-xl p-6 flex flex-col gap-2 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
-          >
-            <div class="flex items-center gap-base font-code text-code text-on-surface-variant/70 dark:text-inverse-on-surface/50">
-              <time datetime={post.data.pubDate.toISOString()}>
-                {dateFormatter.format(post.data.pubDate)}
-              </time>
-              {post.data.tags.length > 1 && (
-                <>
-                  <span class="w-1 h-1 rounded-full bg-primary/30" />
-                  <div class="flex gap-2 flex-wrap">
-                    {post.data.tags
-                      .filter((t) => t !== tagName)
-                      .slice(0, 2)
-                      .map((tag, i) => (
-                        <span
-                          class={`text-xs px-2 py-0.5 rounded-md ${tagColors[(i + index) % tagColors.length]}`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            <h2 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors leading-snug">
-              {post.data.title}
-            </h2>
-
-            {post.data.description && (
-              <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 line-clamp-2 max-w-3xl">
-                {post.data.description}
-              </p>
-            )}
-
-            <div class="mt-1 flex items-center gap-1 text-primary dark:text-inverse-primary font-label-md uppercase tracking-wider text-xs group-hover:gap-2 transition-all">
-              Read Post
-              <Icon name="arrow_forward" class="text-sm" />
-            </div>
-          </a>
-        ))
-      }
+      {posts.map((post, index) => (
+        <PostCard post={post} variant="list" index={index} currentTag={tagName} />
+      ))}
     </div>
   </div>
 </BaseLayout>

@@ -2,11 +2,11 @@
   "name": "jeweidotnet",
   "version": "0.0.1",
   "dependencies": {
-    "@astrojs/mdx": "^6.0.2",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.4",
+    "rehype-external-links": "^3.0.0",
     "tailwindcss": "^4.3.0",
     "yaml": "^2.9.0"
   },

@@ -16,6 +16,7 @@ export async function resolveSocialImage(
     src: image ?? defaultOgImage,
     layout: 'none',
     width: 1200,
+    height: 630,
     format: 'jpg',
   });
 

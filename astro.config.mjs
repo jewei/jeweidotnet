@@ -2,10 +2,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig, fontProviders } from 'astro/config';
-import mdx from '@astrojs/mdx';
+import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { parse } from 'yaml';
+import rehypeExternalLinks from 'rehype-external-links';
 
 /**
  * Build a map of `/{slug}/` → ISO `lastmod` for the sitemap.
@@ -64,6 +65,13 @@ const sitemapDates = loadSitemapDates();
 export default defineConfig({
   site: 'https://jewei.net',
   output: 'static',
+  markdown: {
+    processor: unified({
+      rehypePlugins: [
+        [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
+      ],
+    }),
+  },
   // Make Markdown `![]()` images responsive (auto srcset + sizes). Hand-tuned
   // component images opt out with `layout="none"` to keep their explicit
   // `widths`/`densities`, which are incompatible with a layout.
@@ -72,7 +80,6 @@ export default defineConfig({
     responsiveStyles: true,
   },
   integrations: [
-    mdx(),
     sitemap({
       serialize(item) {
         const pathname = new URL(item.url).pathname;

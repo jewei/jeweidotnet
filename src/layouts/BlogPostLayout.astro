@@ -19,12 +19,15 @@ const { title, description, pubDate, updatedDate, tags, image } = post.data;
 const showCodeFont = hasCodeBlocks(post.body);
 
 const siteUrl = Astro.site!.href;
+const postPageUrl = new URL(postUrl(post.id), siteUrl).href;
 const socialImageMeta = image ? await resolveSocialImage(image, siteUrl) : undefined;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
   headline: title,
-  ...(description ? { description } : {}),
+  description,
+  url: postPageUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': postPageUrl },
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
   author: { '@type': 'Person', name: 'Jewei Mak', url: `${siteUrl}/about/` },
@@ -37,6 +40,7 @@ const jsonLd = {
   title={title}
   description={description}
   socialImage={image}
+  socialImageAlt={title}
   type="article"
   pubDate={pubDate}
   updatedDate={updatedDate}
@@ -52,8 +56,7 @@ const jsonLd = {
 
     <article class="max-w-[672px] mx-auto relative z-10 pt-8">
       <div
-        class="absolute -top-2 -left-14 text-surface-tint opacity-70 hidden md:block"
-        style="animation: spin 12s linear infinite;"
+        class="absolute -top-2 -left-14 text-surface-tint opacity-70 hidden md:block post-decoration-spin"
       >
         <svg fill="none" height="36" viewBox="0 0 40 40" width="36">
           <path
@@ -202,3 +205,15 @@ const jsonLd = {
     </article>
   </div>
 </BaseLayout>
+
+<style>
+  .post-decoration-spin {
+    animation: spin 12s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .post-decoration-spin {
+      animation: none;
+    }
+  }
+</style>
