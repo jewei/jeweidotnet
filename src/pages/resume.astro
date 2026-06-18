@@ -11,7 +11,7 @@ import {
 } from '../data/resume';
 ---
 
-<BaseLayout title={resumeMeta.title} description={resumeMeta.description}>
+<BaseLayout title={resumeMeta.title} description={resumeMeta.summary}>
   <!-- Hero -->
   <section class="mb-10 md:mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="space-y-4">
@@ -29,9 +29,7 @@ import {
       <p
         class="font-headline-md text-headline-md text-on-surface-variant dark:text-inverse-on-surface/80 max-w-2xl"
       >
-        {resumeMeta.headline} with <span class="text-primary dark:text-inverse-primary italic"
-          >15+ years of experience</span
-        > building scalable products, APIs, integrations, and engineering delivery systems.
+        {resumeMeta.headline}
       </p>
     </div>
     <div class="shrink-0">
