@@ -62,4 +62,4 @@ I’m just an email away at **[jewei@duck.com](mailto:jewei@duck.com)**.
 
 Thanks for stopping by. I hope you enjoy poking around this site.
 
-If you enjoy my work and want to support it, you can [sponsor me on GitHub](https://github.com/sponsors/jewei?frequency=one-time). 🙏
+If something I've written saved you time, sparked a thought, or just made the afternoon a little more interesting — you can [sponsor me on GitHub](https://github.com/sponsors/jewei). It helps me carve out more time to write and build, and every contribution, big or small, genuinely means a lot. 🙏
