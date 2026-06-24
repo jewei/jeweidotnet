@@ -7,7 +7,7 @@ tags: ["ai", "macos", "swift"]
 pinned: true
 ---
 
-_Version 1.1 — free, open-source macOS menu bar app · [ClaudeMeter-1.1.dmg 📦](https://github.com/jewei/claude-meter/releases/download/v1.1/ClaudeMeter-1.1.dmg)_
+_Version 1.2 — free, open-source macOS menu bar app · [ClaudeMeter-1.2.dmg 📦](https://github.com/jewei/claude-meter/releases/download/v1.2/ClaudeMeter-1.2.dmg)_
 
 ![Developers in tokens quota anxiety](../../assets/content/developers-in-tokens-quota-anxiety.jpg)
 
