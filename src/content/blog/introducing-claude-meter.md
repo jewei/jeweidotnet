@@ -9,7 +9,7 @@ pinned: true
 
 > Update Version 1.2 added support to Cursor as an optional, opt-in usage source alongside Claude.
 
-_Version 1.2 — free, open-source macOS menu bar app · [ClaudeMeter-1.2.dmg 📦](https://github.com/jewei/claude-meter/releases/download/v1.2/ClaudeMeter-1.2.dmg)_
+_Version 1.3 — free, open-source macOS menu bar app · [ClaudeMeter-1.3.dmg 📦](https://github.com/jewei/claude-meter/releases/download/v1.3/ClaudeMeter-1.3.dmg)_
 
 ![Developers in tokens quota anxiety](../../assets/content/developers-in-tokens-quota-anxiety.jpg)
 
