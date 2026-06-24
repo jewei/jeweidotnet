@@ -77,7 +77,7 @@ Download Claude Meter 1.0, drop it in your Applications folder, and launch it. I
 
 Stop guessing where you stand. Start seeing it.
 
-[![Claude Meter GitHub](https://opengraph.githubassets.com/83e32a743d9f3eea3245bf8622f09358c6c12fbc7862e21c4bbe48e4be7d9a97/jewei/claude-meter "Claude Meter - A free, open-source macOS menu bar app")](https://github.com/jewei/claude-meter)
+[![Claude Meter GitHub](../../assets/content/claude-meter-github.jpg "Claude Meter - A free, open-source macOS menu bar app")](https://github.com/jewei/claude-meter)
 
 ---
 
