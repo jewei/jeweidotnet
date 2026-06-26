@@ -7,9 +7,7 @@ tags: ["ai", "macos", "swift"]
 pinned: true
 ---
 
-> Update Version 1.2 added support to Cursor as an optional, opt-in usage source alongside Claude.
-
-_Version 1.3 — free, open-source macOS menu bar app · [ClaudeMeter-1.3.dmg 📦](https://github.com/jewei/claude-meter/releases/download/v1.3/ClaudeMeter-1.3.dmg)_
+> Update: [Version 2.0 is here](https://jewei.net/claude-meter-v2) — a complete redesign that’s still free and open source for macOS, featuring a refreshed menu bar experience. [Download Claude Meter 2.0 📦](https://github.com/jewei/claude-meter/releases/download/v2.0/ClaudeMeter-2.0.dmg)
 
 ![Developers in tokens quota anxiety](../../assets/content/developers-in-tokens-quota-anxiety.jpg)
 
