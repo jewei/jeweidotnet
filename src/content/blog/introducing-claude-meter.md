@@ -4,7 +4,6 @@ description: "I wanted to see my Claude Code usage before hitting the wall. So I
 image: ../../assets/content/claude-meter.jpg
 pubDate: "2026-06-24T00:00:00.000Z"
 tags: ["ai", "macos", "swift"]
-pinned: true
 ---
 
 > Update: [Version 2.0 is here](https://jewei.net/claude-meter-v2) — a complete redesign that’s still free and open source for macOS, featuring a refreshed menu bar experience. [Download Claude Meter 2.0 📦](https://github.com/jewei/claude-meter/releases/download/v2.0/ClaudeMeter-2.0.dmg)

@@ -4,6 +4,7 @@ description: "Claude Meter 2.0 reimagines your Claude usage as energy you have l
 image: ../../assets/content/claude-meter-v2.jpg
 pubDate: "2026-06-26T00:00:00.000Z"
 tags: ["ai", "macos", "swift"]
+pinned: true
 ---
 
 # Claude Meter 2.0: Your Claude Usage, Now With Energy
