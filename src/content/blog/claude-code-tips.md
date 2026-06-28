@@ -94,7 +94,9 @@ Claude Code starts in a mode that asks permission before edits and commands. If 
 
 ```json
 {
-  "defaultMode": "auto"
+  "permissions" : {
+    "defaultMode" : "auto"
+  },
 }
 ```
 
