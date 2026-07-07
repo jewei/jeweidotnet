@@ -1,10 +1,26 @@
+// The wordmark is an invitation: `jewei.toString()` actually works in here.
+window.jewei = {
+  toString: function () {
+    return 'Software engineer. Minimal systems, deliberate details, code shaped like art. → https://github.com/jewei';
+  },
+};
+console.log('%cjewei.toString()%c — go on, try it.', 'font-weight:600;color:#7c3aed', '');
+
+// Expose the current theme state to assistive tech (theme.js sets the class
+// before this script runs).
+document
+  .getElementById('theme-toggle')
+  ?.setAttribute('aria-pressed', String(document.documentElement.classList.contains('dark')));
+
 document.addEventListener('click', function (e) {
   var target = e.target;
   if (!(target instanceof Element)) return;
 
-  if (target.closest('#theme-toggle')) {
+  var themeToggle = target.closest('#theme-toggle');
+  if (themeToggle) {
     var isDark = document.documentElement.classList.toggle('dark');
     localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    themeToggle.setAttribute('aria-pressed', String(isDark));
     return;
   }
 

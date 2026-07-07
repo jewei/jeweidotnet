@@ -14,6 +14,10 @@ export function tagToSlug(tag: string): string {
       .normalize('NFKD')
       .toLowerCase()
       .replace(/[\u0300-\u036f]/g, '')
+      // Spell out symbols that distinguish tags, so "c++" / "c#" / "c" don't
+      // collapse into the same slug (and URL).
+      .replace(/\+/g, '-plus')
+      .replace(/#/g, '-sharp')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '') || 'tag'
   );

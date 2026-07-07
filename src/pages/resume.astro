@@ -13,10 +13,10 @@ import {
 
 <BaseLayout title={resumeMeta.title} description={resumeMeta.summary[0]}>
   <!-- Hero -->
-  <section class="mb-10 md:mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
+  <section class="resume-hero mb-10 md:mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
     <div class="space-y-4">
       <div
-        class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 text-primary dark:text-inverse-primary"
+        class="resume-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 text-primary dark:text-inverse-primary"
       >
         <Icon name="spark" class="text-[18px]" />
         <span class="font-label-md text-label-md">Available for Work</span>
@@ -240,3 +240,50 @@ import {
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  /* Same entrance grammar as the homepage hero: the intro block rises, the
+     download CTA follows a beat later. Short — a recruiter is here to read. */
+  .resume-hero > * {
+    animation: resume-rise 0.6s var(--ease-out-quint) both;
+  }
+
+  .resume-hero > *:nth-child(2) {
+    animation-delay: 100ms;
+  }
+
+  @keyframes resume-rise {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* "Available for Work" reads as a live status; the spark twinkles to say so. */
+  .resume-badge :global(svg) {
+    animation: spark-twinkle 2.8s ease-in-out infinite;
+  }
+
+  @keyframes spark-twinkle {
+    0%,
+    100% {
+      transform: scale(1) rotate(0deg);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.82) rotate(20deg);
+      opacity: 0.7;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .resume-hero > *,
+    .resume-badge :global(svg) {
+      animation: none;
+    }
+  }
+</style>

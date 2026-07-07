@@ -14,13 +14,6 @@ interface Props {
 const { post, variant, index = 0, currentTag } = Astro.props;
 const { title, description, pubDate, tags, image } = post.data;
 
-const tagTextColors = [
-  'text-primary dark:text-inverse-primary',
-  'text-secondary dark:text-secondary-fixed-dim',
-  'text-tertiary dark:text-tertiary-fixed-dim',
-  'text-on-secondary-fixed-variant',
-];
-
 const cardGradients = [
   'from-primary/10 via-surface-container to-surface-container-lowest',
   'from-secondary/10 via-surface-container to-surface-container-lowest',
@@ -32,7 +25,7 @@ const cardGradients = [
   variant === 'pinned' && (
     <a
       href={postUrl(post.id)}
-      class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+      class="group block relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.99] active:duration-100 transition-all duration-300"
     >
       <div class="flex flex-col md:flex-row h-full">
         <div class="md:w-2/5 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
@@ -64,21 +57,26 @@ const cardGradients = [
         </div>
         <div class="flex-1 p-6 md:p-8 flex flex-col justify-center">
           {tags.length > 0 && (
-            <div class="flex gap-2 mb-4 flex-wrap">
+            <div class="flex items-center gap-2 mb-4 flex-wrap">
               {tags.slice(0, 3).map((tag, i) => (
                 <span class={`px-3 py-1 rounded-full font-label-md text-xs ${tagColors[i % tagColors.length]}`}>
                   {tag}
                 </span>
               ))}
+              {tags.length > 3 && (
+                <span class="font-label-md text-xs text-on-surface-variant dark:text-inverse-on-surface/70">
+                  +{tags.length - 3}
+                </span>
+              )}
             </div>
           )}
-          <h3 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors duration-200 mb-2">
+          <h3 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors duration-200 mb-2 line-clamp-2">
             {title}
           </h3>
           <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 mb-5 line-clamp-3">
             {description}
           </p>
-          <div class="mt-auto flex items-center text-on-surface-variant dark:text-inverse-on-surface/60 font-label-md text-sm gap-2">
+          <div class="mt-auto flex items-center text-on-surface-variant dark:text-inverse-on-surface/70 font-label-md text-sm gap-2">
             <Icon name="calendar_month" class="text-[16px]" />
             <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
           </div>
@@ -92,28 +90,33 @@ const cardGradients = [
   variant === 'grid' && (
     <a
       href={postUrl(post.id)}
-      class="group block rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 p-5 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden"
+      class="group block rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 p-5 hover:-translate-y-1 hover:shadow-xl active:translate-y-0 active:scale-[0.99] active:duration-100 transition-all duration-300 flex flex-col h-full relative overflow-hidden"
     >
       <div
         class={`absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl ${cardGradients[index % cardGradients.length]} rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
       />
       {tags.length > 0 && (
-        <div class="flex gap-2 mb-3 flex-wrap">
+        <div class="flex items-center gap-2 mb-3 flex-wrap">
           {tags.slice(0, 2).map((tag, i) => (
-            <span class={`px-2 py-1 rounded-md font-label-md text-xs ${tagColors[i % tagColors.length]}`}>
+            <span class={`px-3 py-1 rounded-full font-label-md text-xs ${tagColors[i % tagColors.length]}`}>
               {tag}
             </span>
           ))}
+          {tags.length > 2 && (
+            <span class="font-label-md text-xs text-on-surface-variant dark:text-inverse-on-surface/70">
+              +{tags.length - 2}
+            </span>
+          )}
         </div>
       )}
-      <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors duration-200 mb-2 leading-tight">
+      <h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface dark:text-inverse-on-surface group-hover:text-primary dark:group-hover:text-inverse-primary transition-colors duration-200 mb-2 leading-tight line-clamp-2">
         {title}
       </h3>
       <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70 mb-4 line-clamp-2 flex-grow">
         {description}
       </p>
-      <div class="flex items-center text-on-surface-variant dark:text-inverse-on-surface/60 font-label-md text-xs gap-1 mt-auto pt-4 border-t border-outline-variant/20">
-        <Icon name="schedule" class="text-[14px]" />
+      <div class="flex items-center text-on-surface-variant dark:text-inverse-on-surface/70 font-label-md text-xs gap-1 mt-auto pt-4 border-t border-outline-variant/20">
+        <Icon name="calendar_month" class="text-[14px]" />
         <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
       </div>
     </a>
@@ -124,7 +127,7 @@ const cardGradients = [
   variant === 'list' && (
     <a
       href={postUrl(post.id)}
-      class="group bg-surface/50 dark:bg-surface-dark/50 backdrop-blur-sm border border-outline-variant/30 rounded-xl p-6 md:p-8 flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+      class="group bg-surface/50 dark:bg-surface-dark/50 backdrop-blur-sm border border-outline-variant/30 rounded-xl p-6 md:p-8 flex flex-col gap-3 hover:-translate-y-1 hover:shadow-lg active:translate-y-0 active:scale-[0.99] active:duration-100 transition-all duration-300 relative overflow-hidden"
     >
       <div class="flex items-center gap-2 font-mono text-sm text-on-surface-variant/70 dark:text-inverse-on-surface/50 flex-wrap">
         <time datetime={pubDate.toISOString()}>{dateFormatter.format(pubDate)}</time>
@@ -138,7 +141,7 @@ const cardGradients = [
                     .slice(0, 2)
                     .map((tag, i) => (
                       <span
-                        class={`text-xs px-2 py-0.5 rounded-md ${tagColors[(i + index) % tagColors.length]}`}
+                        class={`text-xs px-2 py-0.5 rounded-full ${tagColors[(i + index) % tagColors.length]}`}
                       >
                         {tag}
                       </span>
@@ -151,7 +154,9 @@ const cardGradients = [
                 <span class="w-1 h-1 rounded-full bg-primary/30" />
                 <div class="flex gap-2 flex-wrap">
                   {tags.map((tag, i) => (
-                    <span class={tagTextColors[i % tagTextColors.length]}>#{tag}</span>
+                    <span class={`text-xs px-2 py-0.5 rounded-full ${tagColors[i % tagColors.length]}`}>
+                      {tag}
+                    </span>
                   ))}
                 </div>
               </>

@@ -62,13 +62,47 @@ function loadSitemapDates() {
 
 const sitemapDates = loadSitemapDates();
 
+/**
+ * Wrap Markdown tables in a scroll container so wide tables scroll within the
+ * 672px article column instead of being clipped by the body's
+ * `overflow-x-hidden` (see `.table-scroll` in global.css).
+ */
+function rehypeTableScroll() {
+  /** @param {any} node */
+  function walk(node) {
+    if (!node.children) return;
+    node.children = node.children.map((/** @type {any} */ child) => {
+      if (child.type === 'element' && child.tagName === 'table') {
+        return {
+          type: 'element',
+          tagName: 'div',
+          properties: { className: ['table-scroll'] },
+          children: [child],
+        };
+      }
+      walk(child);
+      return child;
+    });
+  }
+  return (/** @type {any} */ tree) => walk(tree);
+}
+
 export default defineConfig({
   site: 'https://jewei.net',
   output: 'static',
   markdown: {
     processor: unified({
       rehypePlugins: [
-        [rehypeExternalLinks, { target: '_blank', rel: ['noopener', 'noreferrer'] }],
+        [
+          rehypeExternalLinks,
+          {
+            target: '_blank',
+            rel: ['noopener', 'noreferrer'],
+            content: { type: 'text', value: ' (opens in new tab)' },
+            contentProperties: { className: ['sr-only'] },
+          },
+        ],
+        rehypeTableScroll,
       ],
     }),
   },
