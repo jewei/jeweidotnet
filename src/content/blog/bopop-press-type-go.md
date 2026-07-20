@@ -14,6 +14,8 @@ An app opens. An answer appears. A snippet lands on your clipboard. Then the pal
 
 That’s the whole idea: **press, type, go**.
 
+![The Bopop palette showing app results ranked by usage, with filters for Apps, Files, Clipboard, Emoji, and Translate](../../assets/content/bopop-launcher.jpg)
+
 Bopop v0.1.0 is available today, free and open source under the MIT license.
 
 ## What it does
@@ -33,6 +35,10 @@ It also answers the small questions that shouldn’t require opening a browser:
 * `define serendipity` — look up definitions with the macOS dictionary
 * `t 你好` — translate between English and Chinese entirely on-device
 * Paste a link full of tracking parameters — get a clean version back
+
+![Bopop converting 123 MYR to US dollars inline, showing $30.05](../../assets/content/bopop-currency.jpg)
+
+![Bopop converting 14:30 London time to the local time zone](../../assets/content/bopop-timezone.jpg)
 
 There’s more: system commands such as `lock`, `sleep`, and `empty trash`; custom scripts exposed as searchable commands; saved snippets; keyword searches for any website; Quick Look and Reveal in Finder for file results; and a Large Type mode for displaying something clearly across the room.
 
