@@ -3,6 +3,7 @@ title: "Bopop: press, type, go"
 description: "I built Bopop, a keyboard-first launcher for macOS. Local-first, no Accessibility permission, zero dependencies. Free and open source."
 pubDate: "2026-07-20T00:00:00.000Z"
 tags: ["open-source", "macos", "swift"]
+image: ../../assets/content/bopop-press-type-go-og-image.jpg
 ---
 
 I built a launcher.
