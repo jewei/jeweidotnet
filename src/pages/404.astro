@@ -11,48 +11,14 @@ import illustration from '../assets/404-illustration.webp';
   robots="noindex, nofollow"
 >
 
-  <div
-    class="not-found flex flex-col items-center justify-center min-h-[calc(100vh-14rem)] py-8 relative overflow-hidden"
-  >
-    <!-- Ambient glow -->
-    <div
-      class="absolute top-1/4 -left-16 w-64 h-64 bg-primary-fixed/20 blur-3xl rounded-full pointer-events-none"
-      aria-hidden="true"
-    >
-    </div>
-    <div
-      class="absolute bottom-1/4 -right-16 w-64 h-64 bg-secondary-fixed/20 blur-3xl rounded-full pointer-events-none"
-      aria-hidden="true"
-    >
-    </div>
-
-    <!-- Floating doodles -->
-    <div
-      class="absolute top-16 right-[12%] hidden md:block not-found-float opacity-40"
-      aria-hidden="true"
-    >
-      <Icon name="spark" class="text-primary text-4xl" />
-    </div>
-    <div
-      class="absolute bottom-32 left-[8%] hidden md:block not-found-float opacity-30"
-      style="animation-delay: -1s;"
-      aria-hidden="true"
-    >
-      <Icon name="code" class="text-secondary text-5xl" />
-    </div>
-
-    <div class="max-w-2xl w-full text-center z-10 space-y-8">
+  <div class="not-found">
+    <div class="not-found__grid">
       <!-- Illustration -->
-      <div class="relative inline-block group">
-        <div
-          class="absolute inset-0 bg-gradient-to-tr from-primary-fixed to-secondary-fixed not-found-blob opacity-20 scale-110 -rotate-6 transition-transform duration-700 group-hover:rotate-12"
-          aria-hidden="true"
-        >
-        </div>
+      <div class="not-found__visual">
         <Image
           src={illustration}
           alt="A confused robot lost among floating code braces"
-          class="relative w-64 md:w-80 mx-auto drop-shadow-2xl not-found-float"
+          class="not-found__image"
           layout="none"
           widths={[256, 320, 512, 640]}
           sizes="(min-width: 768px) 320px, 256px"
@@ -60,7 +26,7 @@ import illustration from '../assets/404-illustration.webp';
           loading="eager"
         />
         <div
-          class="absolute -bottom-4 -right-6 md:-right-10 bg-surface-container-lowest/90 dark:bg-surface-dark/90 backdrop-blur border border-outline-variant/30 p-3 rounded-xl shadow-xl rotate-3 hidden sm:block"
+          class="not-found__code"
         >
           <pre
             class="font-code text-code text-primary leading-tight text-left"><code>error = null;
@@ -71,50 +37,40 @@ while (lost) {'{'}
       </div>
 
       <!-- Copy -->
-      <div class="space-y-4">
-        <h1
-          class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface tracking-tight"
-        >
-          Oops! This page seems to have gotten <span
-            class="text-primary dark:text-inverse-primary italic">lost in the code.</span
-          >
-        </h1>
-        <p
-          class="font-body-lg text-body-lg text-on-surface-variant dark:text-inverse-on-surface/75 max-w-lg mx-auto"
-        >
+      <div class="not-found__copy">
+        <h1 class="not-found__title">This page got lost in the code.</h1>
+        <p>
           The page you're looking for has been garbage-collected or never existed in this timeline.
         </p>
       </div>
 
       <!-- Actions -->
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-2">
+      <div class="not-found__actions">
         <a
           href="/"
-          class="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-surface-tint text-on-primary font-label-md text-label-md rounded-xl shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+          class="tactile-btn tactile-btn--primary"
         >
           <Icon name="home" class="text-xl" />
-          Back to Reality
+          Go Home
         </a>
-        <div class="flex gap-2">
+        <div class="not-found__secondary-actions">
           <a
             href="/blog/"
-            class="inline-flex items-center justify-center px-6 py-4 border border-secondary/20 dark:border-secondary-fixed-dim/40 text-secondary dark:text-secondary-fixed-dim bg-surface-container-low dark:bg-surface-dark font-label-md text-label-md rounded-xl hover:-translate-y-1 hover:bg-secondary/5 transition-all duration-300"
+            class="tactile-btn tactile-btn--secondary"
           >
             Blog
           </a>
           <a
             href="/about/"
-            class="inline-flex items-center justify-center px-6 py-4 border border-secondary/20 dark:border-secondary-fixed-dim/40 text-secondary dark:text-secondary-fixed-dim bg-surface-container-low dark:bg-surface-dark font-label-md text-label-md rounded-xl hover:-translate-y-1 hover:bg-secondary/5 transition-all duration-300"
+            class="tactile-btn tactile-btn--secondary"
           >
             About
           </a>
         </div>
       </div>
 
-      <div class="pt-4 flex justify-center">
-        <span
-          class="font-code text-code text-on-surface-variant dark:text-inverse-on-surface/60 bg-surface-container-highest dark:bg-surface-dark px-3 py-1 rounded-full border border-outline-variant/20"
-        >
+      <div>
+        <span class="not-found__status">
           HTTP 404: Not_Found
         </span>
       </div>
@@ -127,9 +83,7 @@ while (lost) {'{'}
     border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
   }
 
-  .not-found-float {
-    animation: not-found-float 4s ease-in-out infinite;
-  }
+  .not-found-float { animation: none; }
 
   @keyframes not-found-float {
     0%,

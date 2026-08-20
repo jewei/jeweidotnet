@@ -17,27 +17,6 @@ const quotes = [
   },
 ];
 
-const quoteThemes = [
-  {
-    card: 'bg-primary-fixed/70 border-primary-fixed-dim/70 shadow-[0_18px_45px_-30px_rgba(99,14,212,0.55)] rounded-bl-none',
-    text: 'text-on-primary-fixed-variant',
-    meta: 'text-primary',
-    bar: 'bg-primary',
-  },
-  {
-    card: 'bg-secondary-fixed/35 border-secondary-fixed-dim/45 shadow-[0_18px_45px_-30px_rgba(0,88,190,0.45)] rounded-br-none',
-    text: 'text-on-secondary-fixed-variant',
-    meta: 'text-secondary',
-    bar: 'bg-secondary',
-  },
-  {
-    card: 'bg-tertiary-fixed/35 border-tertiary-fixed-dim/60 shadow-[0_18px_45px_-30px_rgba(0,91,51,0.45)] rounded-tl-none',
-    text: 'text-on-tertiary-fixed-variant',
-    meta: 'text-tertiary',
-    bar: 'bg-tertiary',
-  },
-];
-
 const insights = [
   {
     title: 'Ideas I Keep Returning To',
@@ -71,31 +50,26 @@ const insights = [
   title="Collections"
   description="Random thoughts, quotes, and curated insights by Jewei Mak."
 >
-  <div class="max-w-[720px] mx-auto pt-8">
-    <section class="pb-12 relative overflow-hidden">
-      <div class="absolute top-10 right-0 w-40 h-40 bg-primary/10 rounded-full blur-3xl"></div>
-      <div class="relative z-10">
-        <h1
-          class="font-display text-[40px] md:text-display text-on-surface dark:text-inverse-on-surface leading-tight tracking-[-0.03em] mb-3"
-        >
+  <div class="collection-page">
+    <section class="collection-head">
+      <div>
+        <h1>
           Thoughts & Quotes
         </h1>
-        <p
-          class="font-body-lg text-body-lg text-on-surface-variant dark:text-inverse-on-surface/75 max-w-2xl"
-        >
+        <p>
           A collection of whispers, half-baked ideas, and things I like.
         </p>
-        <div class="flex flex-wrap gap-3 mt-8">
+        <div class="home-actions">
           <a
             href="#quotes"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md hover:-translate-y-0.5 transition-transform"
+            class="tactile-btn tactile-btn--primary"
           >
             <Icon name="star" class="text-[16px]" />
             Quotes
           </a>
           <a
             href="#insights"
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 text-on-surface-variant dark:text-inverse-on-surface/80 font-label-md text-label-md hover:-translate-y-0.5 hover:text-primary dark:hover:text-inverse-primary transition-all"
+            class="tactile-btn tactile-btn--secondary"
           >
             <Icon name="insights" class="text-[16px]" />
             Insights
@@ -104,64 +78,31 @@ const insights = [
       </div>
     </section>
 
-    <section id="quotes" class="py-10 border-t border-outline-variant/25 scroll-mt-28">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+    <section id="quotes" class="collection-section">
+      <div class="collection-section__head">
         <div>
-          <p
-            class="font-label-md text-label-md uppercase tracking-[0.22em] text-secondary dark:text-secondary-fixed-dim mb-2"
-          >
-            Quotes By Me
-          </p>
-          <h2
-            class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface"
-          >
+          <h2>
             Random thoughts
           </h2>
         </div>
-        <p
-          class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/65 max-w-md"
-        >
+        <p>
           Small observations, half-formed principles, and lines I want to keep close.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+      <div class="quote-grid">
         {
-          quotes.map((quote, index) => (
+          quotes.map((quote) => (
             <article
-              class:list={[
-                index === 1 ? 'md:mt-8' : '',
-                index === 2 ? 'md:col-span-2 md:max-w-[calc(50%-0.75rem)]' : '',
-              ]}
+              class="quote-card"
             >
-              <div
-                class:list={[
-                  'bubble-float group relative rounded-[32px] border p-8 md:p-7 transition-transform duration-500 hover:-translate-y-1',
-                  quoteThemes[index % quoteThemes.length].card,
-                ]}
-                style={`animation-delay: ${index * 0.7}s`}
-              >
-                <p
-                  class:list={[
-                    'm-0 font-body-lg text-[22px] md:text-[18px] leading-[1.65] italic',
-                    quoteThemes[index % quoteThemes.length].text,
-                  ]}
-                >
-                  "{quote.text}"
+              <div>
+                <p class="quote-card__text">
+                  “{quote.text}”
                 </p>
-                <div class="mt-6 flex items-center gap-4">
-                  <span
-                    class:list={[
-                      'h-1.5 w-16 rounded-full',
-                      quoteThemes[index % quoteThemes.length].bar,
-                    ]}
-                  />
-                  <span
-                    class:list={[
-                      'font-label-md text-[18px] md:text-[15px] font-bold tracking-wide opacity-80',
-                      quoteThemes[index % quoteThemes.length].meta,
-                    ]}
-                  >
+                <div class="quote-card__meta">
+                  <span aria-hidden="true">—</span>
+                  <span>
                     {quote.context}
                   </span>
                 </div>
@@ -172,42 +113,23 @@ const insights = [
       </div>
     </section>
 
-    <section id="insights" class="py-10 border-t border-outline-variant/25 scroll-mt-28">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+    <section id="insights" class="collection-section">
+      <div class="collection-section__head">
         <div>
-          <p
-            class="font-label-md text-label-md uppercase tracking-[0.22em] text-tertiary dark:text-tertiary-fixed-dim mb-2"
-          >
-            Insights
-          </p>
-          <h2
-            class="font-headline-lg text-headline-lg text-on-surface dark:text-inverse-on-surface"
-          >
+          <h2>
             Curated insights
           </h2>
         </div>
-        <p
-          class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/65 max-w-md"
-        >
+        <p>
           Insights for anything I want to sort, revisit, recommend, or keep in public view.
         </p>
       </div>
 
-      <div class="space-y-5">
+      <div class="collection-index">
         {
           insights.map((list, index) => (
-            <article class="group relative overflow-hidden rounded-xl bg-surface-container-lowest dark:bg-surface-dark border border-outline-variant/30 p-5 md:p-6 hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-              <div
-                class:list={[
-                  'absolute top-0 right-0 h-24 w-24 rounded-bl-full opacity-80 transition-transform duration-300 group-hover:scale-125',
-                  index === 0
-                    ? 'bg-primary/10'
-                    : index === 1
-                      ? 'bg-secondary/10'
-                      : 'bg-tertiary/10',
-                ]}
-              />
-              <div class="relative z-10">
+            <article class="collection-index__card">
+              <div>
                 <div class="flex flex-col md:flex-row md:items-start gap-5 md:gap-8">
                   <div class="md:w-56 shrink-0">
                     <div class="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-container dark:bg-bg-dark text-primary dark:text-inverse-primary font-label-md text-label-md">
@@ -242,7 +164,7 @@ const insights = [
 
 <style>
   .bubble-float {
-    animation: bubble-float 6s ease-in-out infinite;
+    animation: none;
   }
 
   @keyframes bubble-float {

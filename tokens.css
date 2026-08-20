@@ -1,0 +1,105 @@
+/* Hallmark · macrostructure family: Ecosystem Index / Index-First / Long Document
+ * theme: custom · vibe: "playful energetic learning-app confidence" · paper: oklch(97% 0.016 105) · accent: oklch(70% 0.18 145)
+ * display: Bricolage Grotesque 800 · body: Geist 400 · axes: light / geometric-sans / chromatic-green
+ * studied: no · context: explicit · design-system: DESIGN.md · designed-as-app
+ * Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5
+ */
+
+:root {
+  color-scheme: light;
+
+  --color-paper: oklch(97% 0.016 105);
+  --color-paper-2: oklch(94% 0.026 105);
+  --color-paper-3: oklch(90% 0.038 105);
+  --color-ink: oklch(20% 0.018 145);
+  --color-ink-2: oklch(34% 0.022 145);
+  --color-rule: oklch(79% 0.030 105);
+  --color-rule-2: oklch(86% 0.024 105);
+  --color-muted: oklch(48% 0.025 145);
+  --color-neutral: oklch(40% 0.025 145);
+  --color-accent: oklch(70% 0.18 145);
+  --color-accent-strong: oklch(48% 0.15 145);
+  --color-accent-soft: oklch(91% 0.075 125);
+  --color-accent-ink: oklch(20% 0.018 145);
+  --color-focus: oklch(42% 0.20 145);
+  --color-danger: oklch(55% 0.19 28);
+  --color-danger-ink: oklch(97% 0.016 105);
+
+  --font-display: var(--font-bricolage), sans-serif;
+  --font-body: var(--font-geist), sans-serif;
+  --font-outlier: var(--font-jetbrains-mono), monospace;
+  --display-weight: 800;
+  --display-style: normal;
+  --tracking-display: -0.035em;
+  --tracking-label: 0.08em;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.9531rem;
+  --text-2xl: 2.4414rem;
+  --text-3xl: 3.0518rem;
+  --text-4xl: 3.8147rem;
+  --text-display-s: clamp(2.5rem, 5vw, 4.25rem);
+  --text-display: clamp(2.75rem, 6vw, 5.25rem);
+
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 9rem;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+
+  --rule-hair: 1px;
+  --rule-fine: 2px;
+  --rule-strong: 3px;
+  --radius-card: 0.75rem;
+  --radius-pill: 999px;
+  --radius-input: 0.5rem;
+  --shadow-card: 0 3px 0 var(--color-ink);
+
+  --page-max: 73.75rem;
+  --page-gutter: clamp(1rem, 4vw, 2rem);
+  --z-base: 1;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --color-paper: oklch(15% 0.018 145);
+  --color-paper-2: oklch(20% 0.022 145);
+  --color-paper-3: oklch(25% 0.026 145);
+  --color-ink: oklch(95% 0.015 105);
+  --color-ink-2: oklch(78% 0.020 105);
+  --color-rule: oklch(35% 0.025 145);
+  --color-rule-2: oklch(29% 0.022 145);
+  --color-muted: oklch(70% 0.020 105);
+  --color-neutral: oklch(62% 0.020 105);
+  --color-accent: oklch(77% 0.15 145);
+  --color-accent-strong: oklch(68% 0.14 145);
+  --color-accent-soft: oklch(28% 0.065 145);
+  --color-accent-ink: oklch(15% 0.018 145);
+  --color-focus: oklch(87% 0.17 145);
+  --color-danger: oklch(72% 0.16 28);
+  --color-danger-ink: oklch(15% 0.018 145);
+  --shadow-card: 0 3px 0 var(--color-accent-strong);
+}

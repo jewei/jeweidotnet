@@ -12,23 +12,19 @@ import {
 ---
 
 <BaseLayout title={resumeMeta.title} description={resumeMeta.summary[0]}>
-  <!-- Hero -->
-  <section class="resume-hero mb-10 md:mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
+  <!-- Split Studio opening -->
+  <section class="resume-head">
     <div class="space-y-4">
       <div
-        class="resume-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 text-primary dark:text-inverse-primary"
+        class="resume-status"
       >
         <Icon name="spark" class="text-[18px]" />
         <span class="font-label-md text-label-md">Available for Work</span>
       </div>
-      <h1
-        class="font-display text-[36px] md:text-display text-on-surface dark:text-inverse-on-surface leading-tight tracking-[-0.02em]"
-      >
+      <h1 class="resume-title">
         Jewei Mak
       </h1>
-      <p
-        class="font-headline-md text-headline-md text-on-surface-variant dark:text-inverse-on-surface/80 max-w-2xl"
-      >
+      <p class="resume-lede">
         {resumeMeta.headline}
       </p>
     </div>
@@ -44,20 +40,12 @@ import {
     </div>
   </section>
 
-  <!-- Bento grid -->
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-gutter">
+  <!-- Split Studio body -->
+  <div class="resume-layout">
     <!-- Sidebar -->
-    <div class="md:col-span-4 space-y-6 md:space-y-gutter">
+    <div class="space-y-6 md:space-y-gutter">
       <!-- Summary -->
       <section class="resume-card group">
-        <div class="resume-card-decoration" aria-hidden="true">
-          <svg class="resume-sparkle resume-sparkle--lg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"></path>
-          </svg>
-          <svg class="resume-sparkle resume-sparkle--sm" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0l1.5 10.5L24 12l-10.5 1.5L12 24l-1.5-10.5L0 12l10.5-1.5z"></path>
-          </svg>
-        </div>
         <h2 class="resume-section-title">
           <Icon name="person" />
           Summary
@@ -113,7 +101,7 @@ import {
     </div>
 
     <!-- Main column -->
-    <div class="md:col-span-8 space-y-6 md:space-y-gutter">
+    <div class="space-y-6 md:space-y-gutter">
       <!-- Core strengths -->
       <section class="resume-card md:p-8">
         <h2 class="resume-section-title">
@@ -216,13 +204,6 @@ import {
   <section
     class="resume-card resume-cta mt-10 md:mt-14 p-8 md:p-10 text-center relative overflow-hidden"
   >
-    <div class="resume-cta-decoration" aria-hidden="true">
-      <Icon name="star" class="text-[100px] absolute top-6 left-6 md:top-10 md:left-10" />
-      <Icon
-        name="favorite"
-        class="text-[120px] absolute bottom-6 right-6 md:bottom-10 md:right-10"
-      />
-    </div>
     <h2
       class="font-display text-headline-lg text-on-surface dark:text-inverse-on-surface mb-4 relative z-10"
     >
@@ -265,7 +246,7 @@ import {
 
   /* "Available for Work" reads as a live status; the spark twinkles to say so. */
   .resume-badge :global(svg) {
-    animation: spark-twinkle 2.8s ease-in-out infinite;
+    animation: none;
   }
 
   @keyframes spark-twinkle {

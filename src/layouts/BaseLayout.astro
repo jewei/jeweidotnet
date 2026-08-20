@@ -54,14 +54,13 @@ const navLinks = [
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- Primary meta -->
     <title>{fullTitle}</title>
     {description && <meta name="description" content={description} />}
     {robots && <meta name="robots" content={robots} />}
     <link rel="canonical" href={canonicalUrl} />
-    <meta name="theme-color" content="#630ed4" />
 
     <!-- Icons -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -104,8 +103,9 @@ const navLinks = [
     <!-- Feeds -->
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
 
-    <!-- Fonts: self-hosted via Astro Fonts API (Lexend preloaded for display headings) -->
-    <Font cssVariable="--font-lexend" preload />
+    <!-- Fonts: self-hosted via Astro Fonts API -->
+    <Font cssVariable="--font-bricolage" preload />
+    <Font cssVariable="--font-lexend" />
     <Font cssVariable="--font-geist" />
 
     <!-- Per-page head additions (e.g. JSON-LD, hero preload) -->
@@ -118,44 +118,34 @@ const navLinks = [
     <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="5262f0b3-3bd0-4b9f-8d21-aa555515a81d"></script>
   </head>
   <body
-    class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-hidden relative min-h-screen flex flex-col"
+    class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-clip relative min-h-screen flex flex-col"
   >
     <a href="#main-content" class="skip-link">Skip to content</a>
 
-    <!-- Decorative blobs -->
-    <div class="blob-bg bg-primary w-96 h-96 top-20 left-10 dark:opacity-5"></div>
-    <div
-      class="blob-bg bg-secondary w-80 h-80 top-40 right-20 dark:opacity-5"
-      style="animation-delay: -5s;"
-    >
-    </div>
-
     <!-- Header / Nav -->
-    <header
-      class="fixed top-0 left-0 right-0 z-50 bg-surface/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-outline-variant/30"
-    >
+    <header class="site-header">
       <nav
-        class="max-w-[1100px] mx-auto px-6 py-4 flex justify-between items-center gap-8"
+        class="nav-slab"
         aria-label="Main"
       >
         <a
           href="/"
-          class="nav-link font-display text-headline-md font-bold text-primary dark:text-inverse-primary shrink-0 hover:opacity-80 transition-opacity"
+          class="slab-mark nav-link"
         >
-          jewei.toString()
+          JEWEI.NET
         </a>
 
-        <ul class="hidden md:flex items-center gap-7 flex-1">
+        <ul class="slab-nav hidden md:flex">
           {
             navLinks.map(({ href, label }) => (
               <li>
                 <a
                   href={href}
                   class:list={[
-                    'nav-link font-body-md text-body-md transition-colors duration-200',
+                    'nav-link',
                     isActive(href)
-                      ? 'text-primary dark:text-inverse-primary font-semibold'
-                      : 'text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary',
+                      ? 'is-active'
+                      : '',
                   ]}
                 >
                   {label}
@@ -165,12 +155,12 @@ const navLinks = [
           }
         </ul>
 
-        <div class="flex items-center gap-2">
+        <div class="nav-actions">
           <button
             id="theme-toggle"
             type="button"
             aria-label="Toggle dark mode"
-            class="nav-link text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-3 rounded-full hover:bg-surface-variant/50 cursor-pointer"
+            class="nav-icon-btn"
           >
             <Icon name="light_mode" class="icon-light text-[20px]" />
             <Icon name="dark_mode" class="icon-dark text-[20px]" />
@@ -181,7 +171,7 @@ const navLinks = [
             aria-label="Toggle navigation menu"
             aria-controls="mobile-menu"
             aria-expanded="false"
-            class="nav-link md:hidden text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors p-2.5 rounded-full hover:bg-surface-variant/50 cursor-pointer"
+            class="nav-icon-btn md:hidden"
           >
             <Icon name="menu" class="icon-menu-open text-[24px]" />
             <Icon name="close" class="icon-menu-close hidden text-[24px]" />
@@ -192,19 +182,19 @@ const navLinks = [
       <!-- Mobile menu (toggled by #menu-toggle) -->
       <div
         id="mobile-menu"
-        class="hidden md:hidden border-t border-outline-variant/30 bg-surface/95 dark:bg-surface-dark/95 backdrop-blur-md"
+        class="mobile-nav hidden md:hidden"
       >
-        <ul class="max-w-[1100px] mx-auto px-6 py-3 flex flex-col">
+        <ul class="mobile-nav__list">
           {
             navLinks.map(({ href, label }) => (
               <li>
                 <a
                   href={href}
                   class:list={[
-                    'nav-link block py-3 font-body-md text-body-lg transition-colors duration-200',
+                    'nav-link mobile-nav__link',
                     isActive(href)
-                      ? 'text-primary dark:text-inverse-primary font-semibold'
-                      : 'text-on-surface-variant dark:text-inverse-on-surface/80 hover:text-primary dark:hover:text-inverse-primary',
+                      ? 'is-active'
+                      : '',
                   ]}
                 >
                   {label}
@@ -218,27 +208,78 @@ const navLinks = [
 
     <main
       id="main-content"
-      class="flex-grow w-full max-w-[1100px] mx-auto px-6 pt-24 pb-16 z-10 relative"
+      class="site-main"
     >
       <slot />
     </main>
 
-    <footer
-      class="w-full max-w-[1100px] mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center gap-base border-t border-outline-variant/20 mt-auto z-10"
-    >
-      <div class="font-display text-body-lg font-semibold text-primary dark:text-inverse-primary">
-        jewei.toString()
+    <footer class="site-footer">
+      <div class="footer-statement">
+        <p class="footer-statement__line">
+          <span class="footer-statement__row">
+            <span>Build.</span>
+            <span>Write.</span>
+          </span>
+          <span class="footer-statement__row">
+            <span>Learn.</span>
+            <strong>Share.</strong>
+          </span>
+        </p>
+        <svg
+          class="footer-loop"
+          viewBox="0 0 420 190"
+          role="img"
+          aria-labelledby="footer-loop-title"
+        >
+          <title id="footer-loop-title">Build, write, learn, and share in a continuous loop.</title>
+          <defs>
+            <marker
+              id="footer-loop-arrowhead"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path class="footer-loop__arrowhead" d="M 0 0 L 10 5 L 0 10 z"></path>
+            </marker>
+          </defs>
+          <g class="footer-loop__arrows">
+            <path class="footer-loop__arrow footer-loop__arrow--top" d="M 152 38 H 262"></path>
+            <path class="footer-loop__arrow footer-loop__arrow--right" d="M 344 68 V 112"></path>
+            <path class="footer-loop__arrow footer-loop__arrow--bottom" d="M 268 152 H 158"></path>
+            <path class="footer-loop__arrow footer-loop__arrow--left" d="M 76 122 V 78"></path>
+          </g>
+          <g class="footer-loop__nodes">
+            <g class="footer-loop__node">
+              <rect x="12" y="12" width="128" height="52" rx="10"></rect>
+              <text x="76" y="38">BUILD</text>
+            </g>
+            <g class="footer-loop__node">
+              <rect x="280" y="12" width="128" height="52" rx="10"></rect>
+              <text x="344" y="38">WRITE</text>
+            </g>
+            <g class="footer-loop__node">
+              <rect x="280" y="126" width="128" height="52" rx="10"></rect>
+              <text x="344" y="152">LEARN</text>
+            </g>
+            <g class="footer-loop__node footer-loop__node--share">
+              <rect x="12" y="126" width="128" height="52" rx="10"></rect>
+              <text x="76" y="152">SHARE</text>
+            </g>
+          </g>
+        </svg>
       </div>
-      <div
-        class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/70"
-      >
-        &copy; 2022 - {new Date().getFullYear()}
-        {authorName}
-      </div>
-      <div class="flex gap-6 font-body-md text-body-md">
+      <div class="footer-meta">
+        <div class="footer-credit">
+          <strong>JEWEI.NET</strong>
+          <span>&copy; 2022–{new Date().getFullYear()} {authorName}</span>
+        </div>
+        <div class="footer-links">
         <a
           href="/rss.xml"
-          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+          class="footer-link"
         >
           <Icon name="rss_feed" class="text-[18px]" />
           RSS
@@ -247,7 +288,7 @@ const navLinks = [
           href="https://github.com/sponsors/jewei"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+          class="footer-link"
         >
           <Icon name="favorite" class="text-[18px]" />
           Sponsor<span class="sr-only"> (opens in new tab)</span>
@@ -256,7 +297,7 @@ const navLinks = [
           href="https://x.com/jewei"
           rel="noopener noreferrer"
           target="_blank"
-          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+          class="footer-link"
         >
           <svg
             class="w-[18px] h-[18px] shrink-0"
@@ -274,7 +315,7 @@ const navLinks = [
           href="https://github.com/jewei"
           rel="noopener noreferrer"
           target="_blank"
-          class="inline-flex items-center gap-1.5 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors"
+          class="footer-link"
         >
           <svg
             class="w-[18px] h-[18px] shrink-0"
@@ -288,6 +329,7 @@ const navLinks = [
           </svg>
           GitHub<span class="sr-only"> (opens in new tab)</span>
         </a>
+        </div>
       </div>
     </footer>
 

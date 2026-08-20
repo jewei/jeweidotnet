@@ -1,0 +1,16 @@
+{
+  "date": "2026-08-20",
+  "framework": "Astro 6",
+  "css": "Tailwind CSS 4",
+  "design_system": "DESIGN.md",
+  "fonts": ["Bricolage Grotesque", "Geist", "JetBrains Mono"],
+  "palette": "OKLCH custom properties",
+  "motion": "CSS only",
+  "spacing": "4-point named scale",
+  "source_files": [
+    "package.json",
+    "astro.config.mjs",
+    "DESIGN.md",
+    "src/styles/global.css"
+  ]
+}

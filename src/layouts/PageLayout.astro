@@ -29,16 +29,14 @@ const personJsonLd = {
     slot="head"
   />
 
-  <div class="max-w-[720px] mx-auto pt-8">
-    <header class="mb-10 pb-8 border-b border-outline-variant/30 relative">
-      <h1
-        class="font-display text-[36px] md:text-display text-on-surface dark:text-inverse-on-surface leading-tight tracking-[-0.02em] mb-3"
-      >
+  <div class="page-document">
+    <header class="page-head">
+      <h1 class="page-title">
         {frontmatter.title}
       </h1>
       {
         frontmatter.description && (
-          <p class="font-body-lg text-body-lg text-on-surface-variant">{frontmatter.description}</p>
+          <p class="page-lede">{frontmatter.description}</p>
         )
       }
     </header>

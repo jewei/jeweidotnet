@@ -21,29 +21,27 @@ const { tagName, posts } = Astro.props;
 ---
 
 <BaseLayout title={tagName} description={`All posts tagged "${tagName}" on ${siteName}.`}>
-  <div class="pt-8">
+  <div class="index-page">
     <a
       href="/blog/"
-      class="inline-flex items-center gap-1 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors font-body-md text-sm mb-6"
+      class="text-link"
     >
       <Icon name="arrow_back" class="text-[16px]" />
       All posts
     </a>
 
-    <header class="mb-10">
-      <div class="flex items-center gap-3 mb-2">
-        <span
-          class="px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md"
-        >
+    <header class="index-head index-head--tag">
+      <div class="tag-summary">
+        <h1>
           #{tagName}
-        </span>
-        <span class="text-on-surface-variant dark:text-inverse-on-surface/60 font-body-md text-sm"
+        </h1>
+        <span
           >{posts.length} post{posts.length !== 1 ? 's' : ''}</span
         >
       </div>
     </header>
 
-    <div class="flex flex-col gap-4">
+    <div class="archive-list">
       {posts.map((post, index) => (
         <PostCard post={post} variant="list" index={index} currentTag={tagName} />
       ))}

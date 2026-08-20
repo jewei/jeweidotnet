@@ -165,3 +165,179 @@ The shape language is defined by **Soft Roundedness**. While the base unit is 0.
 - **Chips/Tags:** Used for article categories. These are small, pill-shaped elements with low-saturation backgrounds derived from the primary, secondary, or tertiary colors.
 - **Stickers & Doodles:** A unique component class for this system. These are small, non-interactive SVG graphics (stars, loops, arrows) that appear to be "stuck" onto the layout, often overlapping borders or corners of cards to add whimsy.
 - **Code Blocks:** Syntax highlighting should use a custom theme that incorporates the primary Purple and secondary Blue, set against a dark-mode surface even in the light-mode theme.
+
+---
+
+# Hallmark 2026 Lock
+
+This section replaces the earlier visual draft. Use it as the current source of truth.
+
+## Genre
+
+Playful. The interface is energetic, direct, and tactile. It takes broad inspiration from learning apps, but it does not copy another brand.
+
+## Macrostructure family
+
+- Home: **Ecosystem Index**. It uses distinct rails for pinned posts, recent writing, and topics.
+- Blog and tag indexes: **Index-First**. Links are the main interface.
+- Posts and About: **Long Document**. Reading measure is 65 characters or less.
+- Résumé: **Split Studio**. Summary and evidence use an asymmetric two-column layout.
+- 404: **Split Studio** recovery page. One clear message and one recovery action.
+
+## Theme
+
+- `--color-paper`: `oklch(97% 0.016 105)`
+- `--color-paper-2`: `oklch(94% 0.026 105)`
+- `--color-paper-3`: `oklch(90% 0.038 105)`
+- `--color-ink`: `oklch(20% 0.018 145)`
+- `--color-ink-2`: `oklch(34% 0.022 145)`
+- `--color-rule`: `oklch(79% 0.030 105)`
+- `--color-accent`: `oklch(70% 0.18 145)`
+- `--color-focus`: `oklch(42% 0.20 145)`
+
+The accent is sprout green. It marks active states and primary actions. It must not cover large page areas.
+
+## Typography
+
+- Display: Bricolage Grotesque, weight 800, roman.
+- Body: Geist, weight 400.
+- Code: JetBrains Mono, weight 400.
+- Display tracking: `-0.035em`.
+- Display size: `clamp(2.75rem, 6vw, 5.25rem)`.
+
+## Spacing
+
+Use the named 4-point scale in `tokens.css`. Do not add raw spacing values to page components.
+
+## Motion
+
+- Easings: `--ease-out`, `--ease-in`, and `--ease-in-out` from `tokens.css`.
+- Motion primitives: tactile press and short card lift.
+- Reduced motion: limit feedback to 150 ms.
+
+## Component voice
+
+- Navigation: N7 Rounded Slab. It has a strong bottom rule and no blur.
+- Footer: Ft5 Statement with a static metadata row.
+- Primary buttons: green fill, dark text, 2 px ink border, and a short bottom edge.
+- Secondary buttons: paper fill with the same border and edge.
+- Cards: 12 px maximum radius, 2 px ink border, and one hard shadow.
+- Tags: compact pills. Tags use one accent system, not many unrelated colours.
+- Headings: roman only. Do not use italic emphasis in headings.
+
+## What pages must share
+
+- Wordmark, navigation, footer, palette, type pair, focus ring, button behavior, and card border language.
+- No glass effects, colour gradients, blurred blobs, decorative sparkles, or invented metrics.
+
+## What pages may change
+
+- The named macrostructure for the route type.
+- Image use. Only existing content images and the existing portrait are permitted.
+- Card density and section rhythm.
+
+## Exports
+
+### tokens.css
+
+```css
+:root {
+  --color-paper: oklch(97% 0.016 105);
+  --color-paper-2: oklch(94% 0.026 105);
+  --color-paper-3: oklch(90% 0.038 105);
+  --color-ink: oklch(20% 0.018 145);
+  --color-ink-2: oklch(34% 0.022 145);
+  --color-rule: oklch(79% 0.030 105);
+  --color-accent: oklch(70% 0.18 145);
+  --color-accent-ink: oklch(20% 0.018 145);
+  --color-focus: oklch(42% 0.20 145);
+  --font-display: var(--font-bricolage), sans-serif;
+  --font-body: var(--font-geist), sans-serif;
+  --font-outlier: var(--font-jetbrains-mono), monospace;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.9531rem;
+  --text-display: clamp(2.75rem, 6vw, 5.25rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long: 420ms;
+  --radius-card: 0.75rem;
+  --radius-pill: 999px;
+  --radius-input: 0.5rem;
+}
+```
+
+### Tailwind v4 `@theme`
+
+```css
+@theme {
+  --color-paper: oklch(97% 0.016 105);
+  --color-paper-2: oklch(94% 0.026 105);
+  --color-paper-3: oklch(90% 0.038 105);
+  --color-ink: oklch(20% 0.018 145);
+  --color-ink-2: oklch(34% 0.022 145);
+  --color-accent: oklch(70% 0.18 145);
+  --color-focus: oklch(42% 0.20 145);
+  --font-display: var(--font-bricolage), sans-serif;
+  --font-body: var(--font-geist), sans-serif;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --text-md: 1.25rem;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+```
+
+### DTCG tokens.json
+
+```json
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "color": {
+    "paper": { "$value": "oklch(97% 0.016 105)", "$type": "color" },
+    "paper-2": { "$value": "oklch(94% 0.026 105)", "$type": "color" },
+    "ink": { "$value": "oklch(20% 0.018 145)", "$type": "color" },
+    "accent": { "$value": "oklch(70% 0.18 145)", "$type": "color" },
+    "focus": { "$value": "oklch(42% 0.20 145)", "$type": "color" }
+  },
+  "font": {
+    "display": { "$value": "Bricolage Grotesque, sans-serif", "$type": "fontFamily" },
+    "body": { "$value": "Geist, sans-serif", "$type": "fontFamily" }
+  },
+  "space": {
+    "md": { "$value": "1rem", "$type": "dimension" },
+    "lg": { "$value": "1.5rem", "$type": "dimension" }
+  }
+}
+```
+
+### shadcn/ui CSS variables
+
+```css
+:root {
+  --background: 97% 0.016 105;
+  --foreground: 20% 0.018 145;
+  --card: 94% 0.026 105;
+  --card-foreground: 20% 0.018 145;
+  --primary: 70% 0.18 145;
+  --primary-foreground: 20% 0.018 145;
+  --secondary: 90% 0.038 105;
+  --secondary-foreground: 34% 0.022 145;
+  --muted: 79% 0.030 105;
+  --muted-foreground: 48% 0.025 145;
+  --border: 79% 0.030 105;
+  --input: 79% 0.030 105;
+  --ring: 42% 0.20 145;
+  --radius: 0.75rem;
+}
+```

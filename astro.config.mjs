@@ -125,6 +125,13 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
+      name: 'Bricolage Grotesque',
+      cssVariable: '--font-bricolage',
+      weights: [700, 800],
+      styles: ['normal'],
+    },
+    {
+      provider: fontProviders.google(),
       name: 'Lexend',
       cssVariable: '--font-lexend',
       weights: [400, 500, 600, 700],
