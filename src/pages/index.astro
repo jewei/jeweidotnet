@@ -32,12 +32,14 @@ const siteJsonLd = [
     '@type': 'WebSite',
     name: siteName,
     url: siteUrl,
-    description: 'Personal blog by Jewei Mak — thoughts on software, systems, and the craft of building things.',
+    description: 'jewei.toString(), the personal site of Jewei Mak, with writing about software, systems, and the craft of building things.',
+    alternateName: ['jewei.net', 'Jewei Mak'],
   },
   {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: authorName,
+    alternateName: siteName,
     url: `${siteUrl}/about/`,
     sameAs: ['https://github.com/jewei', 'https://x.com/jewei'],
   },
@@ -59,7 +61,7 @@ const siteJsonLd = [
   <!-- Ecosystem Index opening -->
   <section class="home-intro">
     <div class="home-intro__copy">
-      <p class="home-status">Software engineer · builder · writer</p>
+      <p class="home-status">jewei.toString() · software engineer · builder · writer</p>
       <h1 class="home-intro__title">
         Hi, I'm <span class="text-primary dark:text-inverse-primary">Jewei.</span>
       </h1>

@@ -15,7 +15,7 @@ _Jewei in an unknown parallel universe._
 
 ## The Author
 
-Hey there! My name is **Jewei**. I’m a **software engineer** who enjoys building useful things for startups and product teams.
+Hey there! My name is **Jewei**. I’m a **software engineer** who enjoys building useful things for startups and product teams. **jewei.toString()** is my personal site and the home of my technical writing, public projects, and professional background.
 
 These days, I spend less time handcrafting code the old-fashioned way and more time wrangling AI harnesses, steering the chaos, and turning ideas into product-first software. Speed is fun, but I still obsess over clean architecture, thoughtful DX, and systems designed to age well.
 

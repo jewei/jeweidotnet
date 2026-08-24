@@ -15,6 +15,7 @@ interface Props {
   pubDate?: Date;
   updatedDate?: Date;
   robots?: string;
+  hasMarkdown?: boolean;
 }
 
 const {
@@ -26,10 +27,13 @@ const {
   pubDate,
   updatedDate,
   robots,
+  hasMarkdown = true,
 } = Astro.props;
 const canonicalSiteUrl = Astro.site!.href;
 const currentPath = Astro.url.pathname;
 const canonicalUrl = new URL(currentPath, canonicalSiteUrl).href;
+const cleanPath = currentPath.replace(/\/+$/, '') || '/';
+const markdownPath = cleanPath === '/' ? '/index.md' : `${cleanPath}/index.md`;
 const fullTitle = pageTitle(title);
 const { url: ogImage, width: ogImageWidth, height: ogImageHeight } = await resolveSocialImage(
   socialImage,
@@ -61,6 +65,8 @@ const navLinks = [
     {description && <meta name="description" content={description} />}
     {robots && <meta name="robots" content={robots} />}
     <link rel="canonical" href={canonicalUrl} />
+    {hasMarkdown && <link rel="alternate" type="text/markdown" href={markdownPath} />}
+    <link rel="describedby" href="/llms.txt" />
 
     <!-- Icons -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -277,6 +283,8 @@ const navLinks = [
           <span>&copy; 2022–{new Date().getFullYear()} {authorName}</span>
         </div>
         <div class="footer-links">
+        <a href="/contact/" class="footer-link">Contact</a>
+        <a href="/privacy/" class="footer-link">Privacy</a>
         <a
           href="/rss.xml"
           class="footer-link"

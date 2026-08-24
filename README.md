@@ -15,7 +15,7 @@ Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.c
 | Fonts           | Lexend · Geist · JetBrains Mono (self-hosted) |
 | Deployment      | Cloudflare Pages                              |
 | Package manager | Bun                                           |
-| Runtime         | Bun ≥ 1.3                                     |
+| Runtime         | Bun ≥ 1.4                                     |
 
 ## Project structure
 
@@ -43,6 +43,8 @@ src/
 │   │   ├── index.astro       # Blog index with tag filters
 │   │   └── [tag].astro       # Posts filtered by tag
 │   ├── about.md
+│   ├── contact.md
+│   ├── privacy.md
 │   ├── collections.astro     # Curated quotes and links
 │   ├── resume.astro
 │   ├── 404.astro
@@ -53,9 +55,14 @@ src/
     ├── blog.ts        # Shared helpers (tagColors, postUrl, formatters)
     ├── site.ts        # Site name and page title helpers
     └── social-image.ts # OG/Twitter image resolution
+functions/
+└── _middleware.js     # Accept negotiation and agent-friendly Markdown 404s
+scripts/
+└── generate-markdown.mjs # Builds a Markdown sibling for every HTML page
 public/
 ├── content/files/     # Static downloads (e.g. résumé PDF)
 ├── _headers           # Cloudflare Pages cache and security headers
+├── llms.txt           # Agent guidance and site index
 ├── site.webmanifest
 └── robots.txt
 ```
@@ -92,6 +99,7 @@ Run from the project root:
 | `bun run dev`        | Start dev server at `localhost:4321`    |
 | `bun run build`      | Build to `./dist/`                      |
 | `bun run preview`    | Preview the production build locally    |
+| `bun run test:agent` | Test content negotiation and agent-readable output |
 | `bun run test:smoke` | Verify build output (run after `build`) |
 
 ## CI
@@ -101,11 +109,12 @@ GitHub Actions on every push and pull request to `main`:
 1. `bun install --frozen-lockfile`
 2. `bun run check` (type checks `.astro`/TS via `astro check`)
 3. `bun run build`
-4. `bun run test:smoke`
-5. Link check (Lychee) on built HTML
-6. Lighthouse CI
+4. `bun run test:agent`
+5. `bun run test:smoke`
+6. Link check (Lychee) on built HTML
+7. Lighthouse CI
 
-The CI Bun version is pinned (`bun-version: 1.3.14` in `ci.yml`) to match the
+The CI Bun version is pinned (`bun-version: 1.4.0` in `ci.yml`) to match the
 `BUN_VERSION` deploy setting below. Bump both together.
 
 ## Deployment
@@ -118,6 +127,6 @@ Deployed automatically to Cloudflare Pages on every push to `main`.
 | ---------------------------------- | ------------------------------------------------ |
 | Build command                      | `bun install --frozen-lockfile && bun run build` |
 | Build output directory             | `dist`                                           |
-| Environment variable `BUN_VERSION` | `1.3.14` (match CI)                              |
+| Environment variable `BUN_VERSION` | `1.4.0` (match CI)                               |
 
 `wrangler.toml` sets `pages_build_output_dir = "./dist"` for local Wrangler tooling.

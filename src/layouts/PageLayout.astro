@@ -11,21 +11,36 @@ interface Props {
 
 const { frontmatter } = Astro.props;
 
-const personJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: authorName,
-  url: `${siteUrl}/about/`,
-  description: frontmatter.description,
-  sameAs: ['https://github.com/jewei', 'https://x.com/jewei'],
-};
+const isAboutPage = frontmatter.title === 'About Me';
+const pageType = frontmatter.title === 'Contact' ? 'ContactPage' : 'WebPage';
+const pageJsonLd = isAboutPage
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: authorName,
+      url: `${siteUrl}/about/`,
+      description: frontmatter.description,
+      sameAs: ['https://github.com/jewei', 'https://x.com/jewei'],
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': pageType,
+      name: frontmatter.title,
+      url: new URL(Astro.url.pathname, siteUrl).href,
+      description: frontmatter.description,
+      author: {
+        '@type': 'Person',
+        name: authorName,
+        url: `${siteUrl}/about/`,
+      },
+    };
 ---
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>
   <script
     is:inline
     type="application/ld+json"
-    set:html={JSON.stringify(personJsonLd)}
+    set:html={JSON.stringify(pageJsonLd)}
     slot="head"
   />
 

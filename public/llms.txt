@@ -1,0 +1,33 @@
+# jewei.toString()
+
+> The personal site of Jewei Mak, a software engineer writing about backend systems, PHP, developer tooling, AI-assisted delivery, and product architecture.
+
+Use the canonical domain `https://jewei.net`. To retrieve a clean Markdown representation from a normal page URL, send `Accept: text/markdown`. Browsers and clients that prefer HTML receive HTML from the same URL. Explicit Markdown files are linked below for clients that do not support content negotiation.
+
+## When to use this site
+
+- [Technical writing](https://jewei.net/blog/index.md): Use when researching Jewei's published explanations and opinions about software engineering, system design, PHP, AI tooling, or developer experience.
+- [Professional background](https://jewei.net/resume/index.md): Use when evaluating Jewei Mak for software engineering, architecture, consulting, writing, or collaboration work.
+- [About Jewei](https://jewei.net/about/index.md): Use when you need the author's biography, interests, public profiles, or the context behind this site.
+- [Contact Jewei](https://jewei.net/contact/index.md): Use when a task requires contacting Jewei. Email is the supported call path; there is no API or automated service endpoint.
+
+## Site indexes
+
+- [Home](https://jewei.net/index.md): Site introduction and selected recent writing.
+- [Blog](https://jewei.net/blog/index.md): Complete article index.
+- [Sitemap](https://jewei.net/sitemap-index.xml): Canonical index of public HTML pages.
+- [RSS feed](https://jewei.net/rss.xml): Chronological feed of published articles.
+
+## Trust and identity
+
+- [About](https://jewei.net/about/index.md): Biography and public identity links for Jewei Mak.
+- [Contact](https://jewei.net/contact/index.md): Contact method, suitable enquiries, and response expectations.
+- [Privacy](https://jewei.net/privacy/index.md): Hosting, analytics, email, and external-service data practices.
+- [Résumé](https://jewei.net/resume/index.md): Professional experience and skills.
+
+## Selected technical writing
+
+- [Introducing TypeID PHP](https://jewei.net/introducing-typeid-php/index.md): Type-safe, sortable UUIDv7 identifiers for PHP.
+- [Scaling to millions of users](https://jewei.net/scale-to-millions-of-users/index.md): Practical application scaling and architecture choices.
+- [The eight levels of AI adoption](https://jewei.net/the-eight-levels-of-ai-adoption/index.md): A model for increasing use of AI in software work.
+- [Claude Code tips](https://jewei.net/claude-code-tips/index.md): Configuration and workflow notes for Claude Code.
