@@ -1,6 +1,7 @@
 {
-  "date": "2026-08-20",
+  "date": "2026-08-24",
   "framework": "Astro 6",
+  "runtime": "Bun 1.4",
   "css": "Tailwind CSS 4",
   "design_system": "DESIGN.md",
   "fonts": ["Bricolage Grotesque", "Geist", "JetBrains Mono"],

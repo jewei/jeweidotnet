@@ -107,6 +107,43 @@ describe('HTTP content negotiation', () => {
   });
 });
 
+describe('footer navigation', () => {
+  test('offers clear internal routes before utility and social links', () => {
+    const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
+    const footer = html.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/i)?.[1] ?? '';
+
+    expect(footer).toContain('aria-label="Keep browsing"');
+    for (const route of ['/blog/', '/collections/', '/about/', '/resume/']) {
+      expect(footer).toContain(`href="${route}"`);
+    }
+    expect(footer).toContain('aria-label="Site information"');
+    expect(footer).toContain('aria-label="Elsewhere"');
+
+    const socialLinks = footer.match(
+      /<nav class="footer-links footer-links--social" aria-label="Elsewhere">([\s\S]*?)<\/nav>/i,
+    )?.[1] ?? '';
+
+    expect(socialLinks).toContain('href="/rss.xml"');
+    for (const label of ['RSS', 'Sponsor', 'X', 'GitHub']) {
+      expect(socialLinks).toContain(`data-tooltip="${label}"`);
+      expect(socialLinks).toContain(`aria-label="${label}`);
+    }
+    expect(socialLinks).not.toMatch(/>\s*(RSS|Sponsor|X|GitHub)\s*</);
+  });
+});
+
+describe('responsive navigation', () => {
+  test('hides the menu toggle at the desktop breakpoint', () => {
+    const css = fs
+      .readdirSync(path.join(dist, '_astro'))
+      .filter((file) => file.endsWith('.css'))
+      .map((file) => fs.readFileSync(path.join(dist, '_astro', file), 'utf8'))
+      .join('\n');
+
+    expect(css).toMatch(/@media\(min-width:48rem\)\{#menu-toggle\{display:none\}\}/);
+  });
+});
+
 describe('agent-readable build output', () => {
   test('the HTML 404 does not advertise a missing Markdown alternate', () => {
     const html = fs.readFileSync(path.join(dist, '404.html'), 'utf8');

@@ -1,5 +1,17 @@
 [
   {
+    "date": "2026-08-24",
+    "scope": "app",
+    "macrostructure": "Ecosystem Index / Index-First / Long Document / Split Studio",
+    "theme": "custom",
+    "theme_axes": "light / geometric-sans / chromatic-green",
+    "vibe": "playful browsing-led footer",
+    "enrichment": "none",
+    "nav": "N7 Rounded Slab",
+    "footer": "Ft5 Statement",
+    "brief": "replace the footer diagram with purposeful internal browsing routes"
+  },
+  {
     "date": "2026-08-20",
     "scope": "app",
     "macrostructure": "Ecosystem Index / Index-First / Long Document / Split Studio",

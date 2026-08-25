@@ -52,6 +52,13 @@ const navLinks = [
   { href: '/collections/', label: 'Collections' },
   { href: '/resume/',      label: 'Hire Me' },
 ];
+
+const footerExploreLinks = [
+  { href: '/blog/', label: 'Blog', description: 'Software, systems, and shipping notes.' },
+  { href: '/collections/', label: 'Collections', description: 'Quotes, ideas, and useful rabbit holes.' },
+  { href: '/about/', label: 'About', description: 'Background, interests, and current focus.' },
+  { href: '/resume/', label: 'Résumé', description: 'Experience, skills, and selected work.' },
+];
 ---
 
 <!doctype html>
@@ -221,122 +228,119 @@ const navLinks = [
 
     <footer class="site-footer">
       <div class="footer-statement">
-        <p class="footer-statement__line">
-          <span class="footer-statement__row">
-            <span>Build.</span>
-            <span>Write.</span>
-          </span>
-          <span class="footer-statement__row">
-            <span>Learn.</span>
-            <strong>Share.</strong>
-          </span>
-        </p>
-        <svg
-          class="footer-loop"
-          viewBox="0 0 420 190"
-          role="img"
-          aria-labelledby="footer-loop-title"
-        >
-          <title id="footer-loop-title">Build, write, learn, and share in a continuous loop.</title>
-          <defs>
-            <marker
-              id="footer-loop-arrowhead"
-              viewBox="0 0 10 10"
-              refX="8"
-              refY="5"
-              markerWidth="6"
-              markerHeight="6"
-              orient="auto-start-reverse"
-            >
-              <path class="footer-loop__arrowhead" d="M 0 0 L 10 5 L 0 10 z"></path>
-            </marker>
-          </defs>
-          <g class="footer-loop__arrows">
-            <path class="footer-loop__arrow footer-loop__arrow--top" d="M 152 38 H 262"></path>
-            <path class="footer-loop__arrow footer-loop__arrow--right" d="M 344 68 V 112"></path>
-            <path class="footer-loop__arrow footer-loop__arrow--bottom" d="M 268 152 H 158"></path>
-            <path class="footer-loop__arrow footer-loop__arrow--left" d="M 76 122 V 78"></path>
-          </g>
-          <g class="footer-loop__nodes">
-            <g class="footer-loop__node">
-              <rect x="12" y="12" width="128" height="52" rx="10"></rect>
-              <text x="76" y="38">BUILD</text>
-            </g>
-            <g class="footer-loop__node">
-              <rect x="280" y="12" width="128" height="52" rx="10"></rect>
-              <text x="344" y="38">WRITE</text>
-            </g>
-            <g class="footer-loop__node">
-              <rect x="280" y="126" width="128" height="52" rx="10"></rect>
-              <text x="344" y="152">LEARN</text>
-            </g>
-            <g class="footer-loop__node footer-loop__node--share">
-              <rect x="12" y="126" width="128" height="52" rx="10"></rect>
-              <text x="76" y="152">SHARE</text>
-            </g>
-          </g>
-        </svg>
+        <div class="footer-statement__copy">
+          <p class="footer-statement__line">
+            <span class="footer-statement__row">
+              <span>Build.</span>
+              <span>Write.</span>
+            </span>
+            <span class="footer-statement__row">
+              <span>Learn.</span>
+              <strong>Share.</strong>
+            </span>
+          </p>
+          <p class="footer-statement__note">
+            A personal archive of software, systems, and useful side quests.
+          </p>
+        </div>
+
+        <nav class="footer-explore" aria-label="Keep browsing">
+          <p class="footer-explore__heading">Keep browsing</p>
+          <div class="footer-explore__list">
+            {
+              footerExploreLinks.map(({ href, label, description }) => (
+                <a href={href} class="footer-explore__link">
+                  <span class="footer-explore__copy">
+                    <strong>{label}</strong>
+                    <span>{description}</span>
+                  </span>
+                  <Icon name="arrow_forward" class="footer-explore__arrow" />
+                </a>
+              ))
+            }
+          </div>
+        </nav>
       </div>
+
       <div class="footer-meta">
         <div class="footer-credit">
           <strong>JEWEI.NET</strong>
           <span>&copy; 2022–{new Date().getFullYear()} {authorName}</span>
         </div>
-        <div class="footer-links">
-        <a href="/contact/" class="footer-link">Contact</a>
-        <a href="/privacy/" class="footer-link">Privacy</a>
-        <a
-          href="/rss.xml"
-          class="footer-link"
-        >
-          <Icon name="rss_feed" class="text-[18px]" />
-          RSS
-        </a>
-        <a
-          href="https://github.com/sponsors/jewei"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="footer-link"
-        >
-          <Icon name="favorite" class="text-[18px]" />
-          Sponsor<span class="sr-only"> (opens in new tab)</span>
-        </a>
-        <a
-          href="https://x.com/jewei"
-          rel="noopener noreferrer"
-          target="_blank"
-          class="footer-link"
-        >
-          <svg
-            class="w-[18px] h-[18px] shrink-0"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-            ></path>
-          </svg>
-          Twitter/X<span class="sr-only"> (opens in new tab)</span>
-        </a>
-        <a
-          href="https://github.com/jewei"
-          rel="noopener noreferrer"
-          target="_blank"
-          class="footer-link"
-        >
-          <svg
-            class="w-[18px] h-[18px] shrink-0"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-            ></path>
-          </svg>
-          GitHub<span class="sr-only"> (opens in new tab)</span>
-        </a>
+
+        <div class="footer-meta__links">
+          <nav class="footer-links" aria-label="Site information">
+            <a href="/contact/" class="footer-link">Contact</a>
+            <a href="/privacy/" class="footer-link">Privacy</a>
+          </nav>
+
+          <nav class="footer-links footer-links--social" aria-label="Elsewhere">
+            <a
+              href="/rss.xml"
+              class="footer-link footer-link--icon"
+              aria-label="RSS feed"
+              data-tooltip="RSS"
+            >
+              <Icon name="rss_feed" class="text-[20px]" />
+            </a>
+            <a
+              href="https://github.com/sponsors/jewei"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="footer-link footer-link--icon"
+              aria-label="Sponsor on GitHub (opens in new tab)"
+              data-tooltip="Sponsor"
+            >
+              <svg
+                class="w-[20px] h-[20px] shrink-0"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6.02 6.02 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z"
+                ></path>
+              </svg>
+            </a>
+            <a
+              href="https://x.com/jewei"
+              rel="noopener noreferrer"
+              target="_blank"
+              class="footer-link footer-link--icon"
+              aria-label="X (opens in new tab)"
+              data-tooltip="X"
+            >
+              <svg
+                class="w-[20px] h-[20px] shrink-0"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                ></path>
+              </svg>
+            </a>
+            <a
+              href="https://github.com/jewei"
+              rel="noopener noreferrer"
+              target="_blank"
+              class="footer-link footer-link--icon"
+              aria-label="GitHub (opens in new tab)"
+              data-tooltip="GitHub"
+            >
+              <svg
+                class="w-[20px] h-[20px] shrink-0"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                ></path>
+              </svg>
+            </a>
+          </nav>
         </div>
       </div>
     </footer>
