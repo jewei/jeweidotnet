@@ -140,11 +140,21 @@ describe('responsive navigation', () => {
       .map((file) => fs.readFileSync(path.join(dist, '_astro', file), 'utf8'))
       .join('\n');
 
-    expect(css).toMatch(/@media\(min-width:48rem\)\{#menu-toggle\{display:none\}\}/);
+    expect(css).toMatch(
+      /@media\s*\((?:min-width:48rem|width>=48rem)\)\{#menu-toggle\{display:none\}\}/,
+    );
   });
 });
 
 describe('agent-readable build output', () => {
+  test('preserves intentional spaces around inline homepage links', () => {
+    const html = fs.readFileSync(path.join(dist, 'index.html'), 'utf8');
+
+    expect(html).toMatch(
+      /New posts land in the\s+<a href="\/rss\.xml"[^>]*>RSS feed<\/a>\s+first\. Or\s+<a href="https:\/\/x\.com\/jewei"[^>]*>come say hi/,
+    );
+  });
+
   test('the HTML 404 does not advertise a missing Markdown alternate', () => {
     const html = fs.readFileSync(path.join(dist, '404.html'), 'utf8');
 

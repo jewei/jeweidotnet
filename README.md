@@ -8,7 +8,7 @@ Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.c
 
 | Layer           | Technology                                    |
 | --------------- | --------------------------------------------- |
-| Framework       | Astro 6 (static output)                       |
+| Framework       | Astro 7 (static output)                       |
 | Content         | Astro Content Collections (Markdown + MDX)    |
 | Integrations    | MDX · RSS · Sitemap                           |
 | Styling         | Tailwind CSS v4 + custom design system        |
