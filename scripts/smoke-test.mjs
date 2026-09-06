@@ -20,6 +20,12 @@ const requiredFiles = [
   'contact/index.md',
   'privacy/index.html',
   'privacy/index.md',
+  'projects/index.html',
+  'projects/index.md',
+  'collections/index.html',
+  'collections/index.md',
+  'resume/index.html',
+  'resume/index.md',
   'blog/index.html',
   'blog/index.md',
   'introducing-typeid-php/index.html',
@@ -30,6 +36,9 @@ const requiredSitemapUrls = [
   'https://jewei.net/about/',
   'https://jewei.net/contact/',
   'https://jewei.net/privacy/',
+  'https://jewei.net/projects/',
+  'https://jewei.net/collections/',
+  'https://jewei.net/resume/',
   'https://jewei.net/blog/',
   'https://jewei.net/introducing-typeid-php/',
 ];
@@ -56,7 +65,13 @@ if (!llms.includes('# jewei.toString()') || !llms.includes('## When to use this 
 }
 
 const rss = fs.readFileSync(path.join(dist, 'rss.xml'), 'utf8');
-if (!rss.includes('<rss') || !rss.includes('introducing-typeid-php')) {
+if (
+  !rss.includes('<rss') ||
+  !rss.includes('introducing-typeid-php') ||
+  !rss.includes('<language>en</language>') ||
+  !rss.includes('rel="self"') ||
+  !rss.includes('<category>')
+) {
   fail('rss.xml missing expected content');
 }
 

@@ -23,6 +23,23 @@ export function tagToSlug(tag: string): string {
   );
 }
 
+const tagDisplayNames: Record<string, string> = {
+  ai: 'AI',
+  cloudflare: 'Cloudflare',
+  macos: 'macOS',
+  php: 'PHP',
+  swift: 'Swift',
+};
+
+export function formatTagName(tag: string): string {
+  const slug = tagToSlug(tag);
+  if (tagDisplayNames[slug]) return tagDisplayNames[slug];
+
+  return tag
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b[a-z]/g, (letter) => letter.toUpperCase());
+}
+
 export function postUrl(id: string): string {
   return `/${id.replace(/\.mdx?$/, '')}/`;
 }
@@ -31,12 +48,14 @@ export const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+  timeZone: 'Asia/Kuala_Lumpur',
 });
 
 export const longDateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
+  timeZone: 'Asia/Kuala_Lumpur',
 });
 
 export async function getPublishedPosts(): Promise<CollectionEntry<'blog'>[]> {
@@ -61,6 +80,74 @@ export function getReadingTime(body: string | undefined): number {
 
   const words = prose.split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
+}
+
+const relatedPostStopWords = new Set([
+  'about',
+  'after',
+  'again',
+  'build',
+  'building',
+  'from',
+  'have',
+  'into',
+  'more',
+  'software',
+  'that',
+  'their',
+  'this',
+  'using',
+  'what',
+  'when',
+  'with',
+  'your',
+]);
+
+function postTerms(post: CollectionEntry<'blog'>): Set<string> {
+  const text = `${post.data.title} ${post.data.description}`
+    .normalize('NFKD')
+    .toLowerCase()
+    .replace(/[\u0300-\u036f]/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ');
+
+  return new Set(
+    text
+      .split(/\s+/)
+      .filter((term) => term.length >= 4 && !relatedPostStopWords.has(term)),
+  );
+}
+
+/**
+ * Rank related writing by shared topics first, then by meaningful title and
+ * description terms. Publication date resolves ties and supplies a sensible
+ * fallback for posts with a unique topic.
+ */
+export function getRelatedPosts(
+  post: CollectionEntry<'blog'>,
+  posts: CollectionEntry<'blog'>[],
+  limit = 3,
+): CollectionEntry<'blog'>[] {
+  const tags = new Set(post.data.tags);
+  const terms = postTerms(post);
+
+  return posts
+    .filter((candidate) => candidate.id !== post.id)
+    .map((candidate) => {
+      const sharedTags = candidate.data.tags.filter((tag) => tags.has(tag)).length;
+      const sharedTerms = [...postTerms(candidate)].filter((term) => terms.has(term)).length;
+
+      return {
+        post: candidate,
+        score: sharedTags * 10 + sharedTerms,
+      };
+    })
+    .filter(({ score }) => score > 0)
+    .sort(
+      (a, b) =>
+        b.score - a.score || b.post.data.pubDate.getTime() - a.post.data.pubDate.getTime(),
+    )
+    .slice(0, Math.max(0, limit))
+    .map(({ post: candidate }) => candidate);
 }
 
 export function getTagCloud(posts: CollectionEntry<'blog'>[]): [string, number][] {

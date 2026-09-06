@@ -1,0 +1,71 @@
+---
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+  variant?: 'selected' | 'index';
+  headingLevel?: 2 | 3;
+  priority?: boolean;
+}
+
+const { project, variant = 'index', headingLevel = 2, priority = false } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const imageSizes =
+  variant === 'selected'
+    ? '(min-width: 960px) 40rem, (min-width: 640px) 46vw, 100vw'
+    : '(min-width: 960px) 36rem, 100vw';
+---
+
+<article class:list={['project-card', `project-card--${variant}`]} id={variant === 'index' ? project.id : undefined}>
+  <a
+    class="project-card__media"
+    href={project.articleHref}
+    aria-label={`Read about ${project.name}`}
+  >
+    <Image
+      src={project.image}
+      alt={project.imageAlt}
+      class="project-card__image"
+      widths={[360, 640, 900, 1200]}
+      sizes={imageSizes}
+      layout="none"
+      format="webp"
+      loading={priority ? 'eager' : 'lazy'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      decoding="async"
+    />
+  </a>
+
+  <div class="project-card__body">
+    <div class="project-card__meta">
+      <span>{project.category}</span>
+      <span aria-hidden="true">·</span>
+      <span>{project.status}</span>
+    </div>
+
+    <Heading class="project-card__title">
+      <a href={project.articleHref}>{project.name}</a>
+    </Heading>
+
+    <p class="project-card__description">{project.description}</p>
+
+    <ul class="project-card__stack" aria-label={`${project.name} technology`}>
+      {project.stack.map((item) => <li>{item}</li>)}
+    </ul>
+
+    <div class="project-card__links">
+      <a class="text-link" href={project.articleHref}>
+        Read the story
+        <span aria-hidden="true">→</span>
+      </a>
+      {project.links.map((link) => (
+        <a class="text-link text-link--quiet" href={link.href} target="_blank" rel="noopener noreferrer">
+          {link.label}
+          <span aria-hidden="true">↗</span>
+          <span class="sr-only"> (opens in new tab)</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</article>

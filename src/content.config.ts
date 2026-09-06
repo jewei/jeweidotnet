@@ -14,6 +14,7 @@ const blog = defineCollection({
       draft: z.boolean().default(false),
       pinned: z.boolean().default(false),
       image: image().optional(),
+      imageAlt: z.string().optional(),
     }),
 });
 

@@ -1,132 +1,99 @@
 # jewei.toString()
 
-Personal blog at [jewei.net](https://jewei.net) — thoughts on software engineering, system design, and the craft of building things.
+Personal site at [jewei.net](https://jewei.net). It is a technical journal, project index, and professional profile for Jewei Mak.
 
-Built with [Astro](https://astro.build), [Tailwind CSS v4](https://tailwindcss.com), and deployed on [Cloudflare Pages](https://pages.cloudflare.com).
+The site uses Astro static output and deploys to Cloudflare Pages. It has no client framework and uses small, native JavaScript files only where needed.
 
 ## Stack
 
-| Layer           | Technology                                    |
-| --------------- | --------------------------------------------- |
-| Framework       | Astro 7 (static output)                       |
-| Content         | Astro Content Collections (Markdown + MDX)    |
-| Integrations    | MDX · RSS · Sitemap                           |
-| Styling         | Tailwind CSS v4 + custom design system        |
-| Fonts           | Lexend · Geist · JetBrains Mono (self-hosted) |
-| Deployment      | Cloudflare Pages                              |
-| Package manager | Bun                                           |
-| Runtime         | Bun ≥ 1.4                                     |
+| Layer | Technology |
+| --- | --- |
+| Framework | Astro 7, static output |
+| Content | Astro Content Collections and Markdown |
+| Feeds and discovery | RSS, sitemap, robots.txt, `llms.txt` |
+| Styling | Native CSS and custom tokens |
+| Fonts | Newsreader, Geist, JetBrains Mono; self-hosted |
+| Images | Astro image processing and Sharp |
+| Deployment | Cloudflare Pages |
+| Package manager | Bun 1.4 or later |
 
 ## Project structure
 
-```
+```text
 src/
-├── assets/            # Images optimized by Astro at build time
-│   ├── content/       # Blog and page illustrations
-│   ├── og-image.jpg   # Default social card image
-│   └── …              # Site UI images (avatar, 404 art, etc.)
-├── components/
-│   └── Icon.astro     # Shared SVG icon component
-├── content/
-│   └── blog/          # Markdown / MDX blog posts
-├── content.config.ts  # Blog collection schema
+├── assets/                 # Source images and the default social card
+├── components/             # Post, project, section, social, and icon components
+├── content/blog/           # Technical articles in Markdown
 ├── data/
-│   └── resume.ts      # Résumé content
-├── layouts/
-│   ├── BaseLayout.astro      # HTML shell, nav, SEO meta, OG tags
-│   ├── BlogPostLayout.astro  # Article layout + JSON-LD
-│   └── PageLayout.astro      # Static pages (About)
-├── pages/
-│   ├── index.astro           # Homepage
-│   ├── [slug].astro          # Blog post pages
-│   ├── blog/
-│   │   ├── index.astro       # Blog index with tag filters
-│   │   └── [tag].astro       # Posts filtered by tag
-│   ├── about.md
-│   ├── contact.md
-│   ├── privacy.md
-│   ├── collections.astro     # Curated quotes and links
-│   ├── resume.astro
-│   ├── 404.astro
-│   └── rss.xml.js
-├── styles/
-│   └── global.css     # Tailwind + design system tokens
-└── support/
-    ├── blog.ts        # Shared helpers (tagColors, postUrl, formatters)
-    ├── site.ts        # Site name and page title helpers
-    └── social-image.ts # OG/Twitter image resolution
-functions/
-└── _middleware.js     # Accept negotiation and agent-friendly Markdown 404s
-scripts/
-└── generate-markdown.mjs # Builds a Markdown sibling for every HTML page
-public/
-├── content/files/     # Static downloads (e.g. résumé PDF)
-├── _headers           # Cloudflare Pages cache and security headers
-├── llms.txt           # Agent guidance and site index
-├── site.webmanifest
-└── robots.txt
+│   ├── projects.ts         # Project index data
+│   └── resume.ts           # Résumé data
+├── layouts/                # Site shell, article layout, and prose page layout
+├── pages/                  # Static routes, indexes, résumé, RSS, and 404
+├── styles/global.css       # Shared component and page styles
+└── support/                # Blog, metadata, code-block, and social-image helpers
+tokens.css                  # Color, type, spacing, width, and motion tokens
+functions/_middleware.js    # HTML or Markdown content negotiation
+scripts/                    # Build-output and smoke-test scripts
+tests/                      # Agent-readiness and page-quality contracts
+public/                     # Headers, icons, scripts, résumé PDF, and discovery files
 ```
 
-## Writing a post
+## Write an article
 
-Create a `.md` (or `.mdx`) file in `src/content/blog/`:
+Create a `.md` file in `src/content/blog/`:
 
 ```markdown
 ---
 title: "Your Post Title"
-description: "A short summary shown in listings and meta tags."
+description: "A short and specific summary."
 pubDate: "2026-01-15"
 updatedDate: "2026-06-01" # optional
 tags: ["php", "open-source"]
-image: ../../assets/content/my-cover.jpg # optional, path relative to this file
-draft: false # optional, defaults to false
+image: ../../assets/content/my-cover.jpg # optional
+imageAlt: "A useful description of the social image."
+draft: false # optional; false by default
 ---
 
-Post content here…
-
-Use `../../assets/content/...` for inline images in the post body as well. Astro optimizes them at build time.
+Post content here.
 ```
 
-The filename becomes the URL slug: `my-post.md` → `/my-post/`.
+The filename becomes the root article URL. For example, `my-post.md` becomes `/my-post/`.
+
+Add `title="filename.ext"` after a fenced-code language to show a filename and copy control:
+
+````markdown
+```php title="UserController.php"
+final class UserController {}
+```
+````
 
 ## Commands
 
-Run from the project root:
+| Command | Action |
+| --- | --- |
+| `bun install` | Install dependencies |
+| `bun run dev` | Start the development server |
+| `bun run check` | Check Astro and TypeScript |
+| `bun run build` | Build HTML, assets, and Markdown copies into `dist/` |
+| `bun run preview` | Preview the production build |
+| `bun test` | Run all Bun tests |
+| `bun run test:agent` | Test agent-readable output and page contracts |
+| `bun run test:smoke` | Test required build output after a build |
 
-| Command              | Action                                  |
-| -------------------- | --------------------------------------- |
-| `bun install`        | Install dependencies                    |
-| `bun run dev`        | Start dev server at `localhost:4321`    |
-| `bun run build`      | Build to `./dist/`                      |
-| `bun run preview`    | Preview the production build locally    |
-| `bun run test:agent` | Test content negotiation and agent-readable output |
-| `bun run test:smoke` | Verify build output (run after `build`) |
+## Quality controls
 
-## CI
+CI runs the type check, build, tests, internal-link check, and Lighthouse CI. The Lighthouse minimum is 95 for Performance, Accessibility, Best Practices, and SEO on five representative routes.
 
-GitHub Actions on every push and pull request to `main`:
-
-1. `bun install --frozen-lockfile`
-2. `bun run check` (type checks `.astro`/TS via `astro check`)
-3. `bun run build`
-4. `bun run test:agent`
-5. `bun run test:smoke`
-6. Link check (Lychee) on built HTML
-7. Lighthouse CI
-
-The CI Bun version is pinned (`bun-version: 1.4.0` in `ci.yml`) to match the
-`BUN_VERSION` deploy setting below. Bump both together.
+The résumé page has a separate A4 print layout. The current downloadable PDF is at `public/content/files/2026/09/jewei-mak-resume-2026.pdf`; the previous URL remains available for compatibility.
 
 ## Deployment
 
-Deployed automatically to Cloudflare Pages on every push to `main`.
+Cloudflare Pages builds `dist/` after each push to `main`.
 
-**Build settings** (configured in Cloudflare Pages dashboard):
+| Setting | Value |
+| --- | --- |
+| Build command | `bun install --frozen-lockfile && bun run build` |
+| Build output directory | `dist` |
+| `BUN_VERSION` | `1.4.0` |
 
-| Setting                            | Value                                            |
-| ---------------------------------- | ------------------------------------------------ |
-| Build command                      | `bun install --frozen-lockfile && bun run build` |
-| Build output directory             | `dist`                                           |
-| Environment variable `BUN_VERSION` | `1.4.0` (match CI)                               |
-
-`wrangler.toml` sets `pages_build_output_dir = "./dist"` for local Wrangler tooling.
+Keep the CI Bun version and the Cloudflare `BUN_VERSION` value equal. `wrangler.toml` also sets `pages_build_output_dir = "./dist"` for local tools.

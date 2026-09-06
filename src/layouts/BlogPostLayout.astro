@@ -1,38 +1,78 @@
 ---
-import BaseLayout from './BaseLayout.astro';
-import Icon from '../components/Icon.astro';
-import { Font, Image } from 'astro:assets';
-import avatar from '../assets/jewei.jpg';
 import type { CollectionEntry } from 'astro:content';
-import { tagToSlug, longDateFormatter, postUrl, hasCodeBlocks } from '../support/blog';
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import {
+  hasCodeBlocks,
+  formatTagName,
+  longDateFormatter,
+  postUrl,
+  shortDateFormatter,
+  tagToSlug,
+} from '../support/blog';
 import { resolveSocialImage } from '../support/social-image';
+import { personId } from '../support/site';
 
 interface Props {
   post: CollectionEntry<'blog'>;
   prev: CollectionEntry<'blog'> | null;
   next: CollectionEntry<'blog'> | null;
+  related: CollectionEntry<'blog'>[];
+  headings: MarkdownHeading[];
   readingTime: number;
 }
 
-const { post, prev, next, readingTime } = Astro.props;
-const { title, description, pubDate, updatedDate, tags, image } = post.data;
-const showCodeFont = hasCodeBlocks(post.body);
+const { post, prev, next, related, headings, readingTime } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, image, imageAlt } = post.data;
+const showCodeControls = hasCodeBlocks(post.body);
+const tocHeadings = headings.filter(({ depth, text }) => depth === 2 && text.trim().length > 0);
+const showTableOfContents = tocHeadings.length >= 3;
+const adjacentPostIds = new Set([prev?.id, next?.id].filter((id): id is string => Boolean(id)));
+const continuationPosts = related.filter((relatedPost) => !adjacentPostIds.has(relatedPost.id));
 
-const siteUrl = Astro.site!.href;
+const siteUrl = Astro.site!;
 const postPageUrl = new URL(postUrl(post.id), siteUrl).href;
-const socialImageMeta = image ? await resolveSocialImage(image, siteUrl) : undefined;
+const aboutPageUrl = new URL('/about/', siteUrl).href;
+const writingPageUrl = new URL('/blog/', siteUrl).href;
+const socialImageMeta = image ? await resolveSocialImage(image, siteUrl.href) : undefined;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
+  '@id': `${postPageUrl}#article`,
   headline: title,
   description,
   url: postPageUrl,
   mainEntityOfPage: { '@type': 'WebPage', '@id': postPageUrl },
+  isPartOf: { '@type': 'Blog', name: 'Writing by Jewei Mak', url: writingPageUrl },
   datePublished: pubDate.toISOString(),
   dateModified: (updatedDate ?? pubDate).toISOString(),
-  author: { '@type': 'Person', name: 'Jewei Mak', url: `${siteUrl}/about/` },
-  publisher: { '@type': 'Person', name: 'Jewei Mak', url: siteUrl },
-  ...(socialImageMeta ? { image: socialImageMeta.url } : {}),
+  inLanguage: 'en-US',
+  timeRequired: `PT${readingTime}M`,
+  keywords: tags,
+  ...(tags.length > 0 ? { articleSection: tags } : {}),
+  author: {
+    '@type': 'Person',
+    '@id': personId,
+    name: 'Jewei Mak',
+    url: aboutPageUrl,
+  },
+  publisher: {
+    '@type': 'Person',
+    '@id': personId,
+    name: 'Jewei Mak',
+    url: aboutPageUrl,
+  },
+  ...(socialImageMeta
+    ? {
+        image: {
+          '@type': 'ImageObject',
+          url: socialImageMeta.url,
+          width: socialImageMeta.width,
+          height: socialImageMeta.height,
+          caption: imageAlt ?? title,
+        },
+      }
+    : {}),
 };
 ---
 
@@ -40,178 +80,172 @@ const jsonLd = {
   title={title}
   description={description}
   socialImage={image}
-  socialImageAlt={title}
+  socialImageAlt={imageAlt ?? `Social card for “${title}”.`}
   type="article"
   pubDate={pubDate}
   updatedDate={updatedDate}
 >
   <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
-  {showCodeFont && <Font cssVariable="--font-jetbrains-mono" slot="head" />}
 
-  <div class="blog-document">
-    <article class="blog-article">
-      <header class="blog-head">
-        <div class="blog-meta-row">
+  <div class="article-shell">
+    <article class="article-document">
+      <header class="article-header">
+        <a href="/blog/" class="article-kicker">Writing</a>
+
+        <h1 class="article-title">{title}</h1>
+        <p class="article-dek">{description}</p>
+
+        <div class="article-byline">
+          <span>
+            By <a href="/about/" rel="author">Jewei Mak</a>
+          </span>
+          <span aria-hidden="true">·</span>
+          <time datetime={pubDate.toISOString()}>{longDateFormatter.format(pubDate)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{readingTime} min read</span>
           {
-            tags.map((tag) => (
-              <a
-                href={`/blog/${tagToSlug(tag)}/`}
-                class="post-tag"
-              >
-                {tag}
-              </a>
-            ))
+            updatedDate && updatedDate > pubDate && (
+              <>
+                <span aria-hidden="true">·</span>
+                <span>
+                  Updated{' '}
+                  <time datetime={updatedDate.toISOString()}>
+                    {longDateFormatter.format(updatedDate)}
+                  </time>
+                </span>
+              </>
+            )
           }
-          <div
-            class="flex items-center gap-2 text-on-surface-variant dark:text-inverse-on-surface/70 font-body-md text-sm ml-auto flex-wrap"
-          >
-            <Icon name="calendar_today" class="text-[16px]" />
-            <time datetime={pubDate.toISOString()}>{longDateFormatter.format(pubDate)}</time>
-            {
-              updatedDate && updatedDate > pubDate && (
-                <>
-                  <span class="text-outline-variant">·</span>
-                  <span class="italic text-[13px]">
-                    Updated{' '}
-                    <time datetime={updatedDate.toISOString()}>
-                      {longDateFormatter.format(updatedDate)}
-                    </time>
-                  </span>
-                </>
-              )
-            }
-            <span class="text-outline-variant">·</span>
-            <Icon name="schedule" class="text-[16px]" />
-            <span>{readingTime} min read</span>
-          </div>
         </div>
 
-        <h1 class="blog-title">
-          {title}
-        </h1>
-
-        <div class="flex items-center gap-3 border-b border-outline-variant/30 pb-6">
-          <div
-            class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/40 bg-surface-container-highest shrink-0"
-          >
-            <Image
-              src={avatar}
-              alt="Jewei"
-              class="w-full h-full object-cover"
-              layout="none"
-              width={40}
-              height={40}
-              widths={[40, 80, 120]}
-              sizes="40px"
-              format="webp"
-              loading="lazy"
-            />
-          </div>
-          <div>
-            <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface">
-              Jewei Mak
-            </p>
-            <p
-              class="text-[13px] text-on-surface-variant dark:text-inverse-on-surface/70 font-body-md"
-            >
-              Software Engineer
-            </p>
-          </div>
-        </div>
+        {
+          tags.length > 0 && (
+            <nav class="article-topics" aria-label="Article topics">
+              <ul>
+                {tags.map((tag) => (
+                  <li>
+                    <a href={`/blog/${tagToSlug(tag)}/`} class="article-topic">
+                      {formatTagName(tag)}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )
+        }
       </header>
 
-      <div class="prose">
-        <slot />
+      <div class="article-content">
+        {
+          showTableOfContents && (
+            <>
+              <details class="article-toc">
+                <summary class="article-toc__title">On this page</summary>
+                <nav aria-label="Table of contents">
+                  <ol>
+                    {tocHeadings.map(({ slug, text }) => (
+                      <li>
+                        <a href={`#${slug}`}>{text}</a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              </details>
+
+              <nav class="article-toc article-toc--rail" aria-label="Table of contents">
+                <p class="article-toc__title">On this page</p>
+                <ol>
+                  {tocHeadings.map(({ slug, text }) => (
+                    <li>
+                      <a href={`#${slug}`}>{text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            </>
+          )
+        }
+
+        <div class="article-body prose">
+          <slot />
+        </div>
       </div>
 
-      <aside class="article-support">
-        <div class="text-2xl shrink-0" aria-hidden="true">♥</div>
-        <div class="flex-1">
-          <p class="font-label-md text-label-md text-on-surface dark:text-inverse-on-surface mb-1">
-            Enjoyed this post?
-          </p>
-          <p class="font-body-md text-[14px] text-on-surface-variant dark:text-inverse-on-surface/70">
-            Writing takes time. If this saved you a debugging session, sparked an idea, or just made the afternoon less boring — consider sponsoring my work. Even a one-time contribution means a lot.
-          </p>
-        </div>
-        <a
-          href="https://github.com/sponsors/jewei"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="tactile-btn tactile-btn--primary"
-        >
-          <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-          </svg>
-          Sponsor<span class="sr-only"> (opens in new tab)</span>
-        </a>
+      <aside class="article-support" aria-label="Support this writing">
+        <p>
+          Writing takes time. If this post helped,{' '}
+          <a href="https://github.com/sponsors/jewei" target="_blank" rel="noopener noreferrer">
+            sponsor my work<span class="sr-only"> (opens in new tab)</span>
+          </a>.
+        </p>
       </aside>
 
       {
-        (prev || next) && (
-          <nav class="border-t border-outline-variant/30 pt-8 mt-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8">
-            {prev ? (
-              <a
-                href={postUrl(prev.id)}
-                class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors max-w-xs"
-              >
-                <div class="article-nav__icon">
-                  <Icon
-                    name="arrow_back"
-                    class="text-[20px] group-hover:-translate-x-1 transition-transform"
-                  />
-                </div>
-                <div>
-                  <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">
-                    Previous
-                  </span>
-                  <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">
-                    {prev.data.title}
-                  </span>
-                </div>
-              </a>
-            ) : (
-              <div />
+        (continuationPosts.length > 0 || prev || next) && (
+          <section class="article-continuation" aria-labelledby="article-continuation-title">
+            <div class="article-continuation__header">
+              <h2 id="article-continuation-title">Continue reading</h2>
+              <a href="/blog/">All writing <span aria-hidden="true">→</span></a>
+            </div>
+
+            {continuationPosts.length > 0 && (
+              <ol class="related-writing__list">
+                {continuationPosts.map((relatedPost) => (
+                  <li>
+                    <a href={postUrl(relatedPost.id)} class="related-writing__link">
+                      <time datetime={relatedPost.data.pubDate.toISOString()}>
+                        {shortDateFormatter.format(relatedPost.data.pubDate)}
+                      </time>
+                      <span class="related-writing__title">{relatedPost.data.title}</span>
+                      <span class="related-writing__description">
+                        {relatedPost.data.description}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
             )}
 
-            {next ? (
-              <a
-                href={postUrl(next.id)}
-                class="group flex items-center gap-3 text-on-surface-variant dark:text-inverse-on-surface/70 hover:text-primary dark:hover:text-inverse-primary transition-colors text-right sm:flex-row-reverse max-w-xs"
-              >
-                <div class="article-nav__icon">
-                  <Icon
-                    name="arrow_forward"
-                    class="text-[20px] group-hover:translate-x-1 transition-transform"
-                  />
-                </div>
-                <div class="text-left sm:text-right">
-                  <span class="block font-label-md text-label-md text-primary dark:text-inverse-primary mb-1">
-                    Next
-                  </span>
-                  <span class="block font-body-md text-[14px] line-clamp-2 leading-snug">
-                    {next.data.title}
-                  </span>
-                </div>
-              </a>
-            ) : (
-              <div />
+            {(prev || next) && (
+              <nav class="article-pagination" aria-label="Adjacent articles">
+                {prev ? (
+                  <a
+                    href={postUrl(prev.id)}
+                    class="article-pagination__link article-pagination__link--previous"
+                  >
+                    <span class="article-pagination__label">
+                      <span aria-hidden="true">←</span> Previous
+                    </span>
+                    <span class="article-pagination__title">{prev.data.title}</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+
+                {next ? (
+                  <a
+                    href={postUrl(next.id)}
+                    class="article-pagination__link article-pagination__link--next"
+                  >
+                    <span class="article-pagination__label">
+                      Next <span aria-hidden="true">→</span>
+                    </span>
+                    <span class="article-pagination__title">{next.data.title}</span>
+                  </a>
+                ) : (
+                  <span />
+                )}
+              </nav>
             )}
-          </nav>
+          </section>
         )
       }
     </article>
   </div>
+
+  {
+    showCodeControls && (
+      <script is:inline src="/article.js"></script>
+    )
+  }
 </BaseLayout>
-
-<style>
-  .post-decoration-spin {
-    animation: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .post-decoration-spin {
-      animation: none;
-    }
-  }
-</style>

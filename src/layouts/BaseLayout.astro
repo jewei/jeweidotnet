@@ -2,6 +2,7 @@
 import { Font } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Icon from '../components/Icon.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import { siteName, pageTitle, twitterHandle, authorName } from '../support/site';
 import { resolveSocialImage } from '../support/social-image';
 import '../styles/global.css';
@@ -16,6 +17,7 @@ interface Props {
   updatedDate?: Date;
   robots?: string;
   hasMarkdown?: boolean;
+  canonical?: string | false;
 }
 
 const {
@@ -28,37 +30,35 @@ const {
   updatedDate,
   robots,
   hasMarkdown = true,
+  canonical,
 } = Astro.props;
+
 const canonicalSiteUrl = Astro.site!.href;
 const currentPath = Astro.url.pathname;
-const canonicalUrl = new URL(currentPath, canonicalSiteUrl).href;
+const canonicalUrl = canonical === false
+  ? undefined
+  : new URL(canonical ?? currentPath, canonicalSiteUrl).href;
 const cleanPath = currentPath.replace(/\/+$/, '') || '/';
 const markdownPath = cleanPath === '/' ? '/index.md' : `${cleanPath}/index.md`;
 const fullTitle = pageTitle(title);
+const resolvedSocialImageAlt = socialImageAlt ?? 'Jewei Mak — senior software engineer, builder, and writer.';
 const { url: ogImage, width: ogImageWidth, height: ogImageHeight } = await resolveSocialImage(
   socialImage,
   canonicalSiteUrl,
 );
 
+const navLinks = [
+  { href: '/blog/', label: 'Writing' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/collections/', label: 'Collections' },
+  { href: '/about/', label: 'About' },
+  { href: '/resume/', label: 'Résumé' },
+];
+
 function isActive(path: string) {
-  if (path === '/') return currentPath === '/';
+  if (path === '/blog/' && type === 'article') return true;
   return currentPath.startsWith(path);
 }
-
-const navLinks = [
-  { href: '/',             label: 'Home' },
-  { href: '/blog/',        label: 'Blog' },
-  { href: '/about/',       label: 'About' },
-  { href: '/collections/', label: 'Collections' },
-  { href: '/resume/',      label: 'Hire Me' },
-];
-
-const footerExploreLinks = [
-  { href: '/blog/', label: 'Blog', description: 'Software, systems, and shipping notes.' },
-  { href: '/collections/', label: 'Collections', description: 'Quotes, ideas, and useful rabbit holes.' },
-  { href: '/about/', label: 'About', description: 'Background, interests, and current focus.' },
-  { href: '/resume/', label: 'Résumé', description: 'Experience, skills, and selected work.' },
-];
 ---
 
 <!doctype html>
@@ -67,281 +67,145 @@ const footerExploreLinks = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <!-- Primary meta -->
     <title>{fullTitle}</title>
     {description && <meta name="description" content={description} />}
     {robots && <meta name="robots" content={robots} />}
-    <link rel="canonical" href={canonicalUrl} />
+    <meta
+      id="theme-color"
+      name="theme-color"
+      content="#f7faf6"
+      data-light="#f7faf6"
+      data-dark="#171b18"
+    />
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
     {hasMarkdown && <link rel="alternate" type="text/markdown" href={markdownPath} />}
     <link rel="describedby" href="/llms.txt" />
 
-    <!-- Icons -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32" />
     <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Open Graph -->
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={fullTitle} />
-    <meta property="og:url" content={canonicalUrl} />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
     <meta property="og:type" content={type} />
     <meta property="og:locale" content="en_US" />
     {description && <meta property="og:description" content={description} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content={String(ogImageWidth)} />
     <meta property="og:image:height" content={String(ogImageHeight)} />
-    {socialImageAlt && <meta property="og:image:alt" content={socialImageAlt} />}
-    {
-      type === 'article' && pubDate && (
-        <meta property="article:published_time" content={pubDate.toISOString()} />
-      )
-    }
-    {
-      type === 'article' && updatedDate && (
-        <meta property="article:modified_time" content={updatedDate.toISOString()} />
-      )
-    }
+    <meta property="og:image:alt" content={resolvedSocialImageAlt} />
+    {type === 'article' && pubDate && <meta property="article:published_time" content={pubDate.toISOString()} />}
+    {type === 'article' && updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
 
-    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content={twitterHandle} />
     <meta name="twitter:creator" content={twitterHandle} />
     <meta name="twitter:title" content={fullTitle} />
     {description && <meta name="twitter:description" content={description} />}
     <meta name="twitter:image" content={ogImage} />
-    {socialImageAlt && <meta name="twitter:image:alt" content={socialImageAlt} />}
+    <meta name="twitter:image:alt" content={resolvedSocialImageAlt} />
 
-    <!-- Feeds -->
     <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
 
-    <!-- Fonts: self-hosted via Astro Fonts API -->
-    <Font cssVariable="--font-bricolage" preload />
-    <Font cssVariable="--font-lexend" />
-    <Font cssVariable="--font-geist" />
+    <Font cssVariable="--font-newsreader" preload />
+    <Font cssVariable="--font-geist" preload />
+    <Font cssVariable="--font-jetbrains-mono" />
 
-    <!-- Per-page head additions (e.g. JSON-LD, hero preload) -->
     <slot name="head" />
 
-    <!-- Dark mode: apply class before paint to avoid flash -->
     <script is:inline src="/theme.js"></script>
-
-    <!-- Umami analytics -->
     <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="5262f0b3-3bd0-4b9f-8d21-aa555515a81d"></script>
   </head>
-  <body
-    class="bg-surface dark:bg-bg-dark text-on-surface dark:text-inverse-on-surface font-body-md antialiased overflow-x-clip relative min-h-screen flex flex-col"
-  >
+  <body data-page-type={type}>
     <a href="#main-content" class="skip-link">Skip to content</a>
 
-    <!-- Header / Nav -->
     <header class="site-header">
-      <nav
-        class="nav-slab"
-        aria-label="Main"
-      >
-        <a
-          href="/"
-          class="slab-mark nav-link"
-        >
-          JEWEI.NET
-        </a>
+      <div class="masthead">
+        <div class="masthead__top">
+          <a href="/" class="site-wordmark" aria-label="jewei.toString() home">jewei.toString()</a>
 
-        <ul class="slab-nav hidden md:flex">
-          {
-            navLinks.map(({ href, label }) => (
-              <li>
-                <a
-                  href={href}
-                  class:list={[
-                    'nav-link',
-                    isActive(href)
-                      ? 'is-active'
-                      : '',
-                  ]}
-                >
-                  {label}
-                </a>
-              </li>
-            ))
-          }
-        </ul>
-
-        <div class="nav-actions">
-          <button
-            id="theme-toggle"
-            type="button"
-            aria-label="Toggle dark mode"
-            class="nav-icon-btn"
-          >
-            <Icon name="light_mode" class="icon-light text-[20px]" />
-            <Icon name="dark_mode" class="icon-dark text-[20px]" />
-          </button>
-          <button
-            id="menu-toggle"
-            type="button"
-            aria-label="Toggle navigation menu"
-            aria-controls="mobile-menu"
-            aria-expanded="false"
-            class="nav-icon-btn md:hidden"
-          >
-            <Icon name="menu" class="icon-menu-open text-[24px]" />
-            <Icon name="close" class="icon-menu-close hidden text-[24px]" />
-          </button>
+          <div class="masthead__actions">
+            <a
+              href="https://github.com/jewei"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nav-icon-btn nav-github"
+              aria-label="GitHub (opens in new tab)"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.25c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.21.09 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.01 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .5Z" />
+              </svg>
+            </a>
+            <button id="theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false" class="nav-icon-btn">
+              <Icon name="light_mode" class="icon-light" />
+              <Icon name="dark_mode" class="icon-dark" />
+            </button>
+            <button
+              id="menu-toggle"
+              type="button"
+              aria-label="Open navigation menu"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              class="nav-icon-btn menu-toggle"
+            >
+              <Icon name="menu" class="icon-menu-open" />
+              <Icon name="close" class="icon-menu-close hidden" />
+            </button>
+          </div>
         </div>
-      </nav>
 
-      <!-- Mobile menu (toggled by #menu-toggle) -->
-      <div
-        id="mobile-menu"
-        class="mobile-nav hidden md:hidden"
-      >
+        <nav class="masthead__nav" aria-label="Main">
+          <ul>
+            {
+              navLinks.map(({ href, label }) => (
+                <li>
+                  <a href={href} class:list={['nav-link', isActive(href) && 'is-active']} aria-current={isActive(href) ? 'page' : undefined}>
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+      </div>
+
+      <nav id="mobile-menu" class="mobile-nav hidden" aria-label="Mobile navigation">
         <ul class="mobile-nav__list">
           {
             navLinks.map(({ href, label }) => (
               <li>
-                <a
-                  href={href}
-                  class:list={[
-                    'nav-link mobile-nav__link',
-                    isActive(href)
-                      ? 'is-active'
-                      : '',
-                  ]}
-                >
+                <a href={href} class:list={['mobile-nav__link', isActive(href) && 'is-active']} aria-current={isActive(href) ? 'page' : undefined}>
                   {label}
                 </a>
               </li>
             ))
           }
         </ul>
-      </div>
+      </nav>
     </header>
 
-    <main
-      id="main-content"
-      class="site-main"
-    >
+    <main id="main-content" class="site-main">
       <slot />
     </main>
 
     <footer class="site-footer">
-      <div class="footer-statement">
-        <div class="footer-statement__copy">
-          <p class="footer-statement__line">
-            <span class="footer-statement__row">
-              <span>Build.</span>
-              <span>Write.</span>
-            </span>
-            <span class="footer-statement__row">
-              <span>Learn.</span>
-              <strong>Share.</strong>
-            </span>
-          </p>
-          <p class="footer-statement__note">
-            A personal archive of software, systems, and useful side quests.
-          </p>
-        </div>
-
-        <nav class="footer-explore" aria-label="Keep browsing">
-          <p class="footer-explore__heading">Keep browsing</p>
-          <div class="footer-explore__list">
-            {
-              footerExploreLinks.map(({ href, label, description }) => (
-                <a href={href} class="footer-explore__link">
-                  <span class="footer-explore__copy">
-                    <strong>{label}</strong>
-                    <span>{description}</span>
-                  </span>
-                  <Icon name="arrow_forward" class="footer-explore__arrow" />
-                </a>
-              ))
-            }
-          </div>
-        </nav>
+      <div class="footer-letter">
+        <p class="footer-letter__close">Thanks for reading.<br /><span>— Jewei</span></p>
+        <p class="footer-letter__postscript">Build. Write. Learn. Share.</p>
       </div>
 
-      <div class="footer-meta">
-        <div class="footer-credit">
-          <strong>JEWEI.NET</strong>
-          <span>&copy; 2022–{new Date().getFullYear()} {authorName}</span>
-        </div>
-
-        <div class="footer-meta__links">
-          <nav class="footer-links" aria-label="Site information">
-            <a href="/contact/" class="footer-link">Contact</a>
-            <a href="/privacy/" class="footer-link">Privacy</a>
-          </nav>
-
-          <nav class="footer-links footer-links--social" aria-label="Elsewhere">
-            <a
-              href="/rss.xml"
-              class="footer-link footer-link--icon"
-              aria-label="RSS feed"
-              data-tooltip="RSS"
-            >
-              <Icon name="rss_feed" class="text-[20px]" />
-            </a>
-            <a
-              href="https://github.com/sponsors/jewei"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="footer-link footer-link--icon"
-              aria-label="Sponsor on GitHub (opens in new tab)"
-              data-tooltip="Sponsor"
-            >
-              <svg
-                class="w-[20px] h-[20px] shrink-0"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09A6.02 6.02 0 0 1 16.5 3C19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z"
-                ></path>
-              </svg>
-            </a>
-            <a
-              href="https://x.com/jewei"
-              rel="noopener noreferrer"
-              target="_blank"
-              class="footer-link footer-link--icon"
-              aria-label="X (opens in new tab)"
-              data-tooltip="X"
-            >
-              <svg
-                class="w-[20px] h-[20px] shrink-0"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-                ></path>
-              </svg>
-            </a>
-            <a
-              href="https://github.com/jewei"
-              rel="noopener noreferrer"
-              target="_blank"
-              class="footer-link footer-link--icon"
-              aria-label="GitHub (opens in new tab)"
-              data-tooltip="GitHub"
-            >
-              <svg
-                class="w-[20px] h-[20px] shrink-0"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                ></path>
-              </svg>
-            </a>
-          </nav>
-        </div>
+      <div class="footer-utility">
+        <nav class="footer-links" aria-label="Site information">
+          <a href="/projects/">Projects</a>
+          <a href="/blog/">Writing</a>
+          <a href="/contact/">Contact</a>
+          <a href="/privacy/">Privacy</a>
+        </nav>
+        <SocialLinks compact />
+        <p class="footer-credit">© 2022–{new Date().getFullYear()} {authorName}</p>
       </div>
     </footer>
 

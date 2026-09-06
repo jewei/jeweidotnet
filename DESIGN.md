@@ -1,240 +1,211 @@
----
-name: Luminous Developer Narrative
-colors:
-  surface: '#f9f9ff'
-  surface-dim: '#d3daea'
-  surface-bright: '#f9f9ff'
-  surface-container-lowest: '#ffffff'
-  surface-container-low: '#f0f3ff'
-  surface-container: '#e7eefe'
-  surface-container-high: '#e2e8f8'
-  surface-container-highest: '#dce2f3'
-  on-surface: '#151c27'
-  on-surface-variant: '#4a4455'
-  inverse-surface: '#2a313d'
-  inverse-on-surface: '#ebf1ff'
-  outline: '#7b7487'
-  outline-variant: '#ccc3d8'
-  surface-tint: '#6a1dd9'
-  primary: '#630ed4'
-  on-primary: '#ffffff'
-  primary-container: '#7c3aed'
-  on-primary-container: '#ede0ff'
-  inverse-primary: '#d2bbff'
-  secondary: '#004aa8'
-  on-secondary: '#ffffff'
-  secondary-container: '#2170e4'
-  on-secondary-container: '#fefcff'
-  tertiary: '#005b33'
-  on-tertiary: '#ffffff'
-  tertiary-container: '#007644'
-  on-tertiary-container: '#94fbb8'
-  error: '#ba1a1a'
-  on-error: '#ffffff'
-  error-container: '#ffdad6'
-  on-error-container: '#93000a'
-  primary-fixed: '#eaddff'
-  primary-fixed-dim: '#d2bbff'
-  on-primary-fixed: '#25005a'
-  on-primary-fixed-variant: '#5a00c6'
-  secondary-fixed: '#d8e2ff'
-  secondary-fixed-dim: '#adc6ff'
-  on-secondary-fixed: '#001a42'
-  on-secondary-fixed-variant: '#004395'
-  tertiary-fixed: '#91f8b6'
-  tertiary-fixed-dim: '#75db9b'
-  on-tertiary-fixed: '#00210f'
-  on-tertiary-fixed-variant: '#00522e'
-  background: '#f9f9ff'
-  on-background: '#151c27'
-  surface-variant: '#dce2f3'
-  bg-light: '#F9FAFB'
-  bg-dark: '#0F071D'
-  surface-dark: '#1A1429'
-  text-main: '#1A1A1A'
-typography:
-  display:
-    fontFamily: Lexend
-    fontSize: 48px
-    fontWeight: '700'
-    lineHeight: '1.1'
-    letterSpacing: -0.02em
-  headline-lg:
-    fontFamily: Lexend
-    fontSize: 32px
-    fontWeight: '600'
-    lineHeight: '1.2'
-  headline-lg-mobile:
-    fontFamily: Lexend
-    fontSize: 24px
-    fontWeight: '600'
-    lineHeight: '1.2'
-  headline-md:
-    fontFamily: Lexend
-    fontSize: 24px
-    fontWeight: '500'
-    lineHeight: '1.3'
-  body-lg:
-    fontFamily: Geist
-    fontSize: 18px
-    fontWeight: '400'
-    lineHeight: '1.7'
-  body-md:
-    fontFamily: Geist
-    fontSize: 16px
-    fontWeight: '400'
-    lineHeight: '1.6'
-  label-md:
-    fontFamily: Geist
-    fontSize: 14px
-    fontWeight: '600'
-    lineHeight: '1'
-    letterSpacing: 0.05em
-  code:
-    fontFamily: jetbrainsMono
-    fontSize: 14px
-    fontWeight: '400'
-    lineHeight: '1.5'
-rounded:
-  sm: 0.25rem
-  DEFAULT: 0.5rem
-  md: 0.75rem
-  lg: 1rem
-  xl: 1.5rem
-  full: 9999px
-spacing:
-  base: 8px
-  container-max: 1100px
-  gutter: 24px
-  margin-mobile: 20px
-  stack-sm: 12px
-  stack-md: 32px
-  stack-lg: 64px
----
+# Design — jewei.net
 
-## Brand & Style
+A locked design system for the full site. Every page must read this file before it changes visual or interaction code. Amend this file before a page departs from the system.
 
-The design system is built for a personal developer blog that balances technical authority with a whimsical, approachable personality. The aesthetic is "Playful-Minimal"—a hybrid style that leverages the clarity of high-end SaaS interfaces with the charm of indie-creative portfolios. 
+## Product position
 
-The emotional goal is to feel **"Cute but Premium."** This is achieved through a "Calm and Elegant" hierarchy where generous whitespace ensures high readability, while organic decorative elements like tiny doodles, sparkles, and blobs break the rigidity of a standard grid. The system avoids a corporate feel by using soft-tinted backgrounds and expressive typography, ensuring it remains distinctive and personal.
+Jewei Mak is a senior software engineer, backend architect, builder, and writer. The primary audience is engineering peers. The primary tasks are to explore his work and read his writing.
 
-## Colors
-
-The palette is anchored by a vibrant **Vivid Purple** primary, used for main brand accents and key calls to action. A **Bright Blue** serves as the secondary color for interactive highlights and links, while **Forest Green** is reserved for decorative details and positive feedback states.
-
-- **Light Mode:** Uses an off-white, airy background (#F9FAFB) to reduce eye strain compared to pure white. Surfaces should feel lifted with subtle borders.
-- **Dark Mode:** Employs a deep, purple-tinted "cozy" dark (#0F071D). Avoid pure black; instead, use layered purples to maintain depth and warmth.
-- **Contrast:** Text remains high-contrast (Near-black in light mode, near-white in dark mode) to prioritize legibility for long-form technical articles.
-
-## Typography
-
-The system uses a pairing of **Lexend** for headlines and **Geist** for body copy. Lexend provides a friendly, geometric rhythm that feels approachable, while Geist offers a clean, technical precision ideal for a developer blog.
-
-- **Headlines:** Use tighter letter-spacing for large display text to create a "premium" feel.
-- **Body Text:** Set with generous line heights (1.6x - 1.7x) to ensure comfortable long-form reading experience.
-- **Technical Content:** Code snippets must use **JetBrains Mono** to maintain the developer-centric focus, styled with a soft background container to match the overall theme.
-
-## Layout & Spacing
-
-This design system follows a **Fixed-Fluid hybrid grid**. Content is centered within a maximum container width of 1100px to prevent lines of text from becoming too long. 
-
-- **The 8px Rhythm:** All spacing (padding, margins, gaps) should be multiples of 8px to maintain visual harmony.
-- **Vertical Rhythm:** Use large vertical gaps (stack-lg) between major article sections to emphasize the "airy" brand personality.
-- **Mobile:** On devices under 768px, margins shrink to 20px and the layout collapses to a single column. Horizontal padding within cards should be reduced to 16px to maximize screen real estate.
-
-## Elevation & Depth
-
-Depth is conveyed through **Tonal Layering** and **Ambient Shadows** rather than heavy skeuomorphism.
-
-- **Surfaces:** In light mode, use very subtle 1px borders (#E5E7EB) combined with low-opacity, diffused shadows (Blur: 20px, Opacity: 4%, Color: Primary) to make elements feel like they are floating on a soft plane.
-- **Glassmorphism:** Use semi-transparent backgrounds with a 12px backdrop-blur for navigation bars and floating "sticker" elements to add a modern, polished layer.
-- **Interactive Depth:** On hover, cards and buttons should "lift" slightly (translating -4px on the Y-axis) and their shadow should become slightly more pronounced and tinted with the primary color.
-
-## Shapes
-
-The shape language is defined by **Soft Roundedness**. While the base unit is 0.5rem (8px), large containers and decorative "blobs" should use `rounded-xl` (24px) to emphasize the playful nature of the brand.
-
-- **Buttons & Chips:** Always use fully rounded "pill" shapes or `rounded-lg` (16px) to maintain the friendly aesthetic.
-- **Decorations:** Incorporate organic, non-geometric SVG blobs and hand-drawn doodle accents (sparkles, underscores) behind or adjacent to key headings. These should have a "hand-crafted" feel to offset the clean typography.
-
-## Components
-
-- **Buttons:** Primary buttons use a solid Purple gradient with white text. Secondary buttons use a Ghost style with a thin border and the secondary Blue text. All buttons have a high border-radius (min 12px).
-- **Cards:** Blog post previews should be contained in cards with a `rounded-xl` corner, a subtle 1px border, and a faint primary-tinted shadow.
-- **Input Fields:** Search and contact inputs use a soft-gray background (#F3F4F6) and transition to a 2px Purple border on focus.
-- **Chips/Tags:** Used for article categories. These are small, pill-shaped elements with low-saturation backgrounds derived from the primary, secondary, or tertiary colors.
-- **Stickers & Doodles:** A unique component class for this system. These are small, non-interactive SVG graphics (stars, loops, arrows) that appear to be "stuck" onto the layout, often overlapping borders or corners of cards to add whimsy.
-- **Code Blocks:** Syntax highlighting should use a custom theme that incorporates the primary Purple and secondary Blue, set against a dark-mode surface even in the light-mode theme.
-
----
-
-# Hallmark 2026 Lock
-
-This section replaces the earlier visual draft. Use it as the current source of truth.
+The site is a senior engineer's digital garden, technical publication, and professional portfolio. It must feel minimal, technical, editorial, personal, fast, and exact. It must never look like a startup landing page, an agency site, a résumé template, or terminal cosplay.
 
 ## Genre
 
-Playful. The interface is energetic, direct, and tactile. It takes broad inspiration from learning apps, but it does not copy another brand.
+Editorial.
 
 ## Macrostructure family
 
-- Home: **Ecosystem Index**. It uses distinct rails for pinned posts, recent writing, and topics.
-- Blog and tag indexes: **Index-First**. Links are the main interface.
-- Posts and About: **Long Document**. Reading measure is 65 characters or less.
-- Résumé: **Split Studio**. Summary and evidence use an asymmetric two-column layout.
-- 404: **Split Studio** recovery page. One clear message and one recovery action.
+- Discovery pages (`/` and `/projects/`): **Workbench**. Real project captures and technical facts provide the proof. No sales bar or product-tour script.
+- Index pages (`/blog/`, tag archives, and `/collections/`): **Index-First**. Links, dates, topics, and short descriptions are the design.
+- Content pages (articles, `/about/`, `/contact/`, `/privacy/`, and the 404 page): **Long Document**. Reading comes first. There are no page-load reveals.
+- Résumé: **Split Studio allowance**. The main document and a compact facts rail can share the width on large screens. Print becomes one linear document.
+
+## Component archetypes
+
+- Hero: H2 Split Diptych. Use a 7:5 ratio, the existing portrait, and negative space as the divider.
+- Section heads: S2 Hanging. Use a plain heading and an optional action. Do not use numbered eyebrows.
+- Professional proof: T4 Numbered Stat Strip. Use modest type, tabular numbers, and no counter animation.
+- Calls to action: C3 Typographic Link for most actions. A solid ink button is allowed for one primary hero action.
+- Navigation: N6 Compact Masthead. `issue-line=none`, `wordmark=xl`, `rule=single`, `sticky=no`. The mobile version becomes wordmark plus menu and theme controls.
+- Footer: Ft6 Letter Close. `signoff=roman`, `postscript=yes`, `width=60ch`.
 
 ## Theme
 
-- `--color-paper`: `oklch(97% 0.016 105)`
-- `--color-paper-2`: `oklch(94% 0.026 105)`
-- `--color-paper-3`: `oklch(90% 0.038 105)`
-- `--color-ink`: `oklch(20% 0.018 145)`
-- `--color-ink-2`: `oklch(34% 0.022 145)`
-- `--color-rule`: `oklch(79% 0.030 105)`
-- `--color-accent`: `oklch(70% 0.18 145)`
-- `--color-focus`: `oklch(42% 0.20 145)`
+Custom theme. Vibe: **quiet technical journal, personal and exact**.
 
-The accent is sprout green. It marks active states and primary actions. It must not cover large page areas.
+The anchor hue is Jewei's existing green. Green is a signal, not a surface. It occupies less than 3% of a normal viewport.
+
+### Light
+
+- `--color-paper` `oklch(97.5% 0.008 145)`
+- `--color-paper-2` `oklch(94.5% 0.010 145)`
+- `--color-paper-3` `oklch(91% 0.012 145)`
+- `--color-ink` `oklch(20% 0.012 145)`
+- `--color-ink-2` `oklch(36% 0.012 145)`
+- `--color-rule` `oklch(82% 0.010 145)`
+- `--color-rule-2` `oklch(72% 0.012 145)`
+- `--color-muted` `oklch(45% 0.012 145)`
+- `--color-neutral` `oklch(31% 0.012 145)`
+- `--color-accent` `oklch(42% 0.120 150)`
+- `--color-accent-ink` `oklch(97.5% 0.008 145)`
+- `--color-focus` `oklch(48% 0.180 150)`
+
+### Dark
+
+- `--color-paper` `oklch(14% 0.010 145)`
+- `--color-paper-2` `oklch(18% 0.012 145)`
+- `--color-paper-3` `oklch(22% 0.014 145)`
+- `--color-ink` `oklch(94% 0.008 145)`
+- `--color-ink-2` `oklch(78% 0.010 145)`
+- `--color-rule` `oklch(31% 0.012 145)`
+- `--color-rule-2` `oklch(39% 0.014 145)`
+- `--color-muted` `oklch(70% 0.010 145)`
+- `--color-neutral` `oklch(83% 0.010 145)`
+- `--color-accent` `oklch(76% 0.100 150)`
+- `--color-accent-ink` `oklch(14% 0.010 145)`
+- `--color-focus` `oklch(80% 0.150 150)`
 
 ## Typography
 
-- Display: Bricolage Grotesque, weight 800, roman.
-- Body: Geist, weight 400.
-- Code: JetBrains Mono, weight 400.
-- Display tracking: `-0.035em`.
-- Display size: `clamp(2.75rem, 6vw, 5.25rem)`.
+- Display and reading: Newsreader, weights 400 and 700, normal style.
+- Interface and résumé: Geist, weights 400 and 700.
+- Code and technical labels: JetBrains Mono, weight 400.
+- Display tracking: `-0.025em`.
+- Label tracking: `0.06em`.
+- Body minimum: `1rem`.
+- Article measure: `65ch`.
+- Article line height: `1.68`.
+- Display cap: `clamp(2.75rem, 5vw + 1rem, 4.5rem)`.
+- Home name allowance: `--text-hero-name` uses `clamp(5rem, 10vw, 7rem)` for the single word `Jewei.`. The greeting uses a smaller size on its own line.
+
+Newsreader carries headings and long-form prose. Geist carries navigation, summaries, controls, data, and the résumé. JetBrains Mono is only for code and small technical labels.
+
+## Content widths
+
+- Site shell: `82rem`.
+- Standard content: `72rem`.
+- Reading column: `65ch`.
+- Narrow note: `48rem`.
+- Page gutter: `clamp(1rem, 4vw, 2.5rem)`.
 
 ## Spacing
 
-Use the named 4-point scale in `tokens.css`. Do not add raw spacing values to page components.
+Use this 4-point named scale. Pages must use tokens, not raw spacing values.
+
+- `--space-3xs` `0.125rem`
+- `--space-2xs` `0.25rem`
+- `--space-xs` `0.5rem`
+- `--space-sm` `0.75rem`
+- `--space-md` `1rem`
+- `--space-lg` `1.5rem`
+- `--space-xl` `2.5rem`
+- `--space-2xl` `4rem`
+- `--space-3xl` `6rem`
+- `--space-4xl` `9rem`
+
+## Rules, radius, and depth
+
+- Hairline rule: `1px`.
+- Strong rule: `2px`, used only for code frames and print structure.
+- Small radius: `2px`.
+- Card or media radius: `6px` maximum.
+- Pill radius: only for compact topic labels and status labels. Do not use pills as the main component shape.
+- Shadows: none by default. A single low-opacity 1px shadow is allowed for a lifted menu.
 
 ## Motion
 
-- Easings: `--ease-out`, `--ease-in`, and `--ease-in-out` from `tokens.css`.
-- Motion primitives: tactile press and short card lift.
-- Reduced motion: limit feedback to 150 ms.
+- `--ease-out`: `cubic-bezier(0.16, 1, 0.3, 1)`.
+- `--ease-in`: `cubic-bezier(0.7, 0, 0.84, 0)`.
+- `--ease-in-out`: `cubic-bezier(0.65, 0, 0.35, 1)`.
+- Micro duration: `120ms`.
+- Short duration: `200ms`.
+- Long duration: `300ms`.
+- Page reveal: none.
+- Allowed movement: link underline, button press, menu state, copy feedback, and at most 2px of media movement.
+- Reduced motion: remove spatial movement and keep state feedback at 150ms or less.
 
-## Component voice
+## Microinteractions stance
 
-- Navigation: N7 Rounded Slab. It has a strong bottom rule and no blur.
-- Footer: Ft5 Statement with a static metadata row.
-- Primary buttons: green fill, dark text, 2 px ink border, and a short bottom edge.
-- Secondary buttons: paper fill with the same border and edge.
-- Cards: 12 px maximum radius, 2 px ink border, and one hard shadow.
-- Tags: compact pills. Tags use one accent system, not many unrelated colours.
-- Headings: roman only. Do not use italic emphasis in headings.
+- Keyboard state comes before hover state.
+- Focus appears at once with a 2px ring and a 2px offset.
+- Touch targets are at least 44 by 44 CSS pixels.
+- Hover styles only apply when the device supports hover.
+- Code-copy success changes the control label to `Copied`. It does not create a toast.
+- Menu Escape closes the menu and returns focus to the menu button.
+- Theme state is stored. The initial theme applies before paint.
+- There are no decorative toasts, scroll animations, counters, or infinite animations.
 
-## What pages must share
+## CTA voice
 
-- Wordmark, navigation, footer, palette, type pair, focus ring, button behavior, and card border language.
-- No glass effects, colour gradients, blurred blobs, decorative sparkles, or invented metrics.
+- Primary hero action: compact solid ink rectangle, 2px radius, verb-first copy.
+- Secondary action: typographic link with a 1px underline and arrow.
+- Tertiary action: plain text link with an arrow.
+- Do not use promotional copy, large rounded buttons, gradients, or two filled actions together.
+
+## Per-page rules
+
+### Home
+
+Order: introduction, Selected Work, professional evidence, Pinned Posts, Latest Writing, Topics, shared footer. Work is the first action. Writing is the second action.
+
+The hero uses the standard content width and a two-line greeting, with the name as the largest text. The portrait has a thin offset frame and a caption with an About link. Below 60rem, use a 7rem square portrait beside its caption, after the introduction and actions. Use the existing portrait asset.
+
+Home sections use `--space-xl` above and below each dividing rule on small screens, and `--space-2xl` from 60rem. Pinned Posts use text rows without covers. Put the RSS and contact sentence below Latest Writing. The shared footer provides the only closing message and motto.
+
+Topic cells keep `--space-lg` of space after the post count.
+
+### Projects
+
+Show Claude Meter, Bopop, Uppa, TypeID PHP, and Full Page. The homepage shows the first four as Selected Work. Each entry needs a purpose, platform or category, stack, source availability, direct links, and related writing. Do not add filters for five items. Do not use star counts.
+
+Project covers use a 16:10 frame. New covers keep titles and product previews inside generous side margins. Generated covers can use existing product captures as references and must match the site's editorial style.
+
+### Writing indexes
+
+Use dates, titles, short descriptions, and topics. Topic controls must not occupy most of the first mobile view. Avoid boxes around every row.
+
+Show all available post topics as links, with natural wrapping. A topic archive can omit its current topic from each post's metadata.
+
+### Articles
+
+Show the description in the header. Show a table of contents only when the article has at least three useful second-level headings. Provide syntax highlighting, copy feedback, local horizontal code scrolling, optional filenames, figures, captions, related posts, and previous or next links.
+
+### About
+
+Keep the multilingual greeting and personal interests. The page sequence is engineer, builder, writer, photography, books, cooking, and music. The portrait supports the introduction; it does not delay it.
+
+### Résumé
+
+Use dense document hierarchy, not dashboard cards. Keep the PDF action. Print must hide site navigation, theme controls, footer, and web-only actions. Print must use black text, white paper, stable URLs, and clear page breaks.
+
+### Collections
+
+Treat the page as a small growing index. Do not imply that it is a complete knowledge base.
+
+## What all pages must share
+
+- `jewei.toString()` as the main wordmark.
+- One green accent and the same light and dark palettes.
+- Newsreader, Geist, and JetBrains Mono in their defined roles.
+- The same focus ring, link underline, rules, and content widths.
+- The same navigation and footer.
+- Semantic HTML, logical heading order, and descriptive alt text.
 
 ## What pages may change
 
-- The named macrostructure for the route type.
-- Image use. Only existing content images and the existing portrait are permitted.
-- Card density and section rhythm.
+- The content width can change between index, reading, and résumé pages.
+- A project may use its existing image colour inside the image only.
+- Articles may omit a contents list when it does not help navigation.
+- The résumé may use smaller type and tighter spacing than editorial pages.
+
+## Performance and accessibility
+
+- Keep static Astro output and zero framework hydration.
+- Load only required font files and weights. Match fallback metrics to reduce layout shift.
+- Use Astro image processing and explicit image dimensions.
+- Target WCAG AA. Target 7:1 for normal body text where practical.
+- Support 320, 375, 390, 414, 768, 1024, 1440, and 1920 CSS-pixel widths.
+- Use `overflow-x: clip` on `html` and `body`. Code and tables can scroll inside their own containers.
+- Keep RSS, sitemap, canonical URLs, Markdown alternatives, analytics, security headers, and all current article URLs.
 
 ## Exports
 
@@ -242,18 +213,23 @@ Use the named 4-point scale in `tokens.css`. Do not add raw spacing values to pa
 
 ```css
 :root {
-  --color-paper: oklch(97% 0.016 105);
-  --color-paper-2: oklch(94% 0.026 105);
-  --color-paper-3: oklch(90% 0.038 105);
-  --color-ink: oklch(20% 0.018 145);
-  --color-ink-2: oklch(34% 0.022 145);
-  --color-rule: oklch(79% 0.030 105);
-  --color-accent: oklch(70% 0.18 145);
-  --color-accent-ink: oklch(20% 0.018 145);
-  --color-focus: oklch(42% 0.20 145);
-  --font-display: var(--font-bricolage), sans-serif;
-  --font-body: var(--font-geist), sans-serif;
-  --font-outlier: var(--font-jetbrains-mono), monospace;
+  --color-paper: oklch(97.5% 0.008 145);
+  --color-paper-2: oklch(94.5% 0.010 145);
+  --color-paper-3: oklch(91% 0.012 145);
+  --color-ink: oklch(20% 0.012 145);
+  --color-ink-2: oklch(36% 0.012 145);
+  --color-rule: oklch(82% 0.010 145);
+  --color-rule-2: oklch(72% 0.012 145);
+  --color-muted: oklch(45% 0.012 145);
+  --color-neutral: oklch(31% 0.012 145);
+  --color-accent: oklch(42% 0.120 150);
+  --color-accent-ink: oklch(97.5% 0.008 145);
+  --color-focus: oklch(48% 0.180 150);
+  --font-display: var(--font-newsreader), ui-serif, serif;
+  --font-body: var(--font-geist), ui-sans-serif, sans-serif;
+  --font-outlier: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
   --space-xs: 0.5rem;
   --space-sm: 0.75rem;
   --space-md: 1rem;
@@ -261,20 +237,26 @@ Use the named 4-point scale in `tokens.css`. Do not add raw spacing values to pa
   --space-xl: 2.5rem;
   --space-2xl: 4rem;
   --space-3xl: 6rem;
+  --space-4xl: 9rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-md: 1.25rem;
   --text-lg: 1.5625rem;
   --text-xl: 1.9531rem;
-  --text-display: clamp(2.75rem, 6vw, 5.25rem);
+  --text-2xl: 2.4414rem;
+  --text-3xl: 3.0518rem;
+  --text-display: clamp(2.75rem, 5vw + 1rem, 4.5rem);
+  --text-hero-name: clamp(5rem, 10vw, 7rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-micro: 120ms;
-  --dur-short: 220ms;
-  --dur-long: 420ms;
-  --radius-card: 0.75rem;
+  --dur-short: 200ms;
+  --dur-long: 300ms;
+  --radius-card: 6px;
   --radius-pill: 999px;
-  --radius-input: 0.5rem;
+  --radius-input: 2px;
 }
 ```
 
@@ -282,41 +264,85 @@ Use the named 4-point scale in `tokens.css`. Do not add raw spacing values to pa
 
 ```css
 @theme {
-  --color-paper: oklch(97% 0.016 105);
-  --color-paper-2: oklch(94% 0.026 105);
-  --color-paper-3: oklch(90% 0.038 105);
-  --color-ink: oklch(20% 0.018 145);
-  --color-ink-2: oklch(34% 0.022 145);
-  --color-accent: oklch(70% 0.18 145);
-  --color-focus: oklch(42% 0.20 145);
-  --font-display: var(--font-bricolage), sans-serif;
-  --font-body: var(--font-geist), sans-serif;
+  --color-paper: oklch(97.5% 0.008 145);
+  --color-paper-2: oklch(94.5% 0.010 145);
+  --color-paper-3: oklch(91% 0.012 145);
+  --color-ink: oklch(20% 0.012 145);
+  --color-ink-2: oklch(36% 0.012 145);
+  --color-rule: oklch(82% 0.010 145);
+  --color-rule-2: oklch(72% 0.012 145);
+  --color-muted: oklch(45% 0.012 145);
+  --color-neutral: oklch(31% 0.012 145);
+  --color-accent: oklch(42% 0.120 150);
+  --color-focus: oklch(48% 0.180 150);
+  --font-display: var(--font-newsreader), ui-serif, serif;
+  --font-body: var(--font-geist), ui-sans-serif, sans-serif;
+  --font-outlier: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --spacing-3xs: 0.125rem;
+  --spacing-2xs: 0.25rem;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
+  --spacing-xl: 2.5rem;
+  --spacing-2xl: 4rem;
+  --spacing-3xl: 6rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
   --text-md: 1.25rem;
+  --text-lg: 1.5625rem;
+  --text-xl: 1.9531rem;
+  --text-2xl: 2.4414rem;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --radius-card: 6px;
+  --radius-pill: 999px;
+  --radius-input: 2px;
 }
 ```
 
-### DTCG tokens.json
+### DTCG `tokens.json`
 
 ```json
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "color": {
-    "paper": { "$value": "oklch(97% 0.016 105)", "$type": "color" },
-    "paper-2": { "$value": "oklch(94% 0.026 105)", "$type": "color" },
-    "ink": { "$value": "oklch(20% 0.018 145)", "$type": "color" },
-    "accent": { "$value": "oklch(70% 0.18 145)", "$type": "color" },
-    "focus": { "$value": "oklch(42% 0.20 145)", "$type": "color" }
+    "paper": { "$value": "oklch(97.5% 0.008 145)", "$type": "color" },
+    "paper-2": { "$value": "oklch(94.5% 0.010 145)", "$type": "color" },
+    "paper-3": { "$value": "oklch(91% 0.012 145)", "$type": "color" },
+    "ink": { "$value": "oklch(20% 0.012 145)", "$type": "color" },
+    "ink-2": { "$value": "oklch(36% 0.012 145)", "$type": "color" },
+    "rule": { "$value": "oklch(82% 0.010 145)", "$type": "color" },
+    "rule-2": { "$value": "oklch(72% 0.012 145)", "$type": "color" },
+    "muted": { "$value": "oklch(45% 0.012 145)", "$type": "color" },
+    "neutral": { "$value": "oklch(31% 0.012 145)", "$type": "color" },
+    "accent": { "$value": "oklch(42% 0.120 150)", "$type": "color" },
+    "accent-ink": { "$value": "oklch(97.5% 0.008 145)", "$type": "color" },
+    "focus": { "$value": "oklch(48% 0.180 150)", "$type": "color" }
   },
   "font": {
-    "display": { "$value": "Bricolage Grotesque, sans-serif", "$type": "fontFamily" },
-    "body": { "$value": "Geist, sans-serif", "$type": "fontFamily" }
+    "display": { "$value": "Newsreader, ui-serif, serif", "$type": "fontFamily" },
+    "body": { "$value": "Geist, ui-sans-serif, sans-serif", "$type": "fontFamily" },
+    "outlier": { "$value": "JetBrains Mono, ui-monospace, monospace", "$type": "fontFamily" }
   },
   "space": {
+    "3xs": { "$value": "0.125rem", "$type": "dimension" },
+    "2xs": { "$value": "0.25rem", "$type": "dimension" },
+    "xs": { "$value": "0.5rem", "$type": "dimension" },
+    "sm": { "$value": "0.75rem", "$type": "dimension" },
     "md": { "$value": "1rem", "$type": "dimension" },
-    "lg": { "$value": "1.5rem", "$type": "dimension" }
+    "lg": { "$value": "1.5rem", "$type": "dimension" },
+    "xl": { "$value": "2.5rem", "$type": "dimension" },
+    "2xl": { "$value": "4rem", "$type": "dimension" },
+    "3xl": { "$value": "6rem", "$type": "dimension" },
+    "4xl": { "$value": "9rem", "$type": "dimension" }
+  },
+  "duration": {
+    "micro": { "$value": "120ms", "$type": "duration" },
+    "short": { "$value": "200ms", "$type": "duration" },
+    "long": { "$value": "300ms", "$type": "duration" }
   }
 }
 ```
@@ -325,19 +351,45 @@ Use the named 4-point scale in `tokens.css`. Do not add raw spacing values to pa
 
 ```css
 :root {
-  --background: 97% 0.016 105;
-  --foreground: 20% 0.018 145;
-  --card: 94% 0.026 105;
-  --card-foreground: 20% 0.018 145;
-  --primary: 70% 0.18 145;
-  --primary-foreground: 20% 0.018 145;
-  --secondary: 90% 0.038 105;
-  --secondary-foreground: 34% 0.022 145;
-  --muted: 79% 0.030 105;
-  --muted-foreground: 48% 0.025 145;
-  --border: 79% 0.030 105;
-  --input: 79% 0.030 105;
-  --ring: 42% 0.20 145;
-  --radius: 0.75rem;
+  --background: 97.5% 0.008 145;
+  --foreground: 20% 0.012 145;
+  --card: 94.5% 0.010 145;
+  --card-foreground: 20% 0.012 145;
+  --popover: 94.5% 0.010 145;
+  --popover-foreground: 20% 0.012 145;
+  --primary: 42% 0.120 150;
+  --primary-foreground: 97.5% 0.008 145;
+  --secondary: 91% 0.012 145;
+  --secondary-foreground: 36% 0.012 145;
+  --muted: 82% 0.010 145;
+  --muted-foreground: 45% 0.012 145;
+  --accent: 42% 0.120 150;
+  --accent-foreground: 97.5% 0.008 145;
+  --destructive: 55% 0.190 28;
+  --destructive-foreground: 97.5% 0.008 145;
+  --border: 82% 0.010 145;
+  --input: 82% 0.010 145;
+  --ring: 48% 0.180 150;
+  --radius: 6px;
+}
+
+.dark {
+  --background: 14% 0.010 145;
+  --foreground: 94% 0.008 145;
+  --card: 18% 0.012 145;
+  --card-foreground: 94% 0.008 145;
+  --popover: 18% 0.012 145;
+  --popover-foreground: 94% 0.008 145;
+  --primary: 76% 0.100 150;
+  --primary-foreground: 14% 0.010 145;
+  --secondary: 22% 0.014 145;
+  --secondary-foreground: 78% 0.010 145;
+  --muted: 31% 0.012 145;
+  --muted-foreground: 70% 0.010 145;
+  --accent: 76% 0.100 150;
+  --accent-foreground: 14% 0.010 145;
+  --border: 31% 0.012 145;
+  --input: 31% 0.012 145;
+  --ring: 80% 0.150 150;
 }
 ```

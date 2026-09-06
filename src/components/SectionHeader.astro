@@ -1,0 +1,25 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  actionHref?: string;
+  actionLabel?: string;
+  id?: string;
+}
+
+const { title, description, actionHref, actionLabel, id } = Astro.props;
+---
+
+<header class="section-header">
+  <div class="section-header__copy">
+    <h2 id={id} class="section-header__title">{title}</h2>
+    {description && <p class="section-header__description">{description}</p>}
+  </div>
+
+  {actionHref && actionLabel && (
+    <a class="text-link section-header__action" href={actionHref}>
+      {actionLabel}
+      <span aria-hidden="true">→</span>
+    </a>
+  )}
+</header>

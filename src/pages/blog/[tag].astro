@@ -1,8 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import Icon from '../../components/Icon.astro';
 import PostCard from '../../components/PostCard.astro';
-import { tagToSlug, getPostsByTag } from '../../support/blog';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatTagName, getPostsByTag, tagToSlug } from '../../support/blog';
 import { siteName } from '../../support/site';
 
 export async function getStaticPaths() {
@@ -11,40 +10,41 @@ export async function getStaticPaths() {
   return [...tagMap.entries()].map(([tagSlug, tagPosts]) => ({
     params: { tag: tagSlug },
     props: {
-      tagName: tagPosts[0].data.tags.find((t) => tagToSlug(t) === tagSlug) ?? tagSlug,
+      tagName: tagPosts[0].data.tags.find((tag) => tagToSlug(tag) === tagSlug) ?? tagSlug,
       posts: tagPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()),
     },
   }));
 }
 
 const { tagName, posts } = Astro.props;
+const displayTagName = formatTagName(tagName);
 ---
 
-<BaseLayout title={tagName} description={`All posts tagged "${tagName}" on ${siteName}.`}>
-  <div class="index-page">
-    <a
-      href="/blog/"
-      class="text-link"
-    >
-      <Icon name="arrow_back" class="text-[16px]" />
-      All posts
+<BaseLayout
+  title={`Writing about ${displayTagName}`}
+  description={`All ${posts.length} ${posts.length === 1 ? 'post' : 'posts'} about ${displayTagName} on ${siteName}.`}
+  socialImageAlt={`Technical writing by Jewei Mak about ${displayTagName}.`}
+>
+  <div class="writing-page writing-page--tag">
+    <a class="text-link writing-back-link" href="/blog/">
+      <span aria-hidden="true">←</span>
+      All writing
     </a>
 
-    <header class="index-head index-head--tag">
-      <div class="tag-summary">
-        <h1>
-          #{tagName}
-        </h1>
-        <span
-          >{posts.length} post{posts.length !== 1 ? 's' : ''}</span
-        >
+    <header class="writing-head writing-head--tag">
+      <div class="writing-head__copy">
+        <h1>{displayTagName}</h1>
+        <p>{posts.length} {posts.length === 1 ? 'post' : 'posts'} in this thread.</p>
       </div>
     </header>
 
-    <div class="archive-list">
-      {posts.map((post, index) => (
-        <PostCard post={post} variant="list" index={index} currentTag={tagName} />
-      ))}
-    </div>
+    <section class="writing-archive" aria-labelledby="tag-archive-title">
+      <h2 class="sr-only" id="tag-archive-title">Posts about {displayTagName}</h2>
+      <div class="writing-list">
+        {posts.map((post) => (
+          <PostCard post={post} variant="list" currentTag={tagName} headingLevel={3} />
+        ))}
+      </div>
+    </section>
   </div>
 </BaseLayout>

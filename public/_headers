@@ -36,10 +36,13 @@
   Content-Type: text/markdown; charset=utf-8
 
 /theme.js
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /nav.js
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/article.js
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /*
   X-Content-Type-Options: nosniff

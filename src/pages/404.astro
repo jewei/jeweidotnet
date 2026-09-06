@@ -1,104 +1,48 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
-import { Image } from 'astro:assets';
-import illustration from '../assets/404-illustration.webp';
 ---
 
 <BaseLayout
   title="Page Not Found"
-  description="The page you're looking for doesn't exist or has been moved."
+  description="The requested page does not exist or has moved."
   robots="noindex, nofollow"
   hasMarkdown={false}
+  canonical={false}
 >
-
   <div class="not-found">
     <div class="not-found__grid">
-      <!-- Illustration -->
-      <div class="not-found__visual">
-        <Image
-          src={illustration}
-          alt="A confused robot lost among floating code braces"
-          class="not-found__image"
-          layout="none"
-          widths={[256, 320, 512, 640]}
-          sizes="(min-width: 768px) 320px, 256px"
-          format="webp"
-          loading="eager"
-        />
-        <div
-          class="not-found__code"
-        >
-          <pre
-            class="font-code text-code text-primary leading-tight text-left"><code>error = null;
+      <div class="not-found__visual" aria-hidden="true">
+        <span class="not-found__mark">404</span>
+        <div class="not-found__code">
+          <pre><code>error = null;
 while (lost) {'{'}
   wander();
 {'}'}</code></pre>
         </div>
       </div>
 
-      <!-- Copy -->
       <div class="not-found__copy">
+        <p class="not-found__status">HTTP 404 · Not found</p>
         <h1 class="not-found__title">This page got lost in the code.</h1>
         <p>
-          The page you're looking for has been garbage-collected or never existed in this timeline.
+          It may have moved, or it may never have existed. The work and writing are still here.
         </p>
-      </div>
-
-      <!-- Actions -->
-      <div class="not-found__actions">
-        <a
-          href="/"
-          class="tactile-btn tactile-btn--primary"
-        >
-          <Icon name="home" class="text-xl" />
-          Go Home
-        </a>
-        <div class="not-found__secondary-actions">
-          <a
-            href="/blog/"
-            class="tactile-btn tactile-btn--secondary"
-          >
-            Blog
+        <div class="not-found__actions">
+          <a href="/" class="button-link button-link--primary">
+            <Icon name="home" />
+            Go home
           </a>
-          <a
-            href="/about/"
-            class="tactile-btn tactile-btn--secondary"
-          >
-            About
+          <a href="/projects/" class="text-link">
+            Explore projects
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="/blog/" class="text-link text-link--quiet">
+            Read writing
+            <span aria-hidden="true">→</span>
           </a>
         </div>
-      </div>
-
-      <div>
-        <span class="not-found__status">
-          HTTP 404: Not_Found
-        </span>
       </div>
     </div>
   </div>
 </BaseLayout>
-
-<style>
-  .not-found-blob {
-    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-  }
-
-  .not-found-float { animation: none; }
-
-  @keyframes not-found-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .not-found-float {
-      animation: none;
-    }
-  }
-</style>

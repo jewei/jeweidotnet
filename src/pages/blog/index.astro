@@ -1,50 +1,89 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { getPublishedPosts, getAllTags } from '../../support/blog';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatTagName, getAllTags, getPublishedPosts } from '../../support/blog';
 
 const posts = await getPublishedPosts();
 const allTags = getAllTags(posts);
+const latestPosts = posts.slice(0, 3);
+const archivedPosts = posts.slice(3);
+const archiveByYear = new Map<number, typeof posts>();
+
+for (const post of archivedPosts) {
+  const year = post.data.pubDate.getFullYear();
+  const yearPosts = archiveByYear.get(year) ?? [];
+  yearPosts.push(post);
+  archiveByYear.set(year, yearPosts);
+}
 ---
 
 <BaseLayout
-  title="Blog"
-  description="All posts by Jewei Mak — software engineering, system design, and the craft of building things."
+  title="Writing"
+  description="Technical writing by Jewei Mak about backend architecture, PHP, developer tools, infrastructure, and AI-assisted engineering."
+  socialImageAlt="Technical writing by software engineer Jewei Mak."
 >
-  <div class="index-page">
-    <header class="index-head">
-      <h1>Blog</h1>
-      <p>
-        Thoughts on software development, minimal design, and trying to build things that feel good
-        to use.
-      </p>
+  <div class="writing-page">
+    <header class="writing-head">
+      <div class="writing-head__copy">
+        <h1>Writing</h1>
+        <p>
+          Field notes on backend architecture, developer tools, infrastructure, and learning in
+          public.
+        </p>
+      </div>
+      <a class="text-link writing-head__rss" href="/rss.xml">
+        Follow by RSS
+        <span aria-hidden="true">→</span>
+      </a>
     </header>
 
-    {
-      allTags.length > 0 && (
-        <section class="filter-strip" aria-label="Filter posts by topic">
-          <a
-            href="/blog/"
-            class="filter-chip is-active"
-          >
-            All
-          </a>
-          {allTags.map(([slug, name]) => (
-            <a
-              href={`/blog/${slug}/`}
-              class="filter-chip"
-            >
-              {name}
-            </a>
-          ))}
-        </section>
-      )
-    }
+    {latestPosts.length > 0 && (
+      <section class="writing-archive writing-archive--latest" aria-labelledby="latest-writing-title">
+        <header class="writing-archive__head">
+          <h2 id="latest-writing-title">Latest</h2>
+          <p>{latestPosts.length} recent {latestPosts.length === 1 ? 'entry' : 'entries'}</p>
+        </header>
+        <div class="writing-list writing-list--latest">
+          {latestPosts.map((post) => <PostCard post={post} variant="list" headingLevel={3} />)}
+        </div>
+      </section>
+    )}
 
-    <section class="archive-list">
-      {posts.map((post) => (
-        <PostCard post={post} variant="list" />
-      ))}
-    </section>
+    {allTags.length > 0 && (
+      <nav class="topic-filter" aria-labelledby="topic-filter-title">
+        <span class="topic-filter__label" id="topic-filter-title">Browse by topic</span>
+        <div class="topic-filter__links">
+          <a class="filter-chip is-active" href="/blog/" aria-current="page">All</a>
+          {allTags.map(([slug, name]) => (
+            <a class="filter-chip" href={`/blog/${slug}/`}>{formatTagName(name)}</a>
+          ))}
+        </div>
+      </nav>
+    )}
+
+    {archivedPosts.length > 0 && (
+      <section class="writing-archive writing-archive--history" aria-labelledby="writing-archive-title">
+        <header class="writing-archive__head">
+          <h2 id="writing-archive-title">Archive</h2>
+          <p>{archivedPosts.length} older {archivedPosts.length === 1 ? 'entry' : 'entries'}</p>
+        </header>
+
+        <div class="writing-years">
+          {[...archiveByYear].map(([year, yearPosts]) => (
+            <section class="writing-year" aria-labelledby={`writing-year-${year}`}>
+              <header class="writing-year__head">
+                <h3 id={`writing-year-${year}`}>{year}</h3>
+                <p>{yearPosts.length} {yearPosts.length === 1 ? 'entry' : 'entries'}</p>
+              </header>
+              <div class="writing-list">
+                {yearPosts.map((post) => (
+                  <PostCard post={post} variant="list" headingLevel={4} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </section>
+    )}
   </div>
 </BaseLayout>

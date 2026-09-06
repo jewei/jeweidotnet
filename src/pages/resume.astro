@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/Icon.astro';
+import { authorName, authorProfiles, personId, siteUrl } from '../support/site';
 import {
   resumePdfUrl,
   resumeMeta,
@@ -9,188 +10,141 @@ import {
   education,
   experience,
 } from '../data/resume';
+
+const resumeJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  name: 'Résumé — Jewei Mak',
+  url: new URL('/resume/', siteUrl).href,
+  mainEntity: {
+    '@type': 'Person',
+    '@id': personId,
+    name: authorName,
+    url: new URL('/about/', siteUrl).href,
+    jobTitle: 'Senior Software Engineer',
+    description: resumeMeta.summary[0],
+    email: 'mailto:jewei@duck.com',
+    knowsAbout: coreStrengths,
+    sameAs: authorProfiles,
+  },
+};
 ---
 
-<BaseLayout title={resumeMeta.title} description={resumeMeta.summary[0]}>
-  <!-- Split Studio opening -->
-  <section class="resume-head">
-    <div class="space-y-4">
-      <div
-        class="resume-status"
-      >
-        <Icon name="spark" class="text-[18px]" />
-        <span class="font-label-md text-label-md">Available for Work</span>
+<BaseLayout
+  title={resumeMeta.title}
+  description="Résumé of Jewei Mak, a senior software engineer focused on Laravel, backend architecture, APIs, payments, and production systems."
+  socialImageAlt="Résumé of Jewei Mak — senior software engineer and Laravel specialist."
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(resumeJsonLd)} slot="head" />
+
+  <article class="resume-page">
+    <header class="resume-header">
+      <div class="resume-header__identity">
+        <p class="resume-kicker">Senior software engineer · backend architect</p>
+        <h1>Jewei Mak</h1>
+        <p class="resume-headline">{resumeMeta.headline}</p>
       </div>
-      <h1 class="resume-title">
-        Jewei Mak
-      </h1>
-      <p class="resume-lede">
-        {resumeMeta.headline}
-      </p>
-    </div>
-    <div class="shrink-0">
-      <a
-        href={resumePdfUrl}
-        download
-        class="resume-btn-primary w-full sm:w-auto inline-flex items-center justify-center gap-2"
-      >
-        <Icon name="download" class="text-[20px]" />
-        Download PDF Résumé
-      </a>
-    </div>
-  </section>
 
-  <!-- Split Studio body -->
-  <div class="resume-layout">
-    <!-- Sidebar -->
-    <div class="space-y-6 md:space-y-gutter">
-      <!-- Summary -->
-      <section class="resume-card group">
-        <h2 class="resume-section-title">
-          <Icon name="person" />
-          Summary
-        </h2>
-        <div
-          class="space-y-4 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75"
-        >
-          {resumeMeta.summary.map((paragraph) => <p>{paragraph}</p>)}
+      <div class="resume-actions" role="group" aria-label="Résumé actions">
+        <a href={resumePdfUrl} download class="button button--primary resume-download">
+          <Icon name="download" />
+          Download PDF
+        </a>
+        <a href="mailto:jewei@duck.com" class="text-link">Email Jewei <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <dl class="resume-facts">
+        <div>
+          <dt>Experience</dt>
+          <dd>15+ years</dd>
         </div>
-      </section>
+        <div>
+          <dt>Systems served</dt>
+          <dd>1M+ users</dd>
+        </div>
+        <div>
+          <dt>Payment providers</dt>
+          <dd>10+</dd>
+        </div>
+        <div>
+          <dt>Primary stack</dt>
+          <dd>Laravel · PHP</dd>
+        </div>
+      </dl>
+    </header>
 
-      <!-- Tech stack -->
-      <section class="resume-card">
-        <h2 class="resume-section-title">
-          <Icon name="code" />
-          Tech Stack
-        </h2>
-        <ul class="flex flex-wrap gap-2 list-none p-0 m-0">
-          {
-            techStack.map((tech) => (
-              <li>
-                <span class="resume-tag">{tech}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
+    <div class="resume-layout">
+      <aside class="resume-aside" aria-label="Profile and skills">
+        <section class="resume-section">
+          <h2>Profile</h2>
+          {resumeMeta.summary.map((paragraph) => <p>{paragraph}</p>)}
+        </section>
 
-      <!-- Education -->
-      <section class="resume-card">
-        <h2 class="resume-section-title">
-          <Icon name="school" />
-          Education
-        </h2>
-        <div class="space-y-4">
+        <section class="resume-section">
+          <h2>Core strengths</h2>
+          <ul class="resume-strengths">
+            {coreStrengths.map((strength) => <li>{strength}</li>)}
+          </ul>
+        </section>
+
+        <section class="resume-section">
+          <h2>Technology</h2>
+          <p class="resume-technology">{techStack.join(' · ')}</p>
+        </section>
+
+        <section class="resume-section">
+          <h2>Education</h2>
           {
             education.map((entry) => (
-              <div>
-                <p class="font-label-md text-label-md text-on-surface-variant dark:text-inverse-on-surface/60">
-                  {entry.period}
-                </p>
-                <h3 class="font-headline-md text-body-lg text-on-surface dark:text-inverse-on-surface font-semibold">
-                  {entry.degree}
-                </h3>
-                <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
-                  {entry.institution}
-                </p>
+              <div class="resume-education">
+                <p class="resume-period">{entry.period}</p>
+                <h3>{entry.degree}</h3>
+                <p>{entry.institution}</p>
               </div>
             ))
           }
-        </div>
-      </section>
-    </div>
+        </section>
+      </aside>
 
-    <!-- Main column -->
-    <div class="space-y-6 md:space-y-gutter">
-      <!-- Core strengths -->
-      <section class="resume-card md:p-8">
-        <h2 class="resume-section-title">
-          <Icon name="insights" />
-          Core Strengths
-        </h2>
-        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-x-8 list-none p-0 m-0">
+      <section class="resume-main" aria-labelledby="experience-heading">
+        <h2 id="experience-heading">Experience</h2>
+        <div class="resume-roles">
           {
-            coreStrengths.map((strength) => (
-              <li class="flex gap-2 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
-                <span
-                  class="text-primary dark:text-inverse-primary mt-1 shrink-0"
-                  aria-hidden="true"
-                >
-                  ✦
-                </span>
-                <span>{strength}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </section>
-
-      <!-- Experience -->
-      <section class="resume-card md:p-8">
-        <h2 class="resume-section-title mb-8">
-          <Icon name="work" />
-          Experience
-        </h2>
-        <div class="space-y-8">
-          {
-            experience.map((role, index) => (
-              <article
-                class="resume-timeline-item"
-                class:list={{ 'resume-timeline-item--last': index === experience.length - 1 }}
-                style={`--timeline-opacity: ${Math.max(0.2, 1 - index * 0.12)}`}
-              >
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-2">
+            experience.map((role) => (
+              <article class="resume-role">
+                <header class="resume-role__header">
                   <div>
-                    <h3 class="font-display text-headline-md text-on-surface dark:text-inverse-on-surface">
-                      {role.title}
-                    </h3>
+                    <h3>{role.title}</h3>
                     {role.companyUrl ? (
-                      <a
-                        href={role.companyUrl}
-                        class="font-body-lg text-primary dark:text-inverse-primary font-medium hover:underline underline-offset-2"
-                      >
-                        {role.company}
+                      <a href={role.companyUrl} target="_blank" rel="noopener noreferrer" class="resume-company">
+                        {role.company}<span class="sr-only"> (opens in new tab)</span>
                       </a>
                     ) : (
-                      <p class="font-body-lg text-primary dark:text-inverse-primary font-medium">
-                        {role.company}
-                      </p>
+                      <p class="resume-company">{role.company}</p>
                     )}
                   </div>
-                  <span class="resume-period">{role.period}</span>
-                </div>
-                <ul class="mt-4 space-y-3 list-none p-0 m-0">
-                  {role.highlights.map((highlight) => (
-                    <li class="flex gap-2 font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/75">
-                      <span
-                        class="text-primary dark:text-inverse-primary mt-1 shrink-0"
-                        aria-hidden="true"
-                      >
-                        ✦
-                      </span>
-                      <span>{highlight}</span>
-                    </li>
-                  ))}
+                  <p class="resume-period">{role.period}</p>
+                </header>
+
+                <ul class="resume-highlights">
+                  {role.highlights.map((highlight) => <li>{highlight}</li>)}
                 </ul>
+
                 {(role.stack || role.tools) && (
-                  <div class="mt-4 space-y-1 font-body-md text-sm text-on-surface-variant dark:text-inverse-on-surface/60">
+                  <dl class="resume-role__meta">
                     {role.stack && (
-                      <p>
-                        <strong class="text-on-surface dark:text-inverse-on-surface/90">
-                          Stack:
-                        </strong>{' '}
-                        {role.stack}
-                      </p>
+                      <div>
+                        <dt>Stack</dt>
+                        <dd>{role.stack}</dd>
+                      </div>
                     )}
                     {role.tools && (
-                      <p>
-                        <strong class="text-on-surface dark:text-inverse-on-surface/90">
-                          Tools:
-                        </strong>{' '}
-                        {role.tools}
-                      </p>
+                      <div>
+                        <dt>Tools</dt>
+                        <dd>{role.tools}</dd>
+                      </div>
                     )}
-                  </div>
+                  </dl>
                 )}
               </article>
             ))
@@ -198,73 +152,11 @@ import {
         </div>
       </section>
     </div>
-  </div>
 
-  <!-- CTA -->
-  <section
-    class="resume-card resume-cta mt-10 md:mt-14 p-8 md:p-10 text-center relative overflow-hidden"
-  >
-    <h2
-      class="font-display text-headline-lg text-on-surface dark:text-inverse-on-surface mb-4 relative z-10"
-    >
-      Interested in working together?
-    </h2>
-    <p
-      class="font-body-lg text-body-lg text-on-surface-variant dark:text-inverse-on-surface/75 mb-8 max-w-xl mx-auto relative z-10"
-    >
-      I'm open to senior backend roles, consulting, and interesting product engineering challenges.
-      Let's build something reliable.
-    </p>
-    <div class="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
-      <a href="mailto:jewei@duck.com" class="resume-btn-primary"> Send a Message </a>
-      <a href="/about/" class="resume-btn-secondary"> About Me </a>
-    </div>
-  </section>
+    <footer class="resume-contact">
+      <h2>Contact</h2>
+      <p>I am open to senior backend roles, consulting, and focused product engineering work.</p>
+      <p><a href="mailto:jewei@duck.com">jewei@duck.com</a> · <a href="https://github.com/jewei">github.com/jewei</a> · <a href="https://jewei.net">jewei.net</a></p>
+    </footer>
+  </article>
 </BaseLayout>
-
-<style>
-  /* Same entrance grammar as the homepage hero: the intro block rises, the
-     download CTA follows a beat later. Short — a recruiter is here to read. */
-  .resume-hero > * {
-    animation: resume-rise 0.6s var(--ease-out-quint) both;
-  }
-
-  .resume-hero > *:nth-child(2) {
-    animation-delay: 100ms;
-  }
-
-  @keyframes resume-rise {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* "Available for Work" reads as a live status; the spark twinkles to say so. */
-  .resume-badge :global(svg) {
-    animation: none;
-  }
-
-  @keyframes spark-twinkle {
-    0%,
-    100% {
-      transform: scale(1) rotate(0deg);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(0.82) rotate(20deg);
-      opacity: 0.7;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .resume-hero > *,
-    .resume-badge :global(svg) {
-      animation: none;
-    }
-  }
-</style>

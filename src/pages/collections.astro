@@ -1,159 +1,103 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Icon from '../components/Icon.astro';
+import { siteUrl, authorName, personId } from '../support/site';
 
-const quotes = [
+const notes = [
   {
     text: 'I build software with the care of craft: minimal systems, deliberate details, and code I try to shape like art.',
-    context: 'Personal Note',
+    context: 'Personal note',
   },
   {
     text: 'Speed is fun, but I still obsess over clean architecture, thoughtful DX, and systems designed to age well.',
-    context: 'Building Mantra',
+    context: 'Building principle',
   },
   {
     text: 'Cooking feels a lot like coding: precision matters, but so does instinct, timing, and knowing when to stop tinkering.',
-    context: 'Craft Note',
+    context: 'Craft note',
   },
 ];
 
-const insights = [
+const groups = [
   {
-    title: 'Ideas I Keep Returning To',
-    description: 'Recurring rabbit holes for reading, writing, and building.',
-    items: [
-      'AI-assisted software delivery',
-      'Developer experience',
-      'Systems that stay simple',
-      'Product architecture',
-    ],
+    title: 'Ideas I keep returning to',
+    description: 'Recurring subjects in the work and writing.',
+    items: ['AI-assisted software delivery', 'Developer experience', 'Systems that stay simple', 'Product architecture'],
   },
   {
-    title: 'Bookshelf Themes',
-    description: 'The subjects most likely to pull me into another chapter.',
+    title: 'Bookshelf themes',
+    description: 'Subjects most likely to pull me into another chapter.',
     items: ['Psychology', 'Systems thinking', 'Philosophy', 'Science fiction'],
   },
   {
-    title: 'Everyday Inputs',
-    description: 'Small sources of texture outside the editor.',
-    items: [
-      'Photography walks',
-      'Music for deep work',
-      'Kitchen experiments',
-      'Quiet product details',
-    ],
+    title: 'Everyday inputs',
+    description: 'Things outside the editor that feed the work.',
+    items: ['Photography walks', 'Music for deep work', 'Kitchen experiments', 'Quiet product details'],
   },
 ];
+
+const collectionJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Collections',
+  url: new URL('/collections/', siteUrl).href,
+  description: 'A small, growing index of notes, recurring ideas, books, and everyday inputs kept by Jewei Mak.',
+  author: {
+    '@type': 'Person',
+    '@id': personId,
+    name: authorName,
+  },
+};
 ---
 
 <BaseLayout
   title="Collections"
-  description="Random thoughts, quotes, and curated insights by Jewei Mak."
+  description="A small, growing index of notes, recurring ideas, books, and everyday inputs kept by Jewei Mak."
+  socialImageAlt="Collections on jewei.net — notes, recurring ideas, books, and everyday inputs."
 >
-  <div class="collection-page">
-    <section class="collection-head">
-      <div>
-        <h1>
-          Thoughts & Quotes
-        </h1>
-        <p>
-          A collection of whispers, half-baked ideas, and things I like.
-        </p>
-        <div class="home-actions">
-          <a
-            href="#quotes"
-            class="tactile-btn tactile-btn--primary"
-          >
-            <Icon name="star" class="text-[16px]" />
-            Quotes
-          </a>
-          <a
-            href="#insights"
-            class="tactile-btn tactile-btn--secondary"
-          >
-            <Icon name="insights" class="text-[16px]" />
-            Insights
-          </a>
-        </div>
-      </div>
-    </section>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(collectionJsonLd)} slot="head" />
 
-    <section id="quotes" class="collection-section">
-      <div class="collection-section__head">
-        <div>
-          <h2>
-            Random thoughts
-          </h2>
-        </div>
-        <p>
-          Small observations, half-formed principles, and lines I want to keep close.
-        </p>
-      </div>
+  <div class="index-page collection-page">
+    <header class="index-head">
+      <h1>Collections</h1>
+      <p>A small, growing index of lines and subjects I want to keep in public view.</p>
+    </header>
 
-      <div class="quote-grid">
+    <section id="quotes" class="collection-section" aria-labelledby="notes-heading">
+      <header class="section-header">
+        <h2 id="notes-heading">Notes worth keeping</h2>
+        <p>Three working principles, for now.</p>
+      </header>
+
+      <ol class="collection-ledger">
         {
-          quotes.map((quote) => (
-            <article
-              class="quote-card"
-            >
-              <div>
-                <p class="quote-card__text">
-                  “{quote.text}”
-                </p>
-                <div class="quote-card__meta">
-                  <span aria-hidden="true">—</span>
-                  <span>
-                    {quote.context}
-                  </span>
-                </div>
-              </div>
-            </article>
+          notes.map((note, index) => (
+            <li class="collection-note">
+              <span class="collection-note__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+              <blockquote>
+                <p>“{note.text}”</p>
+                <footer>{note.context}</footer>
+              </blockquote>
+            </li>
           ))
         }
-      </div>
+      </ol>
     </section>
 
-    <section id="insights" class="collection-section">
-      <div class="collection-section__head">
-        <div>
-          <h2>
-            Curated insights
-          </h2>
-        </div>
-        <p>
-          Insights for anything I want to sort, revisit, recommend, or keep in public view.
-        </p>
-      </div>
+    <section id="insights" class="collection-section" aria-labelledby="subjects-heading">
+      <header class="section-header">
+        <h2 id="subjects-heading">Recurring subjects</h2>
+        <p>This is a reading trail, not a complete taxonomy.</p>
+      </header>
 
-      <div class="collection-index">
+      <div class="collection-groups">
         {
-          insights.map((list, index) => (
-            <article class="collection-index__card">
-              <div>
-                <div class="flex flex-col md:flex-row md:items-start gap-5 md:gap-8">
-                  <div class="md:w-56 shrink-0">
-                    <div class="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-surface-container dark:bg-bg-dark text-primary dark:text-inverse-primary font-label-md text-label-md">
-                      {String(index + 1).padStart(2, '0')}
-                    </div>
-                    <h3 class="font-headline-md text-headline-md text-on-surface dark:text-inverse-on-surface mb-2 leading-tight">
-                      {list.title}
-                    </h3>
-                    <p class="font-body-md text-body-md text-on-surface-variant dark:text-inverse-on-surface/65">
-                      {list.description}
-                    </p>
-                  </div>
-                  <ol class="flex-1 space-y-4">
-                    {list.items.map((item, itemIndex) => (
-                      <li class="grid grid-cols-[2.5rem_1fr] gap-3 font-body-lg text-body-lg text-on-surface dark:text-inverse-on-surface/90">
-                        <span class="font-code text-code text-primary dark:text-inverse-primary tabular-nums">
-                          {String(itemIndex + 1).padStart(2, '0')}
-                        </span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </div>
+          groups.map((group) => (
+            <article class="collection-group">
+              <h3>{group.title}</h3>
+              <p>{group.description}</p>
+              <ul>
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
             </article>
           ))
         }
@@ -161,25 +105,3 @@ const insights = [
     </section>
   </div>
 </BaseLayout>
-
-<style>
-  .bubble-float {
-    animation: none;
-  }
-
-  @keyframes bubble-float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .bubble-float {
-      animation: none;
-    }
-  }
-</style>

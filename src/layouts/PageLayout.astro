@@ -1,11 +1,13 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import { siteUrl, authorName } from '../support/site';
+import { authorName, authorProfiles, personId, siteUrl } from '../support/site';
+import avatar from '../assets/jewei.jpg';
 
 interface Props {
   frontmatter: {
     title: string;
     description?: string;
+    lede?: string;
   };
 }
 
@@ -13,30 +15,48 @@ const { frontmatter } = Astro.props;
 
 const isAboutPage = frontmatter.title === 'About Me';
 const pageType = frontmatter.title === 'Contact' ? 'ContactPage' : 'WebPage';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const pageJsonLd = isAboutPage
   ? {
       '@context': 'https://schema.org',
       '@type': 'Person',
+      '@id': personId,
       name: authorName,
       url: `${siteUrl}/about/`,
+      image: new URL(avatar.src, siteUrl).href,
+      jobTitle: 'Senior Software Engineer',
       description: frontmatter.description,
-      sameAs: ['https://github.com/jewei', 'https://x.com/jewei'],
+      knowsAbout: [
+        'Backend architecture',
+        'Laravel',
+        'PHP',
+        'Application programming interfaces',
+        'Payment infrastructure',
+        'Distributed systems',
+        'Cloudflare',
+        'Amazon Web Services',
+        'AI-assisted software engineering',
+      ],
+      sameAs: authorProfiles,
     }
   : {
       '@context': 'https://schema.org',
       '@type': pageType,
       name: frontmatter.title,
-      url: new URL(Astro.url.pathname, siteUrl).href,
+      url: canonicalUrl,
       description: frontmatter.description,
       author: {
         '@type': 'Person',
-        name: authorName,
-        url: `${siteUrl}/about/`,
+        '@id': personId,
       },
     };
 ---
 
-<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  socialImageAlt={`${frontmatter.title} — ${frontmatter.description ?? 'a page on jewei.net'}`}
+>
   <script
     is:inline
     type="application/ld+json"
@@ -44,14 +64,14 @@ const pageJsonLd = isAboutPage
     slot="head"
   />
 
-  <div class="page-document">
+  <div class:list={['page-document', isAboutPage && 'page-document--about']}>
     <header class="page-head">
       <h1 class="page-title">
         {frontmatter.title}
       </h1>
       {
-        frontmatter.description && (
-          <p class="page-lede">{frontmatter.description}</p>
+        (frontmatter.lede ?? frontmatter.description) && (
+          <p class="page-lede">{frontmatter.lede ?? frontmatter.description}</p>
         )
       }
     </header>

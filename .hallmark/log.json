@@ -1,5 +1,41 @@
 [
   {
+    "date": "2026-09-06",
+    "scope": "page",
+    "macrostructure": "Long Document with Split Diptych introduction",
+    "theme": "custom",
+    "theme_axes": "light / roman-serif / chromatic-green",
+    "vibe": "personal engineering profile, direct and exact",
+    "enrichment": "existing portrait",
+    "nav": "N6 Compact Masthead",
+    "footer": "Ft6 Letter Close",
+    "brief": "improve the About page with a useful introduction, professional proof, interests ledger, and clear contact close"
+  },
+  {
+    "date": "2026-09-06",
+    "scope": "app",
+    "macrostructure": "Index-First / Long Document",
+    "theme": "custom",
+    "theme_axes": "light / roman-serif / chromatic-green",
+    "vibe": "quiet technical journal, reading-first archive",
+    "enrichment": "none",
+    "nav": "N6 Compact Masthead",
+    "footer": "Ft6 Letter Close",
+    "brief": "put recent writing first, group the archive by year, and simplify article navigation"
+  },
+  {
+    "date": "2026-09-04",
+    "scope": "app",
+    "macrostructure": "Workbench / Index-First / Long Document / Split Studio",
+    "theme": "custom",
+    "theme_axes": "light / roman-serif / chromatic-green",
+    "vibe": "quiet technical journal, personal and exact",
+    "enrichment": "existing portrait and project captures",
+    "nav": "N6 Compact Masthead",
+    "footer": "Ft6 Letter Close",
+    "brief": "editorial redesign for engineering peers who explore work and read writing"
+  },
+  {
     "date": "2026-08-24",
     "scope": "app",
     "macrostructure": "Ecosystem Index / Index-First / Long Document / Split Studio",

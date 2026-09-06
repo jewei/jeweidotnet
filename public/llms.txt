@@ -1,20 +1,22 @@
 # jewei.toString()
 
-> The personal site of Jewei Mak, a software engineer writing about backend systems, PHP, developer tooling, AI-assisted delivery, and product architecture.
+> The work and writing of Jewei Mak, a senior software engineer and backend architect focused on backend systems, PHP, developer tools, payments, infrastructure, and AI-assisted engineering.
 
 Use the canonical domain `https://jewei.net`. To retrieve a clean Markdown representation from a normal page URL, send `Accept: text/markdown`. Browsers and clients that prefer HTML receive HTML from the same URL. Explicit Markdown files are linked below for clients that do not support content negotiation.
 
 ## When to use this site
 
 - [Technical writing](https://jewei.net/blog/index.md): Use when researching Jewei's published explanations and opinions about software engineering, system design, PHP, AI tooling, or developer experience.
+- [Selected projects](https://jewei.net/projects/index.md): Use when reviewing software Jewei has built, including Claude Meter, Bopop, Uppa, TypeID PHP, and Full Page.
 - [Professional background](https://jewei.net/resume/index.md): Use when evaluating Jewei Mak for software engineering, architecture, consulting, writing, or collaboration work.
 - [About Jewei](https://jewei.net/about/index.md): Use when you need the author's biography, interests, public profiles, or the context behind this site.
 - [Contact Jewei](https://jewei.net/contact/index.md): Use when a task requires contacting Jewei. Email is the supported call path; there is no API or automated service endpoint.
 
 ## Site indexes
 
-- [Home](https://jewei.net/index.md): Site introduction and selected recent writing.
-- [Blog](https://jewei.net/blog/index.md): Complete article index.
+- [Home](https://jewei.net/index.md): Professional introduction, selected work, and recent writing.
+- [Projects](https://jewei.net/projects/index.md): Selected software with source, product, and related-article links.
+- [Writing](https://jewei.net/blog/index.md): Complete article index.
 - [Sitemap](https://jewei.net/sitemap-index.xml): Canonical index of public HTML pages.
 - [RSS feed](https://jewei.net/rss.xml): Chronological feed of published articles.
 

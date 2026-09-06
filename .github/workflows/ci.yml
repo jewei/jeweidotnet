@@ -23,43 +23,37 @@ jobs:
       - run: bun run test:agent
       - run: bun run test:smoke
 
-      # Temporary disabled link check as it checks post links that are not yet built.
+      - name: Restore lychee binary
+        uses: actions/cache@v5
+        with:
+          path: ${{ runner.tool_cache }}/lychee
+          key: lychee-v0.24.2-${{ runner.os }}-x86_64-unknown-linux-gnu
 
-      # - name: Restore lychee binary
-      #   uses: actions/cache@v5
-      #   with:
-      #     path: ${{ runner.tool_cache }}/lychee
-      #     key: lychee-v0.24.2-${{ runner.os }}-x86_64-unknown-linux-gnu
+      - name: Install lychee
+        run: |
+          LYCHEE_DIR="${RUNNER_TOOL_CACHE}/lychee"
+          TASK_BIN_DIR="${RUNNER_TEMP}/bin"
+          mkdir -p "${LYCHEE_DIR}" "${TASK_BIN_DIR}"
+          if [ ! -x "${LYCHEE_DIR}/lychee" ]; then
+            curl --fail --location --retry 3 --retry-all-errors --silent --show-error \
+              https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz \
+              --output "${RUNNER_TEMP}/lychee.tar.gz"
+            tar -xzf "${RUNNER_TEMP}/lychee.tar.gz" -C "${RUNNER_TEMP}"
+            install -Dm755 \
+              "${RUNNER_TEMP}/lychee-x86_64-unknown-linux-gnu/lychee" \
+              "${LYCHEE_DIR}/lychee"
+          fi
+          install -Dm755 "${LYCHEE_DIR}/lychee" "${TASK_BIN_DIR}/lychee"
+          echo "${TASK_BIN_DIR}" >> "${GITHUB_PATH}"
 
-      # - name: Install lychee
-      #   run: |
-      #     LYCHEE_DIR="${RUNNER_TOOL_CACHE}/lychee"
-      #     mkdir -p "${LYCHEE_DIR}" "${HOME}/.local/bin"
-      #     if [ ! -x "${LYCHEE_DIR}/lychee" ]; then
-      #       curl --fail --location --retry 3 --retry-all-errors --silent --show-error \
-      #         https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz \
-      #         --output "${RUNNER_TEMP}/lychee.tar.gz"
-      #       tar -xzf "${RUNNER_TEMP}/lychee.tar.gz" -C "${RUNNER_TEMP}"
-      #       install -Dm755 \
-      #         "${RUNNER_TEMP}/lychee-x86_64-unknown-linux-gnu/lychee" \
-      #         "${LYCHEE_DIR}/lychee"
-      #     fi
-      #     install -Dm755 "${LYCHEE_DIR}/lychee" "${HOME}/.local/bin/lychee"
-      #     echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+      - name: Check internal links
+        run: >-
+          lychee --offline --no-progress
+          --root-dir "${{ github.workspace }}/dist"
+          './dist/**/*.html'
 
-      # - name: Link check
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   run: >-
-      #     lychee --no-progress --max-concurrency 4
-      #     --root-dir "${{ github.workspace }}/dist"
-      #     --exclude '^https://femmily\.com'
-      #     './dist/**/*.html'
-
-      # Temporary disabled Lighthouse CI as it is taking too long to run.
-
-      # - name: Lighthouse CI
-      #   uses: treosh/lighthouse-ci-action@v12
-      #   with:
-      #     configPath: ./lighthouserc.cjs
-      #     uploadArtifacts: true
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.cjs
+          uploadArtifacts: true

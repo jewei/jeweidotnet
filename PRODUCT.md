@@ -8,7 +8,7 @@ brand
 
 Three overlapping audiences, in priority order:
 
-1. **Fellow developers** — readers arriving via search, RSS, or shared links to technical posts on software engineering, PHP, tooling, and system design. Context: reading long-form technical content, often on mobile or in a spare moment. Job: learn something useful, enjoy the read, maybe subscribe or return.
+1. **Engineering peers** — developers and technical leaders who want to inspect Jewei's work or read practical writing about software engineering, PHP, tooling, AI-assisted work, and system design. Job: find useful work, understand how Jewei thinks, and return to the writing.
 2. **Recruiters and prospective clients** — evaluating Jewei professionally via the resume page and overall site quality. Job: quickly assess credibility, skills, and taste.
 3. **Jewei himself** — the site doubles as a personal archive of thinking (blog, curated collections). Writing for the archive keeps the voice honest and personal.
 
@@ -18,11 +18,11 @@ jewei.net is a personal developer blog and portfolio. It exists to publish techn
 
 ## Brand Personality
 
-**Cute but Premium.** Playful-Minimal: the clarity and restraint of high-end interfaces combined with the charm of indie-creative portfolios. Warm, whimsical, approachable — doodles, sparkles, soft-tinted surfaces — but never at the expense of technical authority or reading comfort. The site should feel unmistakably one person's, not a platform theme.
+**Quiet technical editorial.** Minimal, precise, personal, and confident. The site uses publication typography, useful technical detail, and small moments of developer humour. It avoids decorative UI and lets the work and writing carry the page. The result must feel like one engineer's long-kept website, not a platform theme.
 
 ## Anti-references
 
-- **Corporate SaaS landing pages**: hero-metric templates, gradient text, identical icon-card grids, marketing-speak, generic purple-gradient startup aesthetic.
+- **Corporate SaaS landing pages**: hero-metric templates, gradient text, identical icon-card grids, marketing language, and generic startup styling.
 - **Brutalist dev-blogs**: monospace-everything, terminal cosplay, harsh pure black/white, deliberately hostile density.
 - Anything that reads as an anonymous platform default (stock Medium/Substack look).
 
@@ -30,7 +30,7 @@ jewei.net is a personal developer blog and portfolio. It exists to publish techn
 
 1. **Reading is the product.** Long-form legibility beats decoration; whimsy lives in the margins, never in the text column.
 2. **Polish is the portfolio.** Every detail (motion, spacing, code blocks, OG images) is itself evidence of competence — ship nothing that undercuts that.
-3. **Whimsy with restraint.** Doodles, stickers, and blobs are seasoning, applied deliberately in a few places, not scaffolding repeated on every section.
+3. **Personality with restraint.** Developer references and humour can appear in small details. They must not become the page structure.
 4. **Personal, not templated.** If an element could appear on any developer blog unchanged, rework it until it couldn't.
 5. **Fast and quiet.** Static output, self-hosted fonts, Lighthouse-clean; performance is part of the brand promise.
 

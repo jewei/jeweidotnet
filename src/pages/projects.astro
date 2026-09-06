@@ -1,0 +1,81 @@
+---
+import ProjectCard from '../components/ProjectCard.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { projects } from '../data/projects';
+import { siteUrl } from '../support/site';
+
+const projectListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Software projects by Jewei Mak',
+  numberOfItems: projects.length,
+  itemListElement: projects.map((project, index) => {
+    const source = project.links.find((link) => link.label === 'Source');
+    const primaryUrl = source?.href ?? new URL(project.articleHref, siteUrl).href;
+    const shared = {
+      '@type': project.schemaType,
+      name: project.name,
+      description: project.description,
+      url: primaryUrl,
+      mainEntityOfPage: new URL(project.articleHref, siteUrl).href,
+    };
+
+    return {
+      '@type': 'ListItem',
+      position: index + 1,
+      item:
+        project.schemaType === 'SoftwareApplication'
+          ? {
+              ...shared,
+              applicationCategory: 'UtilitiesApplication',
+              operatingSystem: project.operatingSystem,
+              sameAs: source?.href,
+            }
+          : {
+              ...shared,
+              codeRepository: source?.href,
+              programmingLanguage: project.programmingLanguage,
+            },
+    };
+  }),
+};
+---
+
+<BaseLayout
+  title="Projects"
+  description="Software projects by Jewei Mak: native macOS tools, browser extensions, edge infrastructure, and open-source PHP libraries."
+  socialImageAlt="Selected software projects by Jewei Mak."
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(projectListJsonLd)} slot="head" />
+
+  <div class="projects-page">
+    <header class="projects-head">
+      <div class="projects-head__copy">
+        <h1>Projects</h1>
+        <p>
+          Native tools, browser extensions, edge infrastructure, and PHP libraries. Each one solves a problem that I
+          wanted out of my way.
+        </p>
+      </div>
+      <a class="text-link projects-head__action" href="https://github.com/jewei" target="_blank" rel="noopener noreferrer">
+        More on GitHub
+        <span aria-hidden="true">↗</span>
+        <span class="sr-only"> (opens in new tab)</span>
+      </a>
+    </header>
+
+    <section class="projects-list" aria-labelledby="projects-list-title">
+      <h2 class="sr-only" id="projects-list-title">Selected software projects</h2>
+      {projects.map((project, index) => (
+        <ProjectCard project={project} variant="index" headingLevel={3} priority={index === 0} />
+      ))}
+    </section>
+
+    <aside class="projects-note" aria-label="Project note">
+      <p>
+        The source links show the implementation. The related articles explain the decisions,
+        trade-offs, and lessons that survived the build.
+      </p>
+    </aside>
+  </div>
+</BaseLayout>

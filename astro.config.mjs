@@ -4,9 +4,12 @@ import path from 'node:path';
 import { defineConfig, fontProviders } from 'astro/config';
 import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
-import tailwindcss from '@tailwindcss/vite';
 import { parse } from 'yaml';
 import rehypeExternalLinks from 'rehype-external-links';
+import rehypeCodeBlocks, {
+  codeFilenameTransformer,
+  rehypeFigures,
+} from './src/support/rehype-code-blocks.ts';
 
 /**
  * Build a map of `/{slug}/` → ISO `lastmod` for the sitemap.
@@ -76,7 +79,12 @@ function rehypeTableScroll() {
         return {
           type: 'element',
           tagName: 'div',
-          properties: { className: ['table-scroll'] },
+          properties: {
+            className: ['table-scroll'],
+            tabIndex: 0,
+            role: 'region',
+            ariaLabel: 'Scrollable table',
+          },
           children: [child],
         };
       }
@@ -91,8 +99,17 @@ export default defineConfig({
   site: 'https://jewei.net',
   output: 'static',
   markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'github-light-high-contrast',
+        dark: 'github-dark-high-contrast',
+      },
+      transformers: [codeFilenameTransformer],
+      wrap: false,
+    },
     processor: unified({
       rehypePlugins: [
+        rehypeFigures,
         [
           rehypeExternalLinks,
           {
@@ -103,6 +120,7 @@ export default defineConfig({
           },
         ],
         rehypeTableScroll,
+        rehypeCodeBlocks,
       ],
     }),
   },
@@ -125,23 +143,16 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Bricolage Grotesque',
-      cssVariable: '--font-bricolage',
-      weights: [700, 800],
-      styles: ['normal'],
-    },
-    {
-      provider: fontProviders.google(),
-      name: 'Lexend',
-      cssVariable: '--font-lexend',
-      weights: [400, 500, 600, 700],
+      name: 'Newsreader',
+      cssVariable: '--font-newsreader',
+      weights: [400, 700],
       styles: ['normal'],
     },
     {
       provider: fontProviders.google(),
       name: 'Geist',
       cssVariable: '--font-geist',
-      weights: [400, 500, 600, 700],
+      weights: [400, 700],
       styles: ['normal'],
     },
     {
@@ -155,8 +166,5 @@ export default defineConfig({
   ],
   build: {
     inlineStylesheets: 'auto',
-  },
-  vite: {
-    plugins: [tailwindcss()],
   },
 });

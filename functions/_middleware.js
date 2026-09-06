@@ -1,5 +1,13 @@
 const PRODUCES = ['text/html', 'text/markdown'];
 const STATIC_EXTENSION = /\.(?:css|js|mjs|map|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|eot|xml|txt|json|pdf|mp4|webm|mp3|wav|ogg|zip)$/i;
+const SECURITY_HEADERS = {
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' https://cloud.umami.is https://static.cloudflareinsights.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloud.umami.is https://gateway.umami.is https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+};
 
 function parseAccept(header) {
   return header
@@ -77,6 +85,12 @@ function appendVaryAccept(headers) {
   if (!tokens.includes('accept')) headers.set('Vary', `${existing}, Accept`);
 }
 
+function appendSecurityHeaders(headers) {
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+}
+
 function markdownPath(pathname) {
   const clean = pathname.replace(/\/+$/, '') || '/';
   return clean === '/' ? '/index.md' : `${clean}/index.md`;
@@ -85,6 +99,7 @@ function markdownPath(pathname) {
 function negotiatedResponse(body, init) {
   const response = new Response(body, init);
   appendVaryAccept(response.headers);
+  appendSecurityHeaders(response.headers);
   return response;
 }
 
@@ -123,6 +138,16 @@ function markdownNotFound() {
 export async function onRequest(context) {
   const url = new URL(context.request.url);
 
+  if (['/full-page', '/full-page/', '/full-page/index.md'].includes(url.pathname)) {
+    url.pathname = url.pathname.endsWith('/index.md')
+      ? '/full-page-browser-screenshot/index.md'
+      : '/full-page-browser-screenshot/';
+    return negotiatedResponse(null, {
+      status: 301,
+      headers: { Location: url.href },
+    });
+  }
+
   if (STATIC_EXTENSION.test(url.pathname) || url.pathname.startsWith('/api/')) {
     return context.next();
   }
@@ -140,10 +165,9 @@ export async function onRequest(context) {
     const markdownResponse = await context.env.ASSETS.fetch(markdownRequest);
 
     if (markdownResponse.status === 200) {
-      const response = new Response(markdownResponse.body, markdownResponse);
+      const response = negotiatedResponse(markdownResponse.body, markdownResponse);
       response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
       response.headers.set('Link', '</llms.txt>; rel="describedby"');
-      appendVaryAccept(response.headers);
       return response;
     }
 
@@ -154,14 +178,11 @@ export async function onRequest(context) {
       return notAcceptable('The Markdown representation is unavailable and HTML is not acceptable.');
     }
 
-    const response = new Response(htmlResponse.body, htmlResponse);
-    appendVaryAccept(response.headers);
-    return response;
+    return negotiatedResponse(htmlResponse.body, htmlResponse);
   }
 
   const htmlResponse = await context.next();
-  const response = new Response(htmlResponse.body, htmlResponse);
-  appendVaryAccept(response.headers);
+  const response = negotiatedResponse(htmlResponse.body, htmlResponse);
 
   if (response.status === 200 && response.headers.get('Content-Type')?.includes('text/html')) {
     const discoveryLinks = [

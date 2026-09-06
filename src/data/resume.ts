@@ -1,4 +1,4 @@
-export const resumePdfUrl = '/content/files/2026/06/jewei-resume-2026.pdf';
+export const resumePdfUrl = '/content/files/2026/09/jewei-mak-resume-2026.pdf';
 
 export const resumeMeta = {
   title: 'Résumé',
@@ -74,14 +74,14 @@ export const experience: ResumeRole[] = [
       'Elevated backend engineering standards by defining Laravel architecture patterns, code-quality practices, and implementation guidance as the team Laravel SME',
       'Co-architected 5 microservices, enabling 10x scalability while improving modularity, reliability, and maintainability',
       'Applied agentic AI coding workflows to accelerate development, testing, debugging, and refactoring',
-      'Built fraud prevention systems mitigating bot registrations and promotional campaigns abuse using behavioral signals, rate limits, anomaly detection, and risk scoring',    
+      'Built fraud prevention systems mitigating bot registrations and promotional campaign abuse using behavioral signals, rate limits, anomaly detection, and risk scoring',
     ],
     stack: 'Laravel, Filament, Livewire, PostgreSQL, Claude Code, Codex',
   },
   {
     title: 'Senior Backend Software Engineer',
     company: 'femmily',
-    companyUrl: 'https://femmily.com/?ref=jewei.net',
+    companyUrl: '',
     period: '2023 – 2024',
     highlights: [
       'Refactored and migrated 2 legacy Laravel applications into a more maintainable foundation',
