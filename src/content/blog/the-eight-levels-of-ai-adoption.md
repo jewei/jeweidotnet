@@ -4,6 +4,7 @@ description: "A practical guide to how AI goes from answering questions to runni
 pubDate: "2026-06-16T00:00:00.000Z"
 tags: ["ai"]
 image: ../../assets/content/eight-levels-of-ai-og-image.jpg
+imageAlt: "The Eight Levels of AI Adoption social card with a staircase from questions to autonomous systems."
 ---
 
 Most people say they "use AI" when they mean they ask ChatGPT questions.

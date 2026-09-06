@@ -4,7 +4,8 @@ description: "Choosing a database primary key between big integers, ordered UUID
 pubDate: "2022-08-31T16:00:00.000Z"
 updatedDate: "2026-05-31T15:37:35.000Z"
 tags: ["system-design", "database"]
-image: ../../assets/og-image.jpg
+image: ../../assets/og-image-editorial.jpg
+imageAlt: "Editorial jewei.toString() card for a technical article by Jewei Mak."
 ---
 
 > Update (May 2026): For most systems with under 1 million users and moderate complexity, the best approach is still to use an integer as the primary key and a UUID/ULID for external references.
@@ -30,7 +31,7 @@ But there's no need to limit yourself to one or the other. Instead, let's levera
 | **Expose total records** | Yes                  | No                                   | No               |
 | **Generation at**        | Database             | App                                  | App              |
 
-#### 1\. Integer as the Primary Key
+### 1\. Integer as the Primary Key
 
 The idea is simple: use an **integer** as your primary key. Here’s why:
 
@@ -38,7 +39,7 @@ The idea is simple: use an **integer** as your primary key. Here’s why:
 - **Human readability**: Numeric IDs are much easier to read, debug, and refer to in queries. You can simply remember or double-click and copy an integer like "1234" instead of deciphering long, complex strings like "70E2E8DE-500E-4630-B3CB-166131D35C21."
 - **Suitable for internal joins**: Running joins across multiple tables using integers is incredibly efficient and straightforward.
 
-#### 2\. UUID/ULID for External Exposure (e.g., URLs)
+### 2\. UUID/ULID for External Exposure (e.g., URLs)
 
 In addition to the integer primary key, you should store a **UUID** or **ULID** in a separate column. Here’s why:
 
@@ -46,7 +47,7 @@ In addition to the integer primary key, you should store a **UUID** or **ULID
 - **Avoid security risks**: By using UUID/ULID in URLs, you drastically reduce the possibility of people figuring out confidential information (e.g., user counts) or guessing and accessing adjacent records.
 - **Uniqueness across systems**: UUIDs and ULIDs are useful in distributed systems, ensuring globally unique identifiers without the need for worrying about synchronization between your databases.
 
-#### Composite Design: The Best of Both Worlds
+### Composite Design: The Best of Both Worlds
 
 Here’s the proposed structure:
 
@@ -57,7 +58,7 @@ In this way, you achieve both **database optimization** and **external securi
 
 ## Example Table Structure
 
-```sql
+```sql title="schema.sql"
 CREATE TABLE example_table (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- Internal Primary Key
   uuid BINARY(16) NOT NULL UNIQUE,       -- External Identifier (UUID/ULID)

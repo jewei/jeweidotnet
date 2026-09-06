@@ -4,6 +4,7 @@ description: "A self-hosted uptime monitor and public status page built for Clou
 pubDate: "2026-08-20T00:00:00.000+08:00"
 tags: ["open-source", "cloudflare"]
 image: ../../assets/content/uppa-og-image.jpg
+imageAlt: "Uppa social card with an uptime chart, monitors, and recent incidents."
 ---
 
 Uppa is a self-hosted uptime monitor and public status page built for Cloudflare Workers. It checks up to 40 HTTP/HTTPS endpoints once per minute and stores rolling history and incidents in D1.

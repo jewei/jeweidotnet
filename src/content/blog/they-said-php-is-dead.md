@@ -5,13 +5,14 @@ pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:52:22.000Z"
 tags: ["php"]
 image: ../../assets/content/midwit-php.jpeg
+imageAlt: "Midwit meme comparing opinions about PHP and JavaScript across a bell curve."
 ---
 
 In the ever-evolving landscape of web development, one question arises time and again: **Is PHP dead?**
 
 For over a decade, some corners of the development community have been quick to dismiss this ubiquitous server-side scripting language, declaring that it’s on its way out. The reality, however, is far more nuanced. Let’s unpack why PHP's "death" has been greatly exaggerated, and how modern PHP has evolved into a robust, performant, and competitive tool in today’s development ecosystem.
 
-### Why Some Developers Hated (or Still Hate) PHP
+## Why Some Developers Hated (or Still Hate) PHP
 
 Let’s acknowledge this up front: **PHP didn’t always have the best reputation**.
 
@@ -23,7 +24,7 @@ This stereotype became so entrenched that even years after PHP had moved on to m
 
 **2. PHP < 7.0 Was (Mostly) Bad**
 
-It’s hard to argue against the fact that **PHP prior to version 7.0** was a bit of a mess. Versions like **PHP 4**and **PHP 5**, while functional, had their limitations—namely, poor performance, inconsistent API designs, and slow addition of modern language features.
+It’s hard to argue against the fact that **PHP prior to version 7.0** was a bit of a mess. Versions like **PHP 4** and **PHP 5**, while functional, had their limitations—namely, poor performance, inconsistent API designs, and slow addition of modern language features.
 
 To make matters worse, there were **tons of outdated tutorials** floating around that pushed bad practices. Many of these tutorials led new developers into dark corners of the language, perpetuating PHP criticism for far longer than deserved.
 
@@ -33,7 +34,7 @@ The best-known critique from this era is **Eevee's infamous blog post** ["PHP:
 
 And yes, we can’t overlook **WordPress**. As an incredibly popular CMS and blogging platform, WordPress is built on PHP. While WordPress itself is remarkable for its flexibility and open-source nature, it’s also the catalyst for many complaints about PHP. With its reliance on plugins and themes (many of which are poorly coded), **WordPress has perpetuated a lot of bad PHP practices**. However, hating on PHP because of WordPress is like blaming a hammer for someone building a bad table—it’s *how* the tool is used, not the tool itself.
 
-### The Modern Face of PHP: Vital, Fast, and Ever-Improving
+## The Modern Face of PHP: Vital, Fast, and Ever-Improving
 
 ![Midwit meme comparing PHP and JavaScript](../../assets/content/midwit-php.jpeg)
 
@@ -43,10 +44,10 @@ Thankfully, the **PHP of today** is not the PHP of a decade ago. With each rel
 
 **1. The Turning Point: PHP 7 and Beyond**
 
-The release of **PHP 7.0** marked the start of *PHP's renaissance*. PHP 7 was essentially a **major overhaul**of the language, and it has continued to improve with each iteration since. Here’s what made PHP 7—and its subsequent versions—a game changer:
+The release of **PHP 7.0** marked the start of *PHP's renaissance*. PHP 7 was essentially a **major overhaul** of the language, and it has continued to improve with each iteration since. Here’s what made PHP 7—and its subsequent versions—a game changer:
 
 - **Massive Performance Improvements**: PHP 7 introduced significant optimizations under the hood, with performance gains of up to **2-3 times faster** than PHP 5. In specific benchmarked use cases, PHP surpasses **Python** and **Ruby**, making it a legitimate option for high-performance web applications without the need for intensive hardware.
-- **Memory Efficiency**: Not only did PHP 7 boost performance, but it also improved **memory usage**compared to PHP 5, making it perfect for developers looking to optimize resource consumption on cloud infrastructure or shared hosting environments.
+- **Memory Efficiency**: Not only did PHP 7 boost performance, but it also improved **memory usage** compared to PHP 5, making it perfect for developers looking to optimize resource consumption on cloud infrastructure or shared hosting environments.
 - **Modern Language Features**: PHP now offers **scalars, return type declarations, anonymous classes, strict typing**, and **engine exceptions**, among many other forward-thinking features that align with modern development best practices.
 
 > PHP is not resting on its laurels—new features are consistently rolled out with each release, keeping the language agile and competitive. Just look at **PHP 8.x**, which has introduced **JIT compilation**, **union types**, and even more features aimed at improving developer productivity.
@@ -66,7 +67,7 @@ These standards bring **consistency** to various PHP frameworks, libraries, an
 The **PHP ecosystem** has evolved significantly, thanks largely to robust community support and the maturity of developer tools and frameworks.
 
 - **Typing & Static Analysis**: If you’re a fan of **strict typing** or want to ensure your codebase remains rock-solid, PHP now boasts excellent **static analysis tools** like [**PHPStan**](https://phpstan.org/) and [**Psalm**](https://psalm.dev/), which analyze your code and enforce type rules, reducing the chance for bugs in production.
-- **Frameworks with Excellent Developer Experience**: One of PHP’s crown jewels is **Laravel**, a full-stack PHP framework known for its **developer experience (DX)**. Laravel has grown into one of the most loved frameworks across any language, offering:Laravel’s documentation is often hailed as **the best among open-source projects**, making coding in PHP a productive, delightful experience.
+- **Frameworks with Excellent Developer Experience**: One of PHP’s crown jewels is **Laravel**, a full-stack PHP framework known for its **developer experience (DX)**. Laravel has grown into one of the most loved frameworks across any language, offering: Laravel’s documentation is often hailed as **the best among open-source projects**, making coding in PHP a productive, delightful experience.
   - **Elegant syntax and structure** that promotes clean, maintainable codebases.
   - **Laravel Ecosystem**: From **Horizon** (queue management) to **Forge** (server deployment), Laravel offers a rich suite of tools connected seamlessly to streamline development and operations.
 - **Modern SPA Tools**: Want **interactive, real-time** front-end frameworks baked into your PHP app? PHP can handle that too. With tools like [**Livewire**](https://livewire.laravel.com/), you can create dynamic, front-end-like interactions (similar to **Hotwire** or **Phoenix LiveView**) while keeping the bulk of your logic backend-driven.
@@ -83,7 +84,7 @@ If you're still convinced PHP is dead, take a closer look at how widely it's use
 
 The language powers **approximately 77.6% of all websites** whose server-side programming language is known, according to W3Techs as of 2024. That’s an overwhelming majority of the internet, which hardly sounds like "dead" to me!
 
-### In Closing: PHP Isn’t Dead, It’s Thriving
+## In Closing: PHP Isn’t Dead, It’s Thriving
 
 The narrative that **PHP is dead** has persisted for far too long, often driven by dated critiques and misconceptions. In reality, modern **PHP is fast, efficient, and full of forward-thinking features that align with today's development best practices**. With active community involvement, consistent feature improvements, and massive real-world utilization, PHP remains a **thriving language** in the global web development landscape.
 

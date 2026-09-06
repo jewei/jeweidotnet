@@ -5,19 +5,20 @@ pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:30:30.000Z"
 tags: ["open-source"]
 image: ../../assets/content/laravel-skeleton-1.png
+imageAlt: "Laravel Skeleton project card with Jewei's portrait and repository statistics."
 ---
 
 ![Laravel Skeleton project screenshot](../../assets/content/laravel-skeleton-1.png)
 
 My version of Laravel Skeleton is live on GitHub
 
-Starting a new Laravel project often involves repetitive tasks, such as configuring basic settings, integrating essential tools, and laying down the initial structure. The Laravel Skeleton project comes as a refreshing solution to this problem, allowing developers to scaffold an PHP/Laravel app with ease.
+Starting a new Laravel project often involves repetitive tasks, such as configuring basic settings, integrating essential tools, and laying down the initial structure. The Laravel Skeleton project comes as a refreshing solution to this problem, allowing developers to scaffold a PHP/Laravel app with ease.
 
-### What Is Laravel Skeleton?
+## What Is Laravel Skeleton?
 
 Laravel Skeleton is a project template that combines the latest technologies and best practices to provide a solid starting point for new Laravel projects. Created with a focus on quality and efficiency, it simplifies the setup process and includes valuable integrations that every modern Laravel application may need.
 
-### Get Started in Seconds
+## Get Started in Seconds
 
 You can scaffold your Laravel app via Composer with the following command:
 
@@ -25,7 +26,7 @@ You can scaffold your Laravel app via Composer with the following command:
 composer create-project jewei/laravel-skeleton
 ```
 
-### What's Included?
+## What's Included?
 
 Laravel Skeleton comes with a host of features and tools:
 

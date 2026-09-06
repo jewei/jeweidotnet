@@ -4,6 +4,7 @@ description: "I built Bopop, a keyboard-first launcher for macOS. Local-first, n
 pubDate: "2026-07-20T00:00:00.000Z"
 tags: ["open-source", "macos", "swift"]
 image: ../../assets/content/bopop-press-type-go-og-image.jpg
+imageAlt: "Bopop social card with its keyboard launcher showing currency conversion, translation, and calculation results."
 ---
 
 I built a launcher.

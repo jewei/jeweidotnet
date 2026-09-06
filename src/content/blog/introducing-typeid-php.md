@@ -1,7 +1,8 @@
 ---
 title: "Introducing TypeID PHP"
 description: "Type-Safe, Sortable Identifiers for Modern Applications"
-image: ../../assets/content/typeid-cover.jpg
+image: ../../assets/projects/typeid-php.webp
+imageAlt: "TypeID for PHP cover with UserId and OrderId classes and identifier generation code."
 pubDate: "2025-04-26T10:53:29.000Z"
 updatedDate: "2026-05-31T15:36:55.000Z"
 tags: ["open-source"]

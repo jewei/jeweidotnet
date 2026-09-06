@@ -4,6 +4,7 @@ description: "A growing list of practical tips for developers running Claude Cod
 pubDate: "2026-06-26T00:00:00.000Z"
 tags: ["ai"]
 image: ../../assets/content/claude-code-tips.jpg
+imageAlt: "Claude Code Tips social card with a code editor and actions for explaining, refactoring, and testing code."
 ---
 
 Claude Code is an agentic coding tool that runs in your terminal. Out of the box it works well, but a few settings and habits make it noticeably better.
