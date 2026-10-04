@@ -148,7 +148,7 @@ export async function renderCard(card: Card): Promise<Buffer> {
     ],
   );
 
-  const svg = await satori(tree as unknown as Parameters<typeof satori>[0], {
+  const svg = await satori(tree, {
     width: 1200,
     height: 630,
     fonts: loadFonts(),
