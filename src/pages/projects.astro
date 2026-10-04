@@ -51,7 +51,7 @@ const schema = [
 
     <h2 class="sr-only">All projects</h2>
     <div class="list">
-      {projects.map((project, index) => <ProjectCard project={project} variant="full" eager={index === 0} />)}
+      {projects.map((project, index) => <ProjectCard project={project} eager={index === 0} />)}
     </div>
 
     <p class="note">
