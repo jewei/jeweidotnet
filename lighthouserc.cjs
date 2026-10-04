@@ -3,7 +3,15 @@ module.exports = {
   ci: {
     collect: {
       staticDistDir: './dist',
-      url: ['/', '/blog/', '/projects/', '/about/', '/resume/', '/database-primary-key/', '/claude-code-tips/'],
+      url: [
+        '/',
+        '/blog/',
+        '/projects/',
+        '/about/',
+        '/resume/',
+        '/database-primary-key/',
+        '/claude-code-tips/',
+      ],
       // Median of 3 runs: a single run on shared CI runners varies by ±0.05.
       numberOfRuns: 3,
     },
