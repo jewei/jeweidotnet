@@ -1,6 +1,8 @@
 const PRODUCES = ['text/html', 'text/markdown'];
+// Files served as they are. `md` covers direct requests for a Markdown copy
+// (/about/index.md): negotiation would look for /about/index.md/index.md.
 const STATIC_EXTENSION =
-  /\.(?:css|js|mjs|map|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|eot|xml|txt|json|pdf|mp4|webm|mp3|wav|ogg|zip|webmanifest)$/i;
+  /\.(?:css|js|mjs|map|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|eot|xml|txt|md|json|pdf|mp4|webm|mp3|wav|ogg|zip|webmanifest)$/i;
 const SECURITY_HEADERS = {
   'Content-Security-Policy':
     "default-src 'self'; script-src 'self' 'inline-speculation-rules' https://cloud.umami.is https://static.cloudflareinsights.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloud.umami.is https://gateway.umami.is https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
@@ -169,9 +171,11 @@ export async function onRequest(context) {
     const markdownRequest = new Request(alternateUrl, context.request);
     const markdownResponse = await context.env.ASSETS.fetch(markdownRequest);
 
-    if (markdownResponse.status === 200) {
+    // Anything but 404 means the Markdown copy exists: pass 304 (a conditional
+    // request with its ETag) and 206 (a range request) through as they are.
+    if (markdownResponse.status !== 404) {
       const response = negotiatedResponse(markdownResponse.body, markdownResponse);
-      response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
+      if (markdownResponse.ok) response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
       response.headers.set('Link', '</llms.txt>; rel="describedby"');
       return response;
     }
@@ -179,7 +183,9 @@ export async function onRequest(context) {
     const htmlResponse = await context.next();
     if (htmlResponse.status === 404) return markdownNotFound();
 
-    if (!preferredType(accept, ['text/html'])) {
+    // Only refuse an HTML page. A redirect (/about/index.html -> /about/) is not
+    // a representation; the client follows it and negotiates there.
+    if (htmlResponse.ok && !preferredType(accept, ['text/html'])) {
       return notAcceptable('The Markdown representation is unavailable and HTML is not acceptable.');
     }
 

@@ -9,29 +9,42 @@ function assetResponse(body: string, status = 200, contentType = 'text/plain; ch
   return new Response(body, { status, headers: { 'Content-Type': contentType, Vary: 'Accept-Encoding' } });
 }
 
+const MARKDOWN_ETAG = '"md-about"';
+
+/**
+ * A Pages context that serves only files that exist: the HTML page and its
+ * Markdown copy at /about/index.md. Pages redirects /about/index.html to
+ * /about/, and answers a matching If-None-Match with 304.
+ */
 function createContext({
   accept,
   pathname = '/about/',
   markdownExists = true,
-}: { accept?: string; pathname?: string; markdownExists?: boolean } = {}) {
+  ifNoneMatch,
+}: { accept?: string; pathname?: string; markdownExists?: boolean; ifNoneMatch?: string } = {}) {
   const headers = new Headers();
   if (accept !== undefined) headers.set('Accept', accept);
+  if (ifNoneMatch !== undefined) headers.set('If-None-Match', ifNoneMatch);
   const request = new Request(`https://jewei.net${pathname}`, { headers });
-  const htmlStatus = pathname === '/missing/' ? 404 : 200;
-  const html = htmlStatus === 404 ? '<h1>Page not found</h1>' : '<h1>About Jewei</h1>';
+  const markdownFiles = markdownExists ? ['/about/index.md'] : [];
+  const serve = (assetRequest: Request): Response => {
+    const assetPath = new URL(assetRequest.url).pathname;
+    if (markdownFiles.includes(assetPath)) {
+      if (assetRequest.headers.get('If-None-Match') === MARKDOWN_ETAG)
+        return new Response(null, { status: 304, headers: { ETag: MARKDOWN_ETAG } });
+      const response = assetResponse('# About Jewei\n\nSoftware engineer.');
+      response.headers.set('ETag', MARKDOWN_ETAG);
+      return response;
+    }
+    if (assetPath === '/about/index.html')
+      return new Response(null, { status: 308, headers: { Location: '/about/' } });
+    if (assetPath === '/about/') return assetResponse('<h1>About Jewei</h1>', 200, 'text/html; charset=utf-8');
+    return assetResponse('<h1>Page not found</h1>', 404, 'text/html; charset=utf-8');
+  };
   return {
     request,
-    next: async (): Promise<Response> => assetResponse(html, htmlStatus, 'text/html; charset=utf-8'),
-    env: {
-      ASSETS: {
-        fetch: async (assetRequest: Request): Promise<Response> => {
-          const assetPath = new URL(assetRequest.url).pathname;
-          if (assetPath.endsWith('/index.md') && markdownExists)
-            return assetResponse('# About Jewei\n\nSoftware engineer.');
-          return assetResponse('not found', 404);
-        },
-      },
-    },
+    next: async (): Promise<Response> => serve(request),
+    env: { ASSETS: { fetch: async (assetRequest: Request): Promise<Response> => serve(assetRequest) } },
   };
 }
 
@@ -97,6 +110,35 @@ describe('HTTP content negotiation', () => {
     expect(response.status).toBe(404);
     expect(response.headers.get('Content-Type')).toContain('text/html');
     expect(response.headers.get('Vary')).toBe('Accept-Encoding, Accept');
+  });
+
+  test('serves a direct /index.md request to a Markdown-only client', async () => {
+    const response = await onRequest(createContext({ accept: 'text/markdown', pathname: '/about/index.md' }));
+
+    expect(response.status).toBe(200);
+    expect(await response.text()).toMatch(/^# About Jewei/);
+  });
+
+  test('passes a 304 for the Markdown copy through', async () => {
+    const response = await onRequest(createContext({ accept: 'text/markdown', ifNoneMatch: MARKDOWN_ETAG }));
+
+    expect(response.status).toBe(304);
+    expect(response.headers.get('ETag')).toBe(MARKDOWN_ETAG);
+    expect(response.headers.get('Vary')).toBe('Accept');
+  });
+
+  test('passes a redirect through to a Markdown-only client instead of 406', async () => {
+    const response = await onRequest(createContext({ accept: 'text/markdown', pathname: '/about/index.html' }));
+
+    expect(response.status).toBe(308);
+    expect(response.headers.get('Location')).toBe('/about/');
+  });
+
+  test('returns 406 when the Markdown copy is missing and HTML is not acceptable', async () => {
+    const response = await onRequest(createContext({ accept: 'text/markdown', markdownExists: false }));
+
+    expect(response.status).toBe(406);
+    expectSecurityHeaders(response);
   });
 
   test('returns a recoverable Markdown 404 for an unknown page', async () => {
