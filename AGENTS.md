@@ -2,7 +2,7 @@
 
 The personal site of Jewei Mak: writing, projects, and résumé. Astro 7 static output on Cloudflare Pages. Bun is the package manager and runtime. Vite+ (`vp`) is the toolchain.
 
-This file is the rule source for every agent (`CLAUDE.md` links here). Read it before you change anything. Detail lives in `docs/`.
+This file is the rule source for every agent. Read it before you change anything. Detail lives in `docs/`.
 
 ## Golden rules
 
@@ -67,6 +67,18 @@ Each recipe ends with `vp run verify`.
 - **New fixed page:** add an entry to `src/data/pages.ts`, then the route in `src/pages/`. Prose pages: Markdown with `layout: ../layouts/Prose.astro` and `page: <key>`. Add it to `footerNav` in `site.config.ts` if visitors need it.
 - **Design change:** read `docs/DESIGN.md` first. Change tokens before components. Run `vp run shots` and look at 320, 768, 1440 in both themes.
 - **Rename a URL:** add a 301 in `functions/_middleware.js`, a test in `tests/unit/middleware.test.ts`, and keep the old path in `legacy-urls.txt` only if it still resolves.
+
+## Skills
+
+Project skills live in `.claude/skills/`. Use them for these tasks:
+
+| Skill                    | Use for                                        |
+| ------------------------ | ---------------------------------------------- |
+| `new-blog-post`          | Drafting a post                                |
+| `open-graph-image`       | Generated or custom social cards               |
+| `resume-review`          | Résumé content, page, and PDF                  |
+| `web-perf`               | Core Web Vitals and Lighthouse work            |
+| `wrangler`, `cloudflare` | Pages deploys, headers, and the Pages Function |
 
 ## Images
 

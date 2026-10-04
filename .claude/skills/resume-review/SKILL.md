@@ -24,8 +24,9 @@ This repo holds the résumé in three coupled places. A review usually touches a
 |---|---|---|
 | Structured data | `src/data/resume.ts` | Source of truth: summary, strengths, experience, skills, education |
 | Web page | `src/pages/resume.astro` | Renders the data; can be slightly richer than print |
-| Downloadable PDF | `public/content/files/2026/06/jewei-resume-{year}.pdf` | The artifact recruiters actually read — apply the wiki rules **strictly** here |
-| PDF link | `resumePdfUrl` in `src/data/resume.ts` | Keep in sync with the PDF filename |
+| Downloadable PDF | `public/content/files/<year>/<month>/jewei-mak-resume-<year>.pdf` (current: `2026/09`) | The artifact recruiters actually read — apply the wiki rules **strictly** here |
+| PDF link | `resumePdfUrl` in `src/data/resume.ts` | Point it at the newest PDF. Add new versions in a new folder; keep old PDFs so old links work. |
+| Browser print | `@media print` in `src/pages/resume.astro` | A fallback, not the PDF. Two-column A4; `tests/build/browser.test.ts` keeps it at ≤ 2 pages. |
 
 **Web vs. PDF:** the wiki rules below were written for a one/two-page printed résumé.
 The web page may relax layout rules (it scrolls, has links, dark mode), but **content
@@ -52,9 +53,12 @@ PDF, or both.
    filler adjectives. This is the highest-leverage pass — do it carefully.
 4. **Check section order and senior conventions** via `references/sections.md`. For this
    user (10+ YoE): summary allowed, Experience first, Education last, no GPA, ≤2 pages.
-5. **Report findings** grouped by severity: blocking content issues → formatting/polish →
+5. **Verify** after edits: `vp test tests/unit` and `vp run test:build` (the build tests
+   include the print page count). Look at `/resume/` with
+   `vp run shots -- /resume/ --widths=375,1440 --full`.
+6. **Report findings** grouped by severity: blocking content issues → formatting/polish →
    nice-to-haves. Give before/after rewrites. Then offer to apply them to `resume.ts`.
-6. **If editing the PDF**, the rules apply strictly (single column, fonts, margins, en
+7. **If editing the PDF**, the rules apply strictly (single column, fonts, margins, en
    dashes, right-aligned dates). The web page follows the same content but its own layout.
 
 ## The rules that matter most (everything else is in the references)
