@@ -4,7 +4,8 @@ module.exports = {
     collect: {
       staticDistDir: './dist',
       url: ['/', '/blog/', '/projects/', '/resume/', '/database-primary-key/', '/claude-code-tips/'],
-      numberOfRuns: 1,
+      // Median of 3 runs: a single run on shared CI runners varies by ±0.05.
+      numberOfRuns: 3,
     },
     assert: {
       assertions: {
