@@ -28,7 +28,7 @@ export function postUrl(post: Post): string {
 
 /**
  * Catalogue number: the post's position in publication order, oldest first.
- * Shown as "№ 007" in lists and article headers.
+ * Shown as "No. 007" in lists and article headers.
  */
 export function postNumbers(posts: Post[]): Map<string, string> {
   const chronological = [...posts].sort(oldestFirst);

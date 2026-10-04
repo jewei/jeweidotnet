@@ -10,7 +10,7 @@ import sharp from 'sharp';
 import { displayUrl, site } from '../site.config';
 
 export interface Card {
-  /** Small label at the top, for example "№ 012 · Writing". */
+  /** Small label at the top, for example "No. 012 · Writing". Satori cannot draw "№". */
   eyebrow: string;
   title: string;
   /** One or two lines under the title. */
