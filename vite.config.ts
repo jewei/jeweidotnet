@@ -20,10 +20,17 @@ export default defineConfig({
       // Static build, then Markdown copies of every page for agents.
       build: {
         command: 'astro build && bun scripts/build-markdown.ts',
-        cache: false,
+        cache: {
+          input: [{ auto: true }, '!dist/**', '!.astro/**', '!node_modules/.astro/**', '!node_modules/.vite/**'],
+          output: ['dist/**'],
+        },
       },
       // Type-check .astro files (tsgolint in `vp check` covers .ts only).
-      typecheck: 'astro check',
+      typecheck: {
+        command: 'astro check',
+        // astro check regenerates .astro/types.d.ts; do not treat it as input.
+        cache: { input: [{ auto: true }, '!.astro/**'] },
+      },
       // Tests that read built HTML in dist/.
       'test:build': {
         command: 'vp test tests/build',
@@ -32,7 +39,7 @@ export default defineConfig({
       },
       // The full gate. CI and agents run this before a PR.
       verify: {
-        command: ['vp check', 'vp run typecheck', 'vp test tests/content', 'vp run test:build'],
+        command: ['vp check', 'vp run typecheck', 'vp test tests/unit', 'vp run test:build'],
         cache: false,
       },
       // Screenshots of key pages at key widths into .shots/ (needs a build).
@@ -46,7 +53,15 @@ export default defineConfig({
     printWidth: 110,
     sortPackageJson: true,
     // Posts and project files are authored content. Never reformat them.
-    ignorePatterns: ['dist/**', '.astro/**', 'src/content/**', 'public/**', '.claude/**', 'bun.lock', '*.astro'],
+    ignorePatterns: [
+      'dist/**',
+      '.astro/**',
+      'src/content/**',
+      'public/**',
+      '.claude/**',
+      'bun.lock',
+      '*.astro',
+    ],
   },
   lint: {
     ignorePatterns: ['dist/**', '.astro/**', 'public/**', '.claude/**'],

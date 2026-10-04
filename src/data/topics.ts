@@ -61,8 +61,7 @@ export const topics = {
   },
   swift: {
     name: 'Swift',
-    description:
-      'Swift and AppKit development notes from building small, fast, local-first macOS apps.',
+    description: 'Swift and AppKit development notes from building small, fast, local-first macOS apps.',
   },
   'system-design': {
     name: 'System design',

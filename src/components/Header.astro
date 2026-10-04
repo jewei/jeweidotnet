@@ -120,7 +120,7 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
     background: var(--bg-raised);
   }
 
-  .header__theme svg {
+  .header__theme :global(svg) {
     grid-area: 1 / 1;
     width: 20px;
     height: 20px;
@@ -130,32 +130,32 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
   }
 
   /* Show the icon of the theme you would switch to */
-  .icon-moon {
+  .header__theme :global(.icon-moon) {
     opacity: 1;
   }
 
-  .icon-sun {
+  .header__theme :global(.icon-sun) {
     opacity: 0;
     transform: rotate(-45deg) scale(0.6);
   }
 
-  :global(:root[data-theme='dark']) .icon-moon {
+  :global(:root[data-theme='dark'] .icon-moon) {
     opacity: 0;
     transform: rotate(45deg) scale(0.6);
   }
 
-  :global(:root[data-theme='dark']) .icon-sun {
+  :global(:root[data-theme='dark'] .icon-sun) {
     opacity: 1;
     transform: none;
   }
 
   @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .icon-moon {
+    :global(:root:not([data-theme='light']) .icon-moon) {
       opacity: 0;
       transform: rotate(45deg) scale(0.6);
     }
 
-    :global(:root:not([data-theme='light'])) .icon-sun {
+    :global(:root:not([data-theme='light']) .icon-sun) {
       opacity: 1;
       transform: none;
     }

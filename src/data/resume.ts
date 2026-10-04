@@ -2,8 +2,7 @@ export const resumePdfUrl = '/content/files/2026/09/jewei-mak-resume-2026.pdf';
 
 export const resumeMeta = {
   title: 'Résumé',
-  headline:
-    'Senior backend engineer. Laravel specialist. Scale-tested.',
+  headline: 'Senior backend engineer. Laravel specialist. Scale-tested.',
   summary: [
     'Senior Laravel/PHP engineer with 15+ years building and scaling backend systems, APIs, and payment integrations for products serving 1,000,000+ users across SaaS, edtech, and e-commerce.',
   ],
@@ -120,7 +119,7 @@ export const experience: ResumeRole[] = [
       'Established coding standards, design patterns, and backend guidelines across the team',
     ],
     stack: 'Ubuntu, Nginx, PHP 7, AWS EC2, S3, RDS, Cloudflare, Laravel, Redis',
-    tools: 'Deployer, Composer, Git, SSH, Slack, Let\'s Encrypt',
+    tools: "Deployer, Composer, Git, SSH, Slack, Let's Encrypt",
   },
   {
     title: 'Application Developer',

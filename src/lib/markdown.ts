@@ -122,22 +122,34 @@ export function rehypeCodeBlocks() {
       const code = child.children?.find((node) => node.tagName === 'code');
       const classes = ([] as unknown[]).concat(code?.properties?.className ?? []);
       const fromClass = classes.find((c): c is string => typeof c === 'string' && c.startsWith('language-'));
-      const language = String(props.dataLanguage ?? props['data-language'] ?? fromClass?.slice(9) ?? 'text').toLowerCase();
+      const declared = props.dataLanguage ?? props['data-language'];
+      const language = (
+        typeof declared === 'string' ? declared : (fromClass?.slice(9) ?? 'text')
+      ).toLowerCase();
       const filename = (props['data-filename'] ?? props.dataFilename) as string | undefined;
       const label = filename ?? languageNames[language] ?? language.toUpperCase();
       const id = `code-${++index}`;
 
       child.properties = { ...props, tabIndex: 0, ariaLabelledby: id };
-      return el('div', { className: ['code'], dataCode: '', dataLanguage: language, ...(filename ? { dataFilename: filename } : {}) }, [
-        el('div', { className: ['code__bar'], dataMdSkip: '' }, [
-          el('span', { className: ['code__label'], id }, [text(label)]),
-          el('button', { type: 'button', className: ['code__copy'], dataCopy: '' }, [
-            el('span', { dataCopyLabel: '', ariaLive: 'polite' }, [text('Copy')]),
-            el('span', { className: ['sr-only'] }, [text(` ${label} code`)]),
+      return el(
+        'div',
+        {
+          className: ['code'],
+          dataCode: '',
+          dataLanguage: language,
+          ...(filename ? { dataFilename: filename } : {}),
+        },
+        [
+          el('div', { className: ['code__bar'], dataMdSkip: '' }, [
+            el('span', { className: ['code__label'], id }, [text(label)]),
+            el('button', { type: 'button', className: ['code__copy'], dataCopy: '' }, [
+              el('span', { dataCopyLabel: '', ariaLive: 'polite' }, [text('Copy')]),
+              el('span', { className: ['sr-only'] }, [text(` ${label} code`)]),
+            ]),
           ]),
-        ]),
-        child,
-      ]);
+          child,
+        ],
+      );
     });
   };
 }
@@ -145,12 +157,17 @@ export function rehypeCodeBlocks() {
 export function rehypeHeadingAnchors() {
   return (tree: Node) =>
     mapChildren(tree, (child) => {
-      if ((child.tagName !== 'h2' && child.tagName !== 'h3') || typeof child.properties?.id !== 'string') return undefined;
+      if ((child.tagName !== 'h2' && child.tagName !== 'h3') || typeof child.properties?.id !== 'string')
+        return undefined;
       const id = child.properties.id;
       const label = textContent(child).trim();
       child.children = [
         ...(child.children ?? []),
-        el('a', { className: ['anchor'], href: `#${id}`, ariaLabel: `Link to section: ${label}`, dataMdSkip: '' }, [text('#')]),
+        el(
+          'a',
+          { className: ['anchor'], href: `#${id}`, ariaLabel: `Link to section: ${label}`, dataMdSkip: '' },
+          [text('#')],
+        ),
       ];
       return child;
     });

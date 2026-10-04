@@ -26,7 +26,11 @@ export const getStaticPaths = (async () => {
       .filter((post) => !post.data.image)
       .map((post) => ({
         key: `post-${postSlug(post)}`,
-        card: { eyebrow: `№ ${numbers.get(post.id)} · Writing`, title: post.data.title, subtitle: post.data.description },
+        card: {
+          eyebrow: `No. ${numbers.get(post.id)} · Writing`,
+          title: post.data.title,
+          subtitle: post.data.description,
+        },
       })),
   ];
   return cards.map(({ key, card }) => ({ params: { key }, props: { card } }));

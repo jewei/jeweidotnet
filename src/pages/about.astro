@@ -47,6 +47,8 @@ const schema = [
   <div class="wrap">
     <header class="intro">
       <div class="intro__copy">
+
+        <h1>About me</h1>
         <p class="greeting" aria-label="Hello, in nine languages">
           <span>Hello.</span>
           <span lang="zh">你好。</span>
@@ -58,7 +60,6 @@ const schema = [
           <span lang="hi">नमस्ते.</span>
           <span lang="el">Γεια σας.</span>
         </p>
-        <h1>About me</h1>
         <p class="intro__lede">
           I build durable software, useful tools, and clear notes for people who care how systems work.
         </p>
@@ -213,7 +214,15 @@ const schema = [
     padding-block: var(--space-8) var(--space-7);
   }
 
+  /* The greeting follows the H1 in the DOM and shows above it. */
+  .intro__copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .greeting {
+    order: -1;
     display: flex;
     flex-wrap: wrap;
     gap: 0.15em 0.6em;

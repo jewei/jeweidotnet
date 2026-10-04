@@ -24,7 +24,12 @@ function loadFonts() {
   fonts ??= [
     { name: 'Geist', data: font('geist', 'geist-latin-400-normal.woff'), weight: 400, style: 'normal' },
     { name: 'Geist', data: font('geist', 'geist-latin-600-normal.woff'), weight: 600, style: 'normal' },
-    { name: 'Serif', data: font('source-serif-4', 'source-serif-4-latin-400-normal.woff'), weight: 400, style: 'normal' },
+    {
+      name: 'Serif',
+      data: font('source-serif-4', 'source-serif-4-latin-400-normal.woff'),
+      weight: 400,
+      style: 'normal',
+    },
   ];
   return fonts;
 }
@@ -84,7 +89,11 @@ export async function renderCard(card: Card): Promise<Buffer> {
           h('span', { color: color.fg3 }, '.toString'),
           h('span', { color: color.accent }, '()'),
         ]),
-        h('div', { display: 'flex', fontSize: 22, letterSpacing: 2, textTransform: 'uppercase', color: color.fg3 }, card.eyebrow.replace('№', 'No.')),
+        h(
+          'div',
+          { display: 'flex', fontSize: 22, letterSpacing: 2, textTransform: 'uppercase', color: color.fg3 },
+          card.eyebrow.replace('№', 'No.'),
+        ),
       ]),
       h('div', { display: 'flex', flexDirection: 'column', gap: 28 }, [
         h(
@@ -118,13 +127,23 @@ export async function renderCard(card: Card): Promise<Buffer> {
             ]
           : []),
       ]),
-      h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 24, color: color.fg3 }, [
-        h('div', { display: 'flex', alignItems: 'center', gap: 16 }, [
-          h('div', { width: 56, height: 8, background: color.mark, borderRadius: 4 }),
-          h('span', {}, 'Jewei Mak'),
-        ]),
-        h('span', {}, 'jewei.net'),
-      ]),
+      h(
+        'div',
+        {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          fontSize: 24,
+          color: color.fg3,
+        },
+        [
+          h('div', { display: 'flex', alignItems: 'center', gap: 16 }, [
+            h('div', { width: 56, height: 8, background: color.mark, borderRadius: 4 }),
+            h('span', {}, 'Jewei Mak'),
+          ]),
+          h('span', {}, 'jewei.net'),
+        ],
+      ),
     ],
   );
 

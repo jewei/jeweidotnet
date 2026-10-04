@@ -66,7 +66,9 @@ export const formatDate = {
 };
 
 const stopWords = new Set(
-  'about after again build building from have into more software that their this using what when with your'.split(' '),
+  'about after again build building from have into more software that their this using what when with your'.split(
+    ' ',
+  ),
 );
 
 function terms(post: Post): Set<string> {
@@ -92,7 +94,9 @@ export function relatedPosts(post: Post, posts: Post[], limit = 3): Post[] {
         [...terms(candidate)].filter((term) => own.has(term)).length,
     }))
     .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score || b.candidate.data.pubDate.getTime() - a.candidate.data.pubDate.getTime())
+    .sort(
+      (a, b) => b.score - a.score || b.candidate.data.pubDate.getTime() - a.candidate.data.pubDate.getTime(),
+    )
     .slice(0, limit)
     .map(({ candidate }) => candidate);
 }

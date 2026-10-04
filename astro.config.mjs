@@ -26,7 +26,9 @@ function postLastModified() {
   const dir = path.resolve('src/content/blog');
   for (const file of fs.readdirSync(dir)) {
     if (!/\.mdx?$/.test(file)) continue;
-    const frontmatter = fs.readFileSync(path.join(dir, file), 'utf8').match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
+    const frontmatter = fs
+      .readFileSync(path.join(dir, file), 'utf8')
+      .match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
     const data = frontmatter ? parse(frontmatter) : null;
     if (!data || data.draft === true) continue;
     const date = new Date(data.updatedDate ?? data.pubDate);
@@ -43,6 +45,9 @@ export default defineConfig({
   site: SITE,
   output: 'static',
   trailingSlash: 'always',
+  // Compression drops newline whitespace next to tags ("also<a>"). Brotli
+  // at the edge makes the saving negligible, so keep the source spacing.
+  compressHTML: false,
   build: { format: 'directory', inlineStylesheets: 'auto' },
   image: { layout: 'constrained', responsiveStyles: true },
   markdown: {

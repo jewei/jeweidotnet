@@ -102,7 +102,7 @@ const schema = [
 
   <article class="article wrap" data-has-toc={showToc || undefined}>
     <header class="article__head">
-      <nav class="crumbs label" aria-label="Breadcrumb">
+      <nav class="crumbs label" aria-label="Breadcrumb" data-md-skip>
         <ol role="list">
           <li><a href="/blog/">Writing</a></li>
           <li><a href={topicUrl(primaryTopic)}>{topicName(primaryTopic)}</a></li>
@@ -111,13 +111,12 @@ const schema = [
       <h1 class="article__title">{title}</h1>
       <p class="article__dek">{description}</p>
       <div class="byline">
-        <Image src={portrait} alt="" width={36} height={36} densities={[1, 2]} format="webp" layout="none" />
+        <Image src={portrait} alt="" width={36} height={36} format="webp" layout="fixed" />
         <p>
           <span>By <a href="/about/" rel="author">{site.author}</a></span>
           <span class="byline__meta">
             <time datetime={pubDate.toISOString()}>{formatDate.long(pubDate)}</time>
-            <span aria-hidden="true">·</span>
-            <span>{minutes} min read</span>
+            <span>· {minutes} min read</span>
           </span>
         </p>
       </div>
@@ -127,7 +126,7 @@ const schema = [
       <dl class="facts">
         <div>
           <dt>Entry</dt>
-          <dd>№ {number}</dd>
+          <dd>No. {number}</dd>
         </div>
         <div>
           <dt>Published</dt>
@@ -183,7 +182,7 @@ const schema = [
 
     <footer class="article__foot">
       <section class="author" aria-labelledby="author-title">
-        <Image src={portrait} alt="" width={72} height={72} densities={[1, 2]} format="webp" layout="none" />
+        <Image src={portrait} alt="" width={72} height={72} format="webp" layout="fixed" />
         <div>
           <h2 id="author-title" class="author__name">Written by {site.author}</h2>
           <p>
@@ -454,16 +453,22 @@ const schema = [
 
   @media (min-width: 64rem) {
     .article {
-      grid-template-columns: var(--rail) minmax(0, var(--measure)) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure)) minmax(0, 1fr);
       grid-template-areas:
-        '. head head'
+        '. head .'
         'rail body .'
         '. foot .';
-      column-gap: var(--space-8);
       padding-top: var(--space-9);
     }
 
+    .article__head {
+      max-width: none;
+    }
+
     .article__rail {
+      justify-self: end;
+      width: var(--rail);
+      margin-right: var(--space-8);
       align-self: start;
       position: sticky;
       top: var(--space-6);

@@ -178,6 +178,17 @@
   color: var(--fg-3);
 }
 
+/* Calm bright screenshots in dark mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .prose img {
+    filter: brightness(0.9) contrast(1.05);
+  }
+}
+
+:root[data-theme='dark'] .prose img {
+  filter: brightness(0.9) contrast(1.05);
+}
+
 /* Tables */
 .prose .table-scroll {
   overflow-x: auto;
@@ -283,20 +294,20 @@
   outline-offset: -2px;
 }
 
-/* Shiki dual themes (defaultColor: false) */
-.shiki,
-.shiki span {
+/* Shiki dual themes (Astro adds class astro-code) (defaultColor: false) */
+.astro-code,
+.astro-code span {
   color: var(--shiki-light);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .shiki,
-  :root:not([data-theme='light']) .shiki span {
+  :root:not([data-theme='light']) .astro-code,
+  :root:not([data-theme='light']) .astro-code span {
     color: var(--shiki-dark);
   }
 }
 
-:root[data-theme='dark'] .shiki,
-:root[data-theme='dark'] .shiki span {
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
   color: var(--shiki-dark);
 }

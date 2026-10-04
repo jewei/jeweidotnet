@@ -1,3 +1,4 @@
+/// <reference types="bun" />
 /**
  * Writes a Markdown copy next to every built page: dist/<path>/index.md.
  * Agents fetch these directly or through `Accept: text/markdown`
@@ -34,7 +35,25 @@ const td = new TurndownService({
   strongDelimiter: '**',
 });
 
-td.remove(['script', 'style', 'svg', 'button', 'noscript']);
+// "- item", not turndown's default "-   item".
+td.addRule('list-item', {
+  filter: 'li',
+  replacement: (content, node, options) => {
+    const parent = node.parentNode as El;
+    const index = Array.prototype.indexOf.call(parent.children, node);
+    const marker =
+      parent.nodeName === 'OL'
+        ? `${Number(parent.getAttribute('start') ?? 1) + index}. `
+        : `${options.bulletListMarker} `;
+    const body = content
+      .replace(/^\n+/, '')
+      .replace(/\n+$/, '\n')
+      .replace(/\n/gm, `\n${' '.repeat(marker.length)}`);
+    return `${marker}${body.trimEnd()}${node.nextSibling ? '\n' : ''}`;
+  },
+});
+
+td.remove(['script', 'style', 'svg', 'button', 'noscript'] as (keyof HTMLElementTagNameMap)[]);
 
 td.addRule('skip', {
   filter: (node) =>
@@ -96,7 +115,16 @@ td.addRule('definition-list', {
   replacement: (_content, node) => {
     const rows = Array.from((node as El).querySelectorAll('dt')).map((dt) => {
       const dd = dt.nextElementSibling;
-      return `- **${text(dt)}:** ${dd ? td.turndown((dd as El).innerHTML).replace(/\n+/g, ' ').trim() : ''}`;
+      const items = dd ? Array.from((dd as El).querySelectorAll('li')) : [];
+      const value = items.length
+        ? items.map((li) => td.turndown((li as El).innerHTML).trim()).join(', ')
+        : dd
+          ? td
+              .turndown((dd as El).innerHTML)
+              .replace(/\n+/g, ' ')
+              .trim()
+          : '';
+      return `- **${text(dt)}:** ${value}`;
     });
     return `\n\n${rows.join('\n')}\n\n`;
   },
@@ -116,7 +144,8 @@ td.addRule('table', {
     );
     if (!rows.length) return '';
     const width = Math.max(...rows.map((row) => row.length));
-    const line = (cells: string[]) => `| ${[...cells, ...Array(width - cells.length).fill('')].join(' | ')} |`;
+    const line = (cells: string[]) =>
+      `| ${[...cells, ...Array(width - cells.length).fill('')].join(' | ')} |`;
     return `\n\n${line(rows[0])}\n${line(Array(width).fill('---'))}\n${rows.slice(1).map(line).join('\n')}\n\n`;
   },
 });
@@ -142,11 +171,19 @@ for (const file of pages(dist)) {
     continue;
   }
 
-  const markdown = td
+  let markdown = td
     .turndown(main)
     .replace(/[ \t]+\]\(/g, '](')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
+
+  // Eyebrow labels sit above the H1 visually; agents get the H1 first.
+  const h1 = markdown.match(/^# .*$/m);
+  if (h1 && h1.index! > 0) {
+    markdown = `${h1[0]}\n\n${(markdown.slice(0, h1.index) + markdown.slice(h1.index! + h1[0].length)).trim()}`;
+  }
+
+  markdown = markdown.replace(/\n{3,}/g, '\n\n');
 
   if (!/^# /m.test(markdown)) {
     console.error(`build-markdown: no H1 in ${relative}`);

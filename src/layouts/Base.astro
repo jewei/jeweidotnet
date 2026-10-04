@@ -63,11 +63,15 @@ let social: { url: string; width: number; height: number };
 if (typeof image === 'string') {
   social = { url: absolute(image), width: 1200, height: 630 };
 } else {
-  const card = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpg', layout: 'none' });
+  // Largest 1.91:1 crop the source allows; never upscale (dimensions must be true).
+  const ratio = 1200 / 630;
+  const width = Math.min(1200, image.width, Math.floor(image.height * ratio));
+  const height = Math.round(width / ratio);
+  const card = await getImage({ src: image, width, height, fit: 'cover', format: 'jpg', layout: 'none' });
   social = {
     url: absolute(card.src),
-    width: Number(card.attributes.width ?? 1200),
-    height: Number(card.attributes.height ?? 630),
+    width: Number(card.attributes.width ?? width),
+    height: Number(card.attributes.height ?? height),
   };
 }
 

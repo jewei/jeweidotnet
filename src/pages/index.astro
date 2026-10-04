@@ -134,7 +134,7 @@ const proof = [
     </header>
     <PostList posts={latest} numbers={numbers} />
     <p class="follow">
-      New posts arrive in the <a class="link" href="/rss.xml">RSS feed</a> first. You can also
+      New posts arrive in the <a class="link" href="/rss.xml">RSS feed</a> first. You can also{' '}
       <a class="link" href="/contact/">say hello</a>.
     </p>
   </section>
@@ -234,6 +234,23 @@ const proof = [
 
   .hero__actions li:last-child {
     margin-left: var(--space-2);
+  }
+
+  @media (max-width: 30rem) {
+    .hero__actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero__actions .button {
+      width: 100%;
+      padding-inline: var(--space-3);
+    }
+
+    .hero__actions li:last-child {
+      grid-column: 1 / -1;
+      margin-left: 0;
+    }
   }
 
   .hero__portrait {

@@ -26,7 +26,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
       return (
         <li class="ledger__row" data-md-post>
           <p class="ledger__meta">
-            <span class="ledger__no">№ {numbers.get(post.id)}</span>
+            <span class="ledger__no">No. {numbers.get(post.id)}</span>
             <time datetime={post.data.pubDate.toISOString()}>{formatDate.short(post.data.pubDate)}</time>
           </p>
           <div class="ledger__body">
