@@ -276,28 +276,70 @@
   .section-head {
     display: flex;
     flex-wrap: wrap;
-    align-items: end;
+    align-items: center;
     justify-content: space-between;
-    gap: var(--space-2) var(--space-6);
-    padding-top: var(--space-5);
+    gap: 0 var(--space-6);
+    padding-top: var(--space-3);
     border-top: 1px solid var(--fg);
-    margin-bottom: var(--space-7);
+    margin-bottom: var(--space-5);
   }
 
   .section-head h2 {
-    font-size: var(--step-3);
-    letter-spacing: var(--tracking-display);
-    line-height: var(--leading-tight);
+    font-size: var(--step-1);
+    letter-spacing: var(--tracking-heading);
+    line-height: var(--leading-snug);
   }
 
   .section-head p {
     color: var(--fg-2);
     max-width: 38rem;
-    margin-top: var(--space-2);
+    margin-top: var(--space-1);
   }
 
   .section {
     padding-block: var(--section) 0;
+  }
+
+  /*
+   * Part: a section whose heading sits in a left rail at 64rem+, like a
+   * typeset document. Below 64rem the heading sits above the body.
+   */
+  .part {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--fg);
+  }
+
+  .part + .part {
+    margin-top: var(--space-8);
+  }
+
+  .part__head h2 {
+    font-size: var(--step-1);
+    letter-spacing: var(--tracking-heading);
+    line-height: var(--leading-snug);
+  }
+
+  .part__body {
+    margin-top: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (min-width: 64rem) {
+    .part {
+      display: grid;
+      grid-template-columns: var(--rail) minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+
+    .part__head {
+      position: sticky;
+      top: var(--space-6);
+      align-self: start;
+    }
+
+    .part__body {
+      margin-top: 0;
+    }
   }
 }
 

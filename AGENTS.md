@@ -47,7 +47,7 @@ src/
   lib/                  posts, projects, seo (JSON-LD), og (cards), markdown (rehype)
   layouts/Base.astro    <head>, SEO tags, header, footer — every page
   layouts/Prose.astro   Markdown pages (contact, privacy)
-  components/           Header, Footer, PostList, ProjectCard, PageHeader, TopicNav, Icon, Wordmark
+  components/           Header, Footer, PostList, ProjectList, ProjectCard, PageHeader, TopicNav, Icon, Wordmark
   pages/                routes; [slug].astro = posts; og/[key].png.ts = social cards
   styles/               tokens.css, base.css, prose.css
 public/                 _headers, theme.js, site.js, icons, /content files (PDF, legacy images)

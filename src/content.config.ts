@@ -24,7 +24,6 @@ const blog = defineCollection({
         // that tags[0] (the primary topic) exists.
         tags: z.tuple([topic], topic),
         draft: z.boolean().default(false),
-        pinned: z.boolean().default(false),
         image: image().optional(),
         imageAlt: z.string().min(10).optional(),
       })

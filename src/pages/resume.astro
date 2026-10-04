@@ -11,12 +11,6 @@ import { coreStrengths, education, experience, resumeMeta, resumePdfUrl, techSta
 import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
 const page = pages.resume;
-const facts = [
-  { label: 'Experience', value: '15+ years' },
-  { label: 'Systems served', value: '1M+ users' },
-  { label: 'Payment providers', value: '10+' },
-  { label: 'Primary stack', value: 'Laravel · PHP' },
-];
 
 const schema = [
   {
@@ -37,14 +31,14 @@ const schema = [
   title={page.title}
   description={page.description}
   image={ogPath('resume')}
-  imageAlt="Résumé of Jewei Mak, senior software engineer and Laravel specialist."
+  imageAlt="Résumé of Jewei Mak, senior software engineer."
   type="profile"
   schema={schema}
 >
   <article class="resume wrap">
     <header class="resume__head">
       <div>
-        <p class="label">Senior software engineer · backend architect</p>
+        <p class="label">{site.jobTitle}</p>
         <h1>{site.author}</h1>
         <p class="resume__headline">{resumeMeta.headline}</p>
       </div>
@@ -62,17 +56,6 @@ const schema = [
         {site.email} · {displayUrl(site.profiles.github)} · {displayUrl(site.url)}
       </p>
     </header>
-
-    <dl class="resume__facts">
-      {
-        facts.map((fact) => (
-          <div>
-            <dt>{fact.label}</dt>
-            <dd>{fact.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
 
     <div class="resume__grid">
       <section class="resume__main" aria-labelledby="experience">
@@ -150,7 +133,7 @@ const schema = [
 
     <footer class="resume__contact" data-print-hide>
       <h2>Contact</h2>
-      <p>I am open to senior backend roles, consulting, and focused product engineering work.</p>
+      <p>Open to senior backend roles, consulting, and product engineering work.</p>
       <p>
         <a class="link" href={`mailto:${site.email}`}>{site.email}</a> ·
         <a class="link" href={site.profiles.github}>{displayUrl(site.profiles.github)}</a> ·
@@ -170,12 +153,13 @@ const schema = [
     gap: var(--space-5);
     align-items: end;
     padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--fg);
   }
 
   h1 {
     margin-top: var(--space-3);
-    font-size: var(--step-5);
-    line-height: 1;
+    font-size: var(--step-4);
+    line-height: var(--leading-tight);
     letter-spacing: var(--tracking-display);
   }
 
@@ -200,50 +184,6 @@ const schema = [
   @media (min-width: 64rem) {
     .resume__head {
       grid-template-columns: 1fr auto;
-    }
-  }
-
-  .resume__facts {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-block: 1px solid var(--fg);
-  }
-
-  .resume__facts div {
-    padding: var(--space-4) var(--space-4) var(--space-4) 0;
-  }
-
-  .resume__facts div:nth-child(n + 3) {
-    border-top: var(--hairline);
-  }
-
-  .resume__facts dt {
-    font-family: var(--mono);
-    font-size: var(--step--2);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--fg-3);
-  }
-
-  .resume__facts dd {
-    margin-top: var(--space-1);
-    font-size: var(--step-1);
-    font-weight: 600;
-    letter-spacing: var(--tracking-heading);
-  }
-
-  @media (min-width: 48rem) {
-    .resume__facts {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-
-    .resume__facts div:nth-child(n + 3) {
-      border-top: 0;
-    }
-
-    .resume__facts div + div {
-      padding-left: var(--space-5);
-      border-left: var(--hairline);
     }
   }
 
@@ -443,19 +383,7 @@ const schema = [
     .resume__head {
       grid-template-columns: 1fr;
       padding-bottom: 4mm;
-    }
-
-    .resume__facts {
-      grid-template-columns: repeat(4, 1fr);
       border-color: var(--print-fg);
-    }
-
-    .resume__facts div {
-      padding-block: 2mm;
-    }
-
-    .resume__facts dd {
-      font-size: 10pt;
     }
 
     .resume__grid {

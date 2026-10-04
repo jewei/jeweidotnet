@@ -40,7 +40,7 @@ const schema = [
     <PageHeader
       label={`${projects.length} projects`}
       title={page.title}
-      lede="Native tools, browser extensions, edge infrastructure, and PHP libraries. Each one solves a problem that I wanted out of my way."
+      lede={page.card}
     >
       <p class="more">
         <a class="arrow-link" href={site.profiles.github} data-external>
@@ -51,13 +51,8 @@ const schema = [
 
     <h2 class="sr-only">All projects</h2>
     <div class="list">
-      {projects.map((project, index) => <ProjectCard project={project} variant="full" eager={index === 0} />)}
+      {projects.map((project, index) => <ProjectCard project={project} eager={index === 0} />)}
     </div>
-
-    <p class="note">
-      The source links show the implementation. The stories explain the decisions, trade-offs, and lessons that
-      survived the build.
-    </p>
   </div>
 </Base>
 
@@ -76,13 +71,5 @@ const schema = [
     margin-top: var(--space-8);
     padding-top: var(--space-8);
     border-top: var(--hairline);
-  }
-
-  .note {
-    margin-top: var(--space-9);
-    max-width: 38rem;
-    font-family: var(--serif);
-    font-size: var(--step-1);
-    color: var(--fg-2);
   }
 </style>

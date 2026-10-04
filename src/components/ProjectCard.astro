@@ -1,7 +1,7 @@
 ---
 /**
- * Project card. `compact` (home grid): image, meta, name, summary, stack.
- * `full` (/projects/): adds a spec list and every project link.
+ * Project card for /projects/: cover, meta, name, summary, a spec list,
+ * and every project link. The home page uses ProjectList instead.
  */
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
@@ -9,27 +9,22 @@ import Icon from './Icon.astro';
 
 interface Props {
   project: CollectionEntry<'projects'>;
-  variant?: 'compact' | 'full';
   headingLevel?: 2 | 3;
   eager?: boolean;
 }
 
-const { project, variant = 'compact', headingLevel = 3, eager = false } = Astro.props;
+const { project, headingLevel = 3, eager = false } = Astro.props;
 const p = project.data;
 const Heading = `h${headingLevel}` as const;
-const sizes =
-  variant === 'full'
-    ? '(min-width: 64rem) 40rem, calc(100vw - 2.5rem)'
-    : '(min-width: 76rem) 36rem, (min-width: 48rem) calc(50vw - 4rem), calc(100vw - 2.5rem)';
 ---
 
-<article class:list={['project', `project--${variant}`]} id={variant === 'full' ? project.id : undefined}>
+<article class="project" id={project.id}>
   <div class="project__media">
     <Image
       src={p.image}
       alt={p.imageAlt}
       widths={[480, 720, 960, 1280]}
-      sizes={sizes}
+      sizes="(min-width: 64rem) 40rem, calc(100vw - 2.5rem)"
       layout="none"
       format="webp"
       quality={82}
@@ -45,50 +40,42 @@ const sizes =
     </Heading>
     <p class="project__summary">{p.summary}</p>
 
-    {
-      variant === 'full' ? (
-        <>
-          <dl class="project__spec">
-            <div>
-              <dt>Stack</dt>
-              <dd>{p.stack.join(', ')}</dd>
-            </div>
-            {p.platform && (
-              <div>
-                <dt>Platform</dt>
-                <dd>{p.platform}</dd>
-              </div>
-            )}
-            <div>
-              <dt>Language</dt>
-              <dd>{p.language.join(', ')}</dd>
-            </div>
-          </dl>
-          <ul class="project__links" role="list">
-            <li>
-              <a class="arrow-link" href={p.story}>
-                <span>Read the story</span>
-                <Icon name="arrow-right" />
-              </a>
-            </li>
-            {p.links.map((link) => (
-              <li>
-                <a class="arrow-link" href={link.href} data-external>
-                  <span>{link.label}</span>
-                  <Icon name="arrow-up-right" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <ul class="project__stack" role="list" aria-label="Stack">
-          {p.stack.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      )
-    }
+    <dl class="project__spec">
+      <div>
+        <dt>Stack</dt>
+        <dd>{p.stack.join(', ')}</dd>
+      </div>
+      {
+        p.platform && (
+          <div>
+            <dt>Platform</dt>
+            <dd>{p.platform}</dd>
+          </div>
+        )
+      }
+      <div>
+        <dt>Language</dt>
+        <dd>{p.language.join(', ')}</dd>
+      </div>
+    </dl>
+    <ul class="project__links" role="list">
+      <li>
+        <a class="arrow-link" href={p.story}>
+          <span>Write-up</span>
+          <Icon name="arrow-right" />
+        </a>
+      </li>
+      {
+        p.links.map((link) => (
+          <li>
+            <a class="arrow-link" href={link.href} data-external>
+              <span>{link.label}</span>
+              <Icon name="arrow-up-right" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </div>
 </article>
 
@@ -137,12 +124,6 @@ const sizes =
     text-decoration: none;
   }
 
-  .project--compact .project__name a::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-  }
-
   .project__name a:hover,
   .project:hover .project__name a {
     text-decoration: underline;
@@ -154,22 +135,6 @@ const sizes =
     margin-top: var(--space-2);
     color: var(--fg-2);
     max-width: 36rem;
-  }
-
-  .project__stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-top: var(--space-4);
-  }
-
-  .project__stack li {
-    padding: var(--space-1) var(--space-2);
-    border: var(--hairline);
-    border-radius: 999px;
-    font-family: var(--mono);
-    font-size: var(--step--2);
-    color: var(--fg-2);
   }
 
   .project__spec {
@@ -204,7 +169,7 @@ const sizes =
   }
 
   @media (min-width: 64rem) {
-    .project--full {
+    .project {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
       gap: var(--space-8);
       align-items: center;

@@ -12,7 +12,7 @@ export const topics = {
   ai: {
     name: 'AI',
     description:
-      'Notes on AI-assisted software engineering: coding agents, Claude Code, adoption levels, and honest reviews of how the tools change daily work.',
+      'Notes on AI-assisted software engineering: coding agents, Claude Code, adoption levels, and what the tools change in daily work.',
   },
   'browser-extensions': {
     name: 'Browser extensions',

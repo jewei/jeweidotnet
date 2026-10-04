@@ -14,7 +14,6 @@ pubDate: '2026-10-04T00:00:00.000+08:00' # Publication time
 updatedDate: '2026-10-10T00:00:00.000+08:00' # Optional. Only for real revisions.
 tags: ['ai', 'open-source'] # 1+ keys from src/data/topics.ts. First tag = primary topic (breadcrumb).
 draft: true # Optional. Hidden from build, RSS, sitemap. Visible in dev.
-pinned: false # Optional. Shows under "Start here" on the home page.
 image: ../../assets/content/<slug>-og-image.jpg # Optional custom social card
 imageAlt: 'What the card shows.' # Required when image is set
 ---
