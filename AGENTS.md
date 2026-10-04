@@ -72,13 +72,14 @@ Each recipe ends with `vp run verify`.
 
 Project skills live in `.claude/skills/`. Use them for these tasks:
 
-| Skill                    | Use for                                        |
-| ------------------------ | ---------------------------------------------- |
-| `new-blog-post`          | Drafting a post                                |
-| `open-graph-image`       | Generated or custom social cards               |
-| `resume-review`          | Résumé content, page, and PDF                  |
-| `web-perf`               | Core Web Vitals and Lighthouse work            |
-| `wrangler`, `cloudflare` | Pages deploys, headers, and the Pages Function |
+| Skill                                                 | Use for                                                                               |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `new-blog-post`                                       | Drafting a post                                                                       |
+| `open-graph-image`                                    | Generated or custom social cards                                                      |
+| `resume-review`                                       | Résumé content, page, and PDF                                                         |
+| `web-perf`                                            | Core Web Vitals and Lighthouse work                                                   |
+| `wrangler`, `cloudflare`                              | Pages deploys, headers, and the Pages Function                                        |
+| `typescript-best-practices`, `type-system-discipline` | Writing or reviewing TypeScript: no `as` casts or `!` assertions; parse external data |
 
 ## Images
 
@@ -93,7 +94,7 @@ Post images go in `src/assets/content/` and are referenced relatively from Markd
 - `vp run verify` passes.
 - For visual changes: screenshots at 320, 768, and 1440 in light and dark were reviewed against `docs/REVIEW.md`.
 - New rules or gotchas are written into this file or the right doc, not left in a chat.
-- Commits are small and use Conventional Commit prefixes (`feat`, `fix`, `docs`, `test`, `perf`, `chore`).
+- Commits are small and use Conventional Commit prefixes (`feat`, `fix`, `refactor`, `docs`, `test`, `perf`, `ci`, `chore`).
 
 ## Gotchas
 
