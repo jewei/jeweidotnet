@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      VP_GIT_HOOKS: '0'
+    steps:
+      - uses: actions/checkout@v7
+
+      # Bun runs the build scripts; keep it equal to packageManager in package.json.
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      # Vite+ toolchain and Node. Pin an exact setup-vp release.
+      - uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: '24'
+          cache: true
+
+      - run: vp install --frozen-lockfile
+      - run: vp exec playwright install --with-deps chromium
+
+      # Format, lint, type checks, unit tests, build, SEO/quality/browser tests.
+      - run: vp run verify
+
+      - name: Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.cjs
+          uploadArtifacts: true

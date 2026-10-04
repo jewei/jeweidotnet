@@ -6,64 +6,28 @@ description: >-
   something to the blog.
 ---
 
-# New Blog Post — jewei.net
+# New blog post — jewei.net
 
-Create a new Markdown blog post under `src/content/blog/` from the content or outline
-the user provides.
+Read `AGENTS.md` and `docs/CONTENT.md` first. They are the source of truth; this skill is the short path.
 
-## File location and naming
+## Steps
 
-- Path: `src/content/blog/{slug}.md`
-- Slug: lowercase, hyphen-separated, derived from the title. Keep it short (3–5 words).
-- Use `.md` unless the post needs MDX features (interactive components, JSX).
+1. Pick a slug: lowercase kebab-case, 3–5 words. The file is `src/content/blog/<slug>.md`; the URL is `/<slug>/`. It must not clash with a fixed page (`blog`, `projects`, `about`, `resume`, `collections`, `contact`, `privacy`, `og`).
+2. Pick 1–3 topics that already exist in `src/data/topics.ts`. The first is the primary topic (breadcrumb). Add a new topic there only if nothing fits, with a 70–160 character description.
+3. Write the frontmatter:
 
-## Frontmatter schema
+   ```yaml
+   ---
+   title: "Post title"
+   description: "120–160 characters. Specific. Appears as meta description and under the title."
+   pubDate: "YYYY-MM-DDT00:00:00.000+08:00"
+   tags: ["ai"]
+   draft: true
+   ---
+   ```
 
-All fields come from `src/content.config.ts`. Use exactly these keys:
-
-```yaml
----
-title: "Post Title Here"
-description: "One or two sentences. Appears in SEO meta and post cards. Should entice the click."
-pubDate: "YYYY-MM-DDT00:00:00.000Z" # today's date at midnight UTC
-updatedDate: "YYYY-MM-DDT00:00:00.000Z" # omit unless this is a revision of an existing post
-tags: ["tag1", "tag2"] # lowercase, hyphen-separated
-draft: true # always true for a new draft; user removes when ready to publish
-pinned: false # omit unless the user asks to pin it
-image: ../../assets/content/filename.jpg # omit unless a cover image already exists
----
-```
-
-**Tag conventions observed in existing posts:**
-`ai`, `open-source`, `php`, `system-design`, `database`, `infrastructure`, `entrepreneurship`
-Use existing tags when the topic fits. Invent a new tag only when nothing fits.
-
-## Writing style
-
-Match the voice used in existing posts (`src/content/blog/the-eight-levels-of-ai-adoption.md`
-is the strongest reference):
-
-- Short paragraphs. One idea per paragraph.
-- No em-dash padding. Prefer periods.
-- No filler opener sentences ("In today's world…", "Have you ever wondered…").
-- Bold sparingly — only for terms being introduced or key takeaways.
-- Code in fenced blocks with the language identifier.
-- Section headers are `##` (H2), sub-sections `###` (H3). Do not use H1 in the body.
-
-## Workflow
-
-1. Read the user's content or outline.
-2. Pick a slug and derive the frontmatter. Set `pubDate` to today. Set `draft: true`.
-3. Write the full post body in Markdown, applying the style guide above.
-4. Create the file at `src/content/blog/{slug}.md`.
-5. Tell the user:
-   - The file path
-   - The tags chosen and why (if non-obvious)
-   - Any frontmatter fields they may want to fill in before publishing (e.g. `image`, `pinned`)
-   - That they should remove `draft: true` when ready to publish
-
-## Draft vs publish
-
-A draft with `draft: true` is excluded from the public site. The user removes that line
-(or sets it to `false`) when they're ready to publish. Do not publish on their behalf
-unless explicitly asked.
+   Add `image` and `imageAlt` only for a custom social card. Without them, the build generates one.
+4. Write the body in the user's voice (strongest reference: `the-eight-levels-of-ai-adoption.md`): short paragraphs, no filler openers, specific commands and results. Start sections at `##`; no H1. Code fences need a language; add `title="file.ext"` for filenames. Images need real alt text.
+5. Optimize any new raster images with Squoosh (see `AGENTS.md`) and put them in `src/assets/content/`.
+6. Run `vp test tests/unit` (fast content rules), then `vp run verify`.
+7. Tell the user the path, the topics and why, and that `draft: true` keeps it hidden until they remove it. Do not publish unless asked.

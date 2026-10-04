@@ -10,7 +10,10 @@ import { defineConfig } from 'vite-plus';
  *   vp test             unit and content tests (Vitest)
  *   vp staged           pre-commit checks on staged files (via vp hooks)
  *
- * See docs/WORKFLOW.md for when to run what.
+ * `build` lives in package.json so Cloudflare Pages can run `bun run build`;
+ * `vp run build` runs the same script (uncached: the Markdown step reads dist/).
+ *
+ * See AGENTS.md for when to run what.
  */
 export default defineConfig({
   run: {
@@ -19,13 +22,6 @@ export default defineConfig({
       // Astro caches rendered Markdown. Run after editing src/lib/markdown.ts.
       clean: { command: 'rm -rf dist .astro node_modules/.astro', cache: false },
       preview: { command: 'astro preview', cache: false },
-      // Static build, then Markdown copies of every page for agents.
-      build: {
-        command: 'astro build && bun scripts/build-markdown.ts',
-        // Not cached: the Markdown step reads dist/, which astro build writes,
-        // so a cached replay could restore stale Markdown.
-        cache: false,
-      },
       // Type-check .astro files (tsgolint in `vp check` covers .ts only).
       typecheck: {
         command: 'astro check',
