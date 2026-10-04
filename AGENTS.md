@@ -2,7 +2,7 @@
 
 The personal site of Jewei Mak: writing, projects, and résumé. Astro 7 static output on Cloudflare Pages. Bun is the package manager and runtime. Vite+ (`vp`) is the toolchain.
 
-This file is the rule source for every agent (`CLAUDE.md` links here). Read it before you change anything. Detail lives in `docs/`.
+This file is the rule source for every agent. Read it before you change anything. Detail lives in `docs/`.
 
 ## Golden rules
 
