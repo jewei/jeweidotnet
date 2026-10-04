@@ -11,6 +11,7 @@ import {
   rehypeCodeBlocks,
   rehypeFigures,
   rehypeHeadingAnchors,
+  rehypeImageSizes,
   rehypeTables,
 } from './src/lib/markdown.ts';
 
@@ -63,6 +64,7 @@ export default defineConfig({
         rehypeHeadingIds,
         rehypeHeadingAnchors,
         rehypeFigures,
+        rehypeImageSizes,
         [rehypeExternalLinks, { target: false, rel: ['noopener'], properties: { dataExternal: '' } }],
         rehypeTables,
         rehypeCodeBlocks,

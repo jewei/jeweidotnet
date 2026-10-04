@@ -6,6 +6,7 @@
  * - rehypeTables: wraps tables in a focusable horizontal scroll region.
  * - rehypeCodeBlocks: wraps <pre> in a frame with a label and a copy button.
  * - rehypeHeadingAnchors: adds a "#" permalink to h2 and h3 headings.
+ * - rehypeImageSizes: sizes Markdown images for the prose column.
  *
  * Elements marked `data-md-skip` are dropped from the Markdown copies
  * that scripts/build-markdown.ts writes for agents.
@@ -83,6 +84,24 @@ export const codeFilename = {
     if (filename) node.properties['data-filename'] = filename;
   },
 };
+
+/**
+ * Prose is at most --measure (40rem) wide, and at 45rem the page gutters leave
+ * that much room. Without this, Astro sizes a Markdown image by its source
+ * width, so a 1600px screenshot loads in full for a 640px column. Runs before
+ * Astro's own image step, which keeps a `sizes` that is already set.
+ */
+const PROSE_IMAGE_SIZES = '(min-width: 45rem) 40rem, calc(100vw - 2.5rem)';
+
+export function rehypeImageSizes() {
+  return (tree: Node) =>
+    mapChildren(tree, (child) => {
+      if (child.tagName === 'img' && child.properties && !child.properties.sizes) {
+        child.properties.sizes = PROSE_IMAGE_SIZES;
+      }
+      return undefined;
+    });
+}
 
 export function rehypeFigures() {
   return (tree: Node) =>

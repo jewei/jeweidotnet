@@ -30,6 +30,12 @@ describe.each(htmlPages)('%s', (_route, doc) => {
     expect(named.map((el) => el.outerHTML.slice(0, 120))).toEqual([]);
   });
 
+  test('prose images are sized for the prose column, not their source width', () => {
+    for (const img of Array.from(doc.querySelectorAll('.prose img[srcset]'))) {
+      expect(img.getAttribute('sizes'), img.getAttribute('src') ?? '').toContain('40rem');
+    }
+  });
+
   test('ids are unique', () => {
     const ids = Array.from(doc.querySelectorAll('[id]'), (el) => el.id);
     expect(ids.filter((id, index) => ids.indexOf(id) !== index)).toEqual([]);
