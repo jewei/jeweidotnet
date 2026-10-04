@@ -6,13 +6,15 @@
  * Rules (enforced by tests/content): description 70–160 characters,
  * title under 60 characters.
  */
+import { site } from '../site.config';
+
 export const pages = {
   home: {
     path: '/',
-    title: 'Jewei Mak',
+    title: site.author,
     eyebrow: 'Software engineer',
-    description:
-      'Jewei Mak is a senior software engineer. He builds backend systems, payment infrastructure, and developer tools, and writes about software architecture and AI.',
+    // The home page describes the site, so it uses the site description.
+    description: site.description,
     card: 'I build reliable software and useful tools, and write about what I learn.',
   },
   blog: {

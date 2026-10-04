@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { describe, expect, test } from 'vite-plus/test';
-import { dist, exists, htmlPages, indexable, jsonLd, read, root } from './helpers';
+import { dist, exists, indexable, jsonLd, page, read, root } from './helpers';
 
 const meta = (doc: Document, selector: string) => doc.querySelector(selector)?.getAttribute('content') ?? '';
 
@@ -45,7 +45,7 @@ describe.each(indexable)('%s', (route, doc) => {
   test('has valid JSON-LD with WebSite and Person', () => {
     const blocks = jsonLd(doc);
     expect(blocks.length).toBe(1);
-    const types = (blocks[0]['@graph'] as { '@type': string }[]).map((node) => node['@type']);
+    const types = blocks[0]['@graph'].map((node) => node['@type']);
     expect(types).toContain('WebSite');
     expect(types).toContain('Person');
     expect(JSON.stringify(blocks)).not.toContain('jewei.net//');
@@ -59,7 +59,7 @@ describe.each(indexable)('%s', (route, doc) => {
 });
 
 test('the 404 page is noindex and has no canonical or Markdown alternate', () => {
-  const [, doc] = htmlPages.find(([route]) => route === '/404')!;
+  const doc = page('/404');
   expect(meta(doc, 'meta[name="robots"]')).toContain('noindex');
   expect(doc.querySelector('link[rel="canonical"]')).toBeNull();
   expect(doc.querySelector('link[rel="alternate"][type="text/markdown"]')).toBeNull();
@@ -86,12 +86,12 @@ test('every social image exists and reports its real size', async () => {
 });
 
 test('articles publish BlogPosting and BreadcrumbList data', () => {
-  const doc = htmlPages.find(([route]) => route === '/database-primary-key/')![1];
-  const graph = jsonLd(doc)[0]['@graph'] as Record<string, unknown>[];
-  const article = graph.find((node) => node['@type'] === 'BlogPosting')!;
-  expect(article.headline).toBe('Database Primary Key');
-  expect(article.datePublished).toBeTruthy();
-  expect(article.dateModified).toBeTruthy();
+  const doc = page('/database-primary-key/');
+  const graph = jsonLd(doc)[0]['@graph'];
+  const article = graph.find((node) => node['@type'] === 'BlogPosting');
+  expect(article?.headline).toBe('Database Primary Key');
+  expect(article?.datePublished).toBeTruthy();
+  expect(article?.dateModified).toBeTruthy();
   expect(graph.some((node) => node['@type'] === 'BreadcrumbList')).toBe(true);
   expect(meta(doc, 'meta[property="article:published_time"]')).not.toBe('');
 });

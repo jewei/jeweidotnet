@@ -21,19 +21,11 @@
     });
   }
 
+  // The site is HTTPS only, so the Clipboard API is available. Where it is
+  // not (an http preview), the button asks for a manual copy.
   function copyText(value) {
     if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(value);
-    return new Promise(function (resolve, reject) {
-      var area = document.createElement('textarea');
-      area.value = value;
-      area.setAttribute('readonly', '');
-      area.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-      document.body.appendChild(area);
-      area.select();
-      var ok = document.execCommand('copy');
-      area.remove();
-      ok ? resolve() : reject(new Error('copy failed'));
-    });
+    return Promise.reject(new Error('Clipboard API unavailable'));
   }
 
   document.addEventListener('click', function (event) {

@@ -6,7 +6,7 @@
 import type { APIRoute } from 'astro';
 import { site } from '../site.config';
 import { pages } from '../data/pages';
-import { topics } from '../data/topics';
+import { topicKeys, topics, topicUrl } from '../data/topics';
 import { getPosts, postUrl } from '../lib/posts';
 import { getProjects } from '../lib/projects';
 
@@ -42,9 +42,9 @@ ${posts.map((post) => `- [${post.data.title}](${md(postUrl(post))}): ${post.data
 
 ## Topics
 
-${Object.entries(topics)
-  .filter(([key]) => posts.some((post) => post.data.tags.includes(key as never)))
-  .map(([key, topic]) => `- [${topic.name}](${md(`/blog/${key}/`)}): ${topic.description}`)
+${topicKeys
+  .filter((key) => posts.some((post) => post.data.tags.includes(key)))
+  .map((key) => `- [${topics[key].name}](${md(topicUrl(key))}): ${topics[key].description}`)
   .join('\n')}
 
 ## Optional

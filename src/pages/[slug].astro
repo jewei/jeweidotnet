@@ -2,6 +2,7 @@
 /**
  * Article pages at /<slug>/. One per published post in src/content/blog/.
  */
+import type { InferGetStaticPropsType } from 'astro';
 import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
@@ -14,23 +15,19 @@ import {
   formatDate,
   getPosts,
   lastModified,
-  postNumbers,
   postSlug,
   postUrl,
   readingMinutes,
   relatedPosts,
-  type Post,
 } from '../lib/posts';
 import { absolute, breadcrumbSchema } from '../lib/seo';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
-  const numbers = postNumbers(posts);
   return posts.map((post, index) => ({
     params: { slug: postSlug(post) },
     props: {
       post,
-      number: numbers.get(post.id)!,
       newer: posts[index - 1] ?? null,
       older: posts[index + 1] ?? null,
       related: relatedPosts(post, posts),
@@ -38,15 +35,9 @@ export async function getStaticPaths() {
   }));
 }
 
-interface Props {
-  post: Post;
-  number: string;
-  newer: Post | null;
-  older: Post | null;
-  related: Post[];
-}
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
-const { post, number, newer, older, related } = Astro.props;
+const { post, newer, older, related } = Astro.props;
 const { title, description, pubDate, updatedDate, tags, image, imageAlt } = post.data;
 const { Content, headings } = await render(post);
 const minutes = readingMinutes(post.body);
@@ -91,12 +82,8 @@ const schema = [
   description={description}
   image={image ?? ogPath(`post-${postSlug(post)}`)}
   imageAlt={imageAlt ?? `${title}, an article by ${site.author}.`}
-  type="article"
-  published={pubDate}
-  modified={updatedDate}
-  tags={tags.map(topicName)}
+  article={{ published: pubDate, modified: updatedDate, tags: tags.map(topicName) }}
   schema={schema}
-  isPost
 >
   <div class="progress" aria-hidden="true"></div>
 
@@ -126,7 +113,7 @@ const schema = [
       <dl class="facts">
         <div>
           <dt>Entry</dt>
-          <dd>No. {number}</dd>
+          <dd>No. {post.number}</dd>
         </div>
         <div>
           <dt>Published</dt>

@@ -16,7 +16,7 @@ interface Props {
 
 const { project, variant = 'compact', headingLevel = 3, eager = false } = Astro.props;
 const p = project.data;
-const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const Heading = `h${headingLevel}` as const;
 const sizes =
   variant === 'full'
     ? '(min-width: 64rem) 40rem, calc(100vw - 2.5rem)'

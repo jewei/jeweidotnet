@@ -9,7 +9,6 @@
  */
 import TurndownService from 'turndown';
 
-type El = HTMLElement;
 const text = (node: Element | null | undefined) =>
   (node?.textContent ?? '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
 const escapeLabel = (value: string) => value.replace(/([\\[\]])/g, '\\$1');
@@ -26,10 +25,10 @@ const td = new TurndownService({
 td.addRule('list-item', {
   filter: 'li',
   replacement: (content, node, options) => {
-    const parent = node.parentNode as El;
-    const index = Array.prototype.indexOf.call(parent.children, node);
+    const parent = node.parentElement;
+    const index = parent ? Array.from(parent.children).indexOf(node) : 0;
     const marker =
-      parent.nodeName === 'OL'
+      parent?.nodeName === 'OL'
         ? `${Number(parent.getAttribute('start') ?? 1) + index}. `
         : `${options.bulletListMarker} `;
     const body = content
@@ -40,38 +39,38 @@ td.addRule('list-item', {
   },
 });
 
-td.remove(['script', 'style', 'svg', 'button', 'noscript'] as (keyof HTMLElementTagNameMap)[]);
+// A filter, not a tag list: svg is not an HTML tag name, so a list would need a cast.
+const dropped = new Set(['script', 'style', 'svg', 'button', 'noscript']);
+td.remove((node) => dropped.has(node.nodeName.toLowerCase()));
 
 td.addRule('skip', {
   filter: (node) =>
     node.nodeType === 1 &&
-    ((node as El).hasAttribute('data-md-skip') ||
-      (node as El).hasAttribute('hidden') ||
-      (node as El).getAttribute('aria-hidden') === 'true' ||
-      (node as El).classList.contains('sr-only')),
+    (node.hasAttribute('data-md-skip') ||
+      node.hasAttribute('hidden') ||
+      node.getAttribute('aria-hidden') === 'true' ||
+      node.classList.contains('sr-only')),
   replacement: () => '',
 });
 
 td.addRule('post-row', {
-  filter: (node) => node.nodeName === 'LI' && (node as El).hasAttribute('data-md-post'),
+  filter: (node) => node.nodeName === 'LI' && node.hasAttribute('data-md-post'),
   replacement: (_content, node) => {
-    const el = node as El;
-    const link = el.querySelector('h2 a, h3 a, h4 a');
-    const date = text(el.querySelector('time'));
-    const summary = text(Array.from(el.querySelectorAll('p')).at(-1));
+    const link = node.querySelector('h2 a, h3 a, h4 a');
+    const date = text(node.querySelector('time'));
+    const summary = text(Array.from(node.querySelectorAll('p')).at(-1));
     const label = escapeLabel(text(link));
     return `\n- [${label}](${link?.getAttribute('href')}) — ${date}. ${summary}`;
   },
 });
 
 td.addRule('code-frame', {
-  filter: (node) => node.nodeName === 'DIV' && (node as El).hasAttribute('data-code'),
+  filter: (node) => node.nodeName === 'DIV' && node.hasAttribute('data-code'),
   replacement: (_content, node) => {
-    const el = node as El;
-    const code = el.querySelector('pre code')?.textContent?.replace(/\n$/, '') ?? '';
+    const code = node.querySelector('pre code')?.textContent?.replace(/\n$/, '') ?? '';
     const fence = '`'.repeat(Math.max(3, ...Array.from(code.matchAll(/`+/g), (m) => m[0].length + 1)));
-    const language = el.getAttribute('data-language') ?? '';
-    const title = el.getAttribute('data-filename');
+    const language = node.getAttribute('data-language') ?? '';
+    const title = node.getAttribute('data-filename');
     const info = `${language === 'text' ? '' : language}${title ? ` title="${title.replace(/"/g, '\\"')}"` : ''}`;
     return `\n\n${fence}${info}\n${code}\n${fence}\n\n`;
   },
@@ -83,7 +82,7 @@ td.addRule('code-frame', {
 td.addRule('figure', {
   filter: 'figure',
   replacement: (content, node) => {
-    const figcaption = (node as El).querySelector('figcaption');
+    const figcaption = node.querySelector('figcaption');
     const caption = figcaption ? td.turndown(figcaption.innerHTML).replace(/\s+/g, ' ').trim() : '';
     return `\n\n${content.trim()}${caption ? `\n\n_${caption}_` : ''}\n\n`;
   },
@@ -94,25 +93,21 @@ td.addRule('figcaption', { filter: 'figcaption', replacement: () => '' });
 td.addRule('image', {
   filter: 'img',
   replacement: (_content, node) => {
-    const el = node as El;
-    const alt = (el.getAttribute('alt') ?? '').replace(/[[\]]/g, '');
-    return alt ? `![${alt}](${el.getAttribute('src')})` : '';
+    const alt = (node.getAttribute('alt') ?? '').replace(/[[\]]/g, '');
+    return alt ? `![${alt}](${node.getAttribute('src')})` : '';
   },
 });
 
 td.addRule('definition-list', {
   filter: 'dl',
   replacement: (_content, node) => {
-    const rows = Array.from((node as El).querySelectorAll('dt')).map((dt) => {
+    const rows = Array.from(node.querySelectorAll('dt')).map((dt) => {
       const dd = dt.nextElementSibling;
-      const items = dd ? Array.from((dd as El).querySelectorAll('li')) : [];
+      const items = dd ? Array.from(dd.querySelectorAll('li')) : [];
       const value = items.length
-        ? items.map((li) => td.turndown((li as El).innerHTML).trim()).join(', ')
+        ? items.map((li) => td.turndown(li.innerHTML).trim()).join(', ')
         : dd
-          ? td
-              .turndown((dd as El).innerHTML)
-              .replace(/\n+/g, ' ')
-              .trim()
+          ? td.turndown(dd.innerHTML).replace(/\n+/g, ' ').trim()
           : '';
       return `- **${text(dt)}:** ${value}`;
     });
@@ -123,20 +118,21 @@ td.addRule('definition-list', {
 td.addRule('table', {
   filter: 'table',
   replacement: (_content, node) => {
-    const rows = Array.from((node as El).querySelectorAll('tr')).map((row) =>
+    const rows = Array.from(node.querySelectorAll('tr')).map((row) =>
       Array.from(row.children).map((cell) =>
         td
-          .turndown((cell as El).innerHTML)
+          .turndown(cell.innerHTML)
           .replace(/\s*\n+\s*/g, '<br>')
           .replace(/\|/g, '\\|')
           .trim(),
       ),
     );
-    if (!rows.length) return '';
+    const [head, ...body] = rows;
+    if (!head) return '';
     const width = Math.max(...rows.map((row) => row.length));
     const line = (cells: string[]) =>
-      `| ${[...cells, ...Array(width - cells.length).fill('')].join(' | ')} |`;
-    return `\n\n${line(rows[0])}\n${line(Array(width).fill('---'))}\n${rows.slice(1).map(line).join('\n')}\n\n`;
+      `| ${[...cells, ...Array<string>(width - cells.length).fill('')].join(' | ')} |`;
+    return `\n\n${line(head)}\n${line(Array<string>(width).fill('---'))}\n${body.map(line).join('\n')}\n\n`;
   },
 });
 
@@ -152,7 +148,7 @@ export function htmlToMarkdown(main: string): string {
 
   // Eyebrow labels sit above the H1 visually; agents get the H1 first.
   const h1 = markdown.match(/^# .*$/m);
-  if (!h1 || h1.index === 0) return markdown;
-  const rest = (markdown.slice(0, h1.index) + markdown.slice(h1.index! + h1[0].length)).trim();
+  if (!h1?.index) return markdown;
+  const rest = (markdown.slice(0, h1.index) + markdown.slice(h1.index + h1[0].length)).trim();
   return collapseBlankLines(`${h1[0]}\n\n${rest}`);
 }
