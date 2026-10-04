@@ -133,6 +133,24 @@ describe('security headers', () => {
     expect(clashes).toEqual([]);
   });
 
+  test('_routes.json keeps static files out of the Function and pages in it', () => {
+    const routes: { include: string[]; exclude: string[] } = JSON.parse(read('_routes.json'));
+    expect(routes.include).toEqual(['/*']);
+    expect(routes.include.length + routes.exclude.length).toBeLessThanOrEqual(100);
+    const excluded = (url: string) => routes.exclude.some((rule) => pagesPattern(rule).test(url));
+    for (const rule of routes.exclude) {
+      expect(rule.length, rule).toBeLessThanOrEqual(100);
+      expect(
+        builtUrls.some((url) => pagesPattern(rule).test(url)),
+        `${rule} matches no file`,
+      ).toBe(true);
+    }
+    // Pages and Markdown copies need the middleware for negotiation and headers.
+    const negotiated = builtUrls.filter((url) => url.endsWith('/') || url.endsWith('.md'));
+    expect(negotiated.filter(excluded)).toEqual([]);
+    expect(excluded('/full-page/')).toBe(false);
+  });
+
   test('_headers and the middleware send the same CSP', () => {
     const headers = read('_headers');
     const middleware = fs.readFileSync(path.join(root, 'functions/_middleware.js'), 'utf8');

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/_astro/*",
+    "/og/*",
+    "/content/*",
+    "/apple-touch-icon.png",
+    "/android-chrome-192x192.png",
+    "/android-chrome-512x512.png",
+    "/favicon-16x16.png",
+    "/favicon-32x32.png",
+    "/favicon.ico",
+    "/site.webmanifest",
+    "/theme.js",
+    "/site.js",
+    "/robots.txt",
+    "/llms.txt",
+    "/rss.xml",
+    "/sitemap-*"
+  ]
+}
