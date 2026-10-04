@@ -8,7 +8,7 @@ One Markdown file per post: `src/content/blog/<slug>.md`. The filename is the UR
 
 ```yaml
 ---
-title: 'Post title' # 3–90 chars. Shown as H1 and <title>.
+title: 'Post title' # 3–70 chars. Shown as H1 and <title>.
 description: 'One or two sentences.' # 40–200 chars; aim for 120–160. Meta description and dek.
 pubDate: '2026-10-04T00:00:00.000+08:00' # Publication time
 updatedDate: '2026-10-10T00:00:00.000+08:00' # Optional. Only for real revisions.
