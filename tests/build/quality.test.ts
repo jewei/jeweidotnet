@@ -21,6 +21,21 @@ describe.each(htmlPages)('%s', (_route, doc) => {
     }
   });
 
+  test('no accessible name on an element whose role cannot have one', () => {
+    // ARIA prohibits naming paragraph, generic, and inline text roles; screen readers ignore it.
+    const unnamed = 'p, span, div, em, strong, b, i, small, code, sub, sup, del, ins';
+    const named = Array.from(doc.querySelectorAll('[aria-label], [aria-labelledby]')).filter(
+      (el) => el.matches(unnamed) && !el.hasAttribute('role'),
+    );
+    expect(named.map((el) => el.outerHTML.slice(0, 120))).toEqual([]);
+  });
+
+  test('prose images are sized for the prose column, not their source width', () => {
+    for (const img of Array.from(doc.querySelectorAll('.prose img[srcset]'))) {
+      expect(img.getAttribute('sizes'), img.getAttribute('src') ?? '').toContain('40rem');
+    }
+  });
+
   test('ids are unique', () => {
     const ids = Array.from(doc.querySelectorAll('[id]'), (el) => el.id);
     expect(ids.filter((id, index) => ids.indexOf(id) !== index)).toEqual([]);
@@ -93,7 +108,64 @@ describe('agent-readable output', () => {
   });
 });
 
+/** A Pages URL pattern (`*` splat, `:name` placeholder) as a RegExp. */
+const pagesPattern = (pattern: string) =>
+  new RegExp(
+    `^${pattern
+      .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+      .replace('*', '.*')
+      .replace(/:[A-Za-z]\w*/g, '[^/]+')}$`,
+  );
+
+/** Every URL the build serves: each file, plus `/dir/` for each `dir/index.html`. */
+const builtUrls = fs
+  .readdirSync(dist, { recursive: true, encoding: 'utf8' })
+  .filter((file) => fs.statSync(path.join(dist, file)).isFile())
+  .flatMap((file) => {
+    const url = `/${file.split(path.sep).join('/')}`;
+    return url.endsWith('/index.html') ? [url, url.replace(/index\.html$/, '')] : [url];
+  });
+
 describe('security headers', () => {
+  test('no two _headers rules set the same header for one URL', () => {
+    // Pages applies every matching rule and joins a repeated header with a comma.
+    const rules: { source: string; pattern: RegExp; names: string[] }[] = [];
+    for (const line of read('_headers').split('\n')) {
+      if (!line.trim() || line.trim().startsWith('#')) continue;
+      if (/^\s/.test(line)) rules.at(-1)?.names.push(line.split(':')[0].trim().toLowerCase());
+      else rules.push({ source: line.trim(), pattern: pagesPattern(line.trim()), names: [] });
+    }
+    const clashes: string[] = [];
+    for (const url of builtUrls) {
+      const setBy = new Map<string, string>();
+      for (const rule of rules.filter(({ pattern }) => pattern.test(url))) {
+        for (const name of rule.names) {
+          if (setBy.has(name)) clashes.push(`${url}: ${name} from ${setBy.get(name)} and ${rule.source}`);
+          else setBy.set(name, rule.source);
+        }
+      }
+    }
+    expect(clashes).toEqual([]);
+  });
+
+  test('_routes.json keeps static files out of the Function and pages in it', () => {
+    const routes: { include: string[]; exclude: string[] } = JSON.parse(read('_routes.json'));
+    expect(routes.include).toEqual(['/*']);
+    expect(routes.include.length + routes.exclude.length).toBeLessThanOrEqual(100);
+    const excluded = (url: string) => routes.exclude.some((rule) => pagesPattern(rule).test(url));
+    for (const rule of routes.exclude) {
+      expect(rule.length, rule).toBeLessThanOrEqual(100);
+      expect(
+        builtUrls.some((url) => pagesPattern(rule).test(url)),
+        `${rule} matches no file`,
+      ).toBe(true);
+    }
+    // Pages and Markdown copies need the middleware for negotiation and headers.
+    const negotiated = builtUrls.filter((url) => url.endsWith('/') || url.endsWith('.md'));
+    expect(negotiated.filter(excluded)).toEqual([]);
+    expect(excluded('/full-page/')).toBe(false);
+  });
+
   test('_headers and the middleware send the same CSP', () => {
     const headers = read('_headers');
     const middleware = fs.readFileSync(path.join(root, 'functions/_middleware.js'), 'utf8');
@@ -111,4 +183,26 @@ test('client JavaScript stays under 8 KB', () => {
     0,
   );
   expect(size).toBeLessThan(8 * 1024);
+});
+
+test('catalogue numbers follow publication date, then slug', () => {
+  const blogDir = path.join(root, 'src/content/blog');
+  const posts = fs
+    .readdirSync(blogDir)
+    .filter((file) => /\.mdx?$/.test(file))
+    .map((file) => {
+      const raw = fs.readFileSync(path.join(blogDir, file), 'utf8');
+      const pubDate = raw.match(/^pubDate:\s*["']?([^"'\n]+)/m)?.[1] ?? '';
+      return {
+        slug: file.replace(/\.mdx?$/, ''),
+        date: Date.parse(pubDate),
+        draft: /^draft:\s*true/m.test(raw),
+      };
+    })
+    .filter((post) => !post.draft)
+    .sort((a, b) => a.date - b.date || a.slug.localeCompare(b.slug));
+  posts.forEach((post, index) => {
+    const shown = read(`${post.slug}/index.html`).match(/<dd[^>]*>No\.\s(\d+)<\/dd>/)?.[1];
+    expect(shown, post.slug).toBe(String(index + 1).padStart(3, '0'));
+  });
 });

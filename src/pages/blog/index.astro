@@ -5,7 +5,7 @@ import PostList from '../../components/PostList.astro';
 import TopicNav from '../../components/TopicNav.astro';
 import Icon from '../../components/Icon.astro';
 import { ogPath, pages } from '../../data/pages';
-import { site } from '../../site.config';
+import { personId, site } from '../../site.config';
 import { getPosts, groupByYear, postNumbers, postUrl, topicCounts } from '../../lib/posts';
 import { absolute, breadcrumbSchema } from '../../lib/seo';
 
@@ -22,7 +22,7 @@ const schema = [
     name: `Writing by ${site.author}`,
     url: absolute('/blog/'),
     description: page.description,
-    author: { '@id': `${site.url}/#person` },
+    author: { '@id': personId },
     blogPost: posts.map((post) => ({
       '@type': 'BlogPosting',
       headline: post.data.title,
@@ -39,7 +39,7 @@ const schema = [
 
 <Base title={page.title} description={page.description} image={ogPath('blog')} schema={schema}>
   <div class="wrap">
-    <PageHeader label={`${posts.length} posts since ${firstYear}`} title="Writing" lede={page.card}>
+    <PageHeader label={`${posts.length} posts since ${firstYear}`} title={page.title} lede={page.card}>
       <p class="feed">
         <a class="arrow-link" href="/rss.xml"><span>Follow by RSS</span><Icon name="rss" /></a>
       </p>

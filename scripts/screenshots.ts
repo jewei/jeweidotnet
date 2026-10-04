@@ -11,6 +11,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
+import { findOverflow } from './overflow';
 
 const root = path.resolve(import.meta.dir, '..');
 const dist = path.join(root, 'dist');
@@ -64,10 +65,9 @@ for (const theme of themes) {
       await page.setViewportSize({ width, height: width < 600 ? 812 : 900 });
       await page.goto(`http://localhost:${server.port}${route}`, { waitUntil: 'networkidle' });
       await page.evaluate(() => document.fonts.ready);
-      const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-      if (scrollWidth > width) {
+      for (const offender of await findOverflow(page)) {
         overflow++;
-        console.warn(`overflow: ${route} @${width} (${theme}) scrollWidth=${scrollWidth}`);
+        console.warn(`overflow: ${route} @${width} (${theme}) ${offender}`);
       }
       const name = `${route.replace(/\//g, '_').replace(/^_|_$/g, '') || 'home'}-${width}-${theme}.png`;
       await page.screenshot({ path: path.join(out, name), fullPage });

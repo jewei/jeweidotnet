@@ -8,6 +8,7 @@ import path from 'node:path';
 import type { AddressInfo } from 'node:net';
 import { chromium, type Browser, type Page } from 'playwright';
 import { afterAll, beforeAll, describe, expect, test } from 'vite-plus/test';
+import { findOverflow } from '../../scripts/overflow';
 import { dist } from './helpers';
 
 let server: http.Server;
@@ -60,13 +61,30 @@ async function open(route: string, width = 1280, colorScheme: 'light' | 'dark' =
   return { page, errors, context };
 }
 
-const routes = ['/', '/blog/', '/projects/', '/about/', '/resume/', '/claude-code-tips/', '/contact/'];
+const routes = [
+  '/',
+  '/blog/',
+  '/blog/ai/',
+  '/projects/',
+  '/about/',
+  '/resume/',
+  '/collections/',
+  '/claude-code-tips/',
+  '/contact/',
+];
+const widths = [320, 768, 1024, 1440];
 
 describe('pages render without errors or overflow', () => {
-  test.each(routes)('%s at 320px', async (route) => {
-    const { page, errors, context } = await open(route, 320);
-    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-    expect(overflow).toBeLessThanOrEqual(0);
+  test.each(routes)('%s at 320, 768, 1024, and 1440px', async (route) => {
+    const { page, errors, context } = await open(route, widths[0]);
+    await page.evaluate(() => document.fonts.ready);
+    const overflow: Record<number, string[]> = {};
+    for (const width of widths) {
+      await page.setViewportSize({ width, height: 900 });
+      const found = await findOverflow(page);
+      if (found.length) overflow[width] = found;
+    }
+    expect(overflow).toEqual({});
     expect(errors).toEqual([]);
     await context.close();
   });

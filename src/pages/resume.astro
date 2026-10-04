@@ -6,7 +6,7 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { ogPath, pages } from '../data/pages';
-import { site } from '../site.config';
+import { displayUrl, site } from '../site.config';
 import { coreStrengths, education, experience, resumeMeta, resumePdfUrl, techStack } from '../data/resume';
 import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
@@ -59,7 +59,7 @@ const schema = [
         </li>
       </ul>
       <p class="resume__print-contact">
-        {site.email} · github.com/jewei · jewei.net
+        {site.email} · {displayUrl(site.profiles.github)} · {displayUrl(site.url)}
       </p>
     </header>
 
@@ -153,8 +153,8 @@ const schema = [
       <p>I am open to senior backend roles, consulting, and focused product engineering work.</p>
       <p>
         <a class="link" href={`mailto:${site.email}`}>{site.email}</a> ·
-        <a class="link" href={site.profiles.github}>github.com/jewei</a> ·
-        <a class="link" href="/">jewei.net</a>
+        <a class="link" href={site.profiles.github}>{displayUrl(site.profiles.github)}</a> ·
+        <a class="link" href="/">{displayUrl(site.url)}</a>
       </p>
     </footer>
   </article>
@@ -374,7 +374,7 @@ const schema = [
   }
 
   .tech li {
-    padding: 0.15rem 0.5rem;
+    padding: calc(var(--space-1) / 2) var(--space-2);
     border: var(--hairline);
     border-radius: var(--radius-1);
     font-family: var(--mono);
@@ -416,8 +416,8 @@ const schema = [
     }
 
     :global(html) {
-      background: #fff !important;
-      color: #000 !important;
+      background: var(--print-bg) !important;
+      color: var(--print-fg) !important;
       font-size: 8.5pt;
     }
 
@@ -432,7 +432,7 @@ const schema = [
 
     .resume__headline {
       font-size: 12pt;
-      color: #222;
+      color: var(--print-fg-2);
     }
 
     .resume__print-contact {
@@ -447,7 +447,7 @@ const schema = [
 
     .resume__facts {
       grid-template-columns: repeat(4, 1fr);
-      border-color: #000;
+      border-color: var(--print-fg);
     }
 
     .resume__facts div {
@@ -506,14 +506,14 @@ const schema = [
     }
 
     .resume__h2 {
-      color: #000;
-      border-color: #999;
+      color: var(--print-fg);
+      border-color: var(--print-line);
       margin-bottom: 2mm;
       padding-bottom: 1mm;
     }
 
     a {
-      color: #000 !important;
+      color: var(--print-fg) !important;
       text-decoration: none !important;
     }
   }

@@ -13,7 +13,8 @@ const blog = defineCollection({
   schema: ({ image }) =>
     z
       .object({
-        title: z.string().min(3).max(90),
+        // 70 is the longest <title> the SEO test allows (documentTitle drops the suffix).
+        title: z.string().min(3).max(70),
         description: z.string().min(40).max(200),
         pubDate: z.coerce.date(),
         updatedDate: z.coerce.date().optional(),

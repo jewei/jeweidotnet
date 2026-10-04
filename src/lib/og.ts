@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import satori from 'satori';
 import sharp from 'sharp';
+import { displayUrl, site } from '../site.config';
 
 export interface Card {
   /** Small label at the top, for example "№ 012 · Writing". */
@@ -139,9 +140,9 @@ export async function renderCard(card: Card): Promise<Buffer> {
         [
           h('div', { display: 'flex', alignItems: 'center', gap: 16 }, [
             h('div', { width: 56, height: 8, background: color.mark, borderRadius: 4 }),
-            h('span', {}, 'Jewei Mak'),
+            h('span', {}, site.author),
           ]),
-          h('span', {}, 'jewei.net'),
+          h('span', {}, displayUrl(site.url)),
         ],
       ),
     ],

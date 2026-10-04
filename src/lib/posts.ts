@@ -3,10 +3,19 @@ import { site } from '../site.config';
 
 export type Post = CollectionEntry<'blog'>;
 
+/**
+ * Publication order, oldest first. Posts on the same date sort by id: the
+ * collection's own order can change between builds, and so would the
+ * catalogue numbers and the newer/older links.
+ */
+function oldestFirst(a: Post, b: Post): number {
+  return a.data.pubDate.getTime() - b.data.pubDate.getTime() || a.id.localeCompare(b.id);
+}
+
 /** Published posts, newest first. Drafts never leave this function. */
 export async function getPosts(): Promise<Post[]> {
   const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
-  return posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+  return posts.sort((a, b) => oldestFirst(b, a));
 }
 
 export function postSlug(post: Post): string {
@@ -22,7 +31,7 @@ export function postUrl(post: Post): string {
  * Shown as "№ 007" in lists and article headers.
  */
 export function postNumbers(posts: Post[]): Map<string, string> {
-  const chronological = [...posts].sort((a, b) => a.data.pubDate.getTime() - b.data.pubDate.getTime());
+  const chronological = [...posts].sort(oldestFirst);
   return new Map(chronological.map((post, index) => [post.id, String(index + 1).padStart(3, '0')]));
 }
 
@@ -94,9 +103,7 @@ export function relatedPosts(post: Post, posts: Post[], limit = 3): Post[] {
         [...terms(candidate)].filter((term) => own.has(term)).length,
     }))
     .filter(({ score }) => score > 0)
-    .sort(
-      (a, b) => b.score - a.score || b.candidate.data.pubDate.getTime() - a.candidate.data.pubDate.getTime(),
-    )
+    .sort((a, b) => b.score - a.score || oldestFirst(b.candidate, a.candidate))
     .slice(0, limit)
     .map(({ candidate }) => candidate);
 }

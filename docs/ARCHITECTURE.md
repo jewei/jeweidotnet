@@ -17,11 +17,13 @@
 ## Request flow
 
 ```text
-Browser ──► Cloudflare Pages ──► functions/_middleware.js
-                                   ├─ /full-page → 301 /full-page-browser-screenshot/
-                                   ├─ static file → asset (headers from public/_headers)
-                                   ├─ Accept: text/markdown → <path>/index.md (or Markdown 404)
-                                   └─ HTML → asset + security headers + Link: alternate, describedby
+Browser ──► Cloudflare Pages
+              ├─ excluded in public/_routes.json (assets, icons, feeds) → asset + public/_headers
+              └─ functions/_middleware.js
+                   ├─ /full-page → 301 /full-page-browser-screenshot/
+                   ├─ other static file (for example <path>/index.md) → asset
+                   ├─ Accept: text/markdown → <path>/index.md (or Markdown 404)
+                   └─ HTML → asset + security headers + Link: alternate, describedby
 ```
 
 ## Build flow
@@ -55,13 +57,14 @@ Everything else is CSS: the reading progress bar (scroll timeline), view transit
 
 ## Tests
 
-| Suite                           | Needs build | Covers                                                                                                                                                                  |
-| ------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tests/unit/content.test.ts`    | no          | slugs, topics, no body H1, image files and alt text, project links, metadata lengths                                                                                    |
-| `tests/unit/middleware.test.ts` | no          | negotiation, q-values, 406, Markdown 404, redirects, security headers                                                                                                   |
-| `tests/build/seo.test.ts`       | yes         | titles, descriptions, canonicals, OG/Twitter, social image sizes, JSON-LD, sitemap, legacy URLs, RSS, robots                                                            |
-| `tests/build/quality.test.ts`   | yes         | lang, skip link, landmarks, alt and dimensions, unique ids, heading order, internal links, anchors, no inline scripts, Markdown copies, llms.txt, CSP parity, JS budget |
-| `tests/build/browser.test.ts`   | yes         | Playwright: 320px overflow, console errors, theme toggle, code copy, skip link, focus ring, AAA contrast                                                                |
+| Suite                           | Needs build | Covers                                                                                                                                                                                                                                               |
+| ------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/unit/content.test.ts`    | no          | slugs, topics, no body H1, image files and alt text, project links, metadata lengths                                                                                                                                                                 |
+| `tests/unit/middleware.test.ts` | no          | negotiation, q-values, 406, Markdown 404, direct .md, 304 and redirect pass-through, renamed URLs, security headers                                                                                                                                  |
+| `tests/unit/markdown.test.ts`   | no          | HTML to Markdown rules: figure captions, blank lines in fenced code, H1 first                                                                                                                                                                        |
+| `tests/build/seo.test.ts`       | yes         | titles, descriptions, canonicals, OG/Twitter, social image sizes, JSON-LD, sitemap, legacy URLs, RSS, robots                                                                                                                                         |
+| `tests/build/quality.test.ts`   | yes         | lang, skip link, landmarks, ARIA names, alt and dimensions, prose image sizes, unique ids, heading order, links, anchors, no inline scripts, Markdown copies, llms.txt, `_headers` overlap, `_routes.json`, CSP parity, JS budget, catalogue numbers |
+| `tests/build/browser.test.ts`   | yes         | Playwright: overflow by element bounds at 320, 768, 1024, 1440px, console errors, theme toggle, code copy, skip link, focus ring, AAA contrast                                                                                                       |
 
 ## Deployment
 
