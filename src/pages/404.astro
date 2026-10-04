@@ -63,7 +63,12 @@ const posts = await getPosts();
     margin-top: var(--section);
   }
 
+  /* The section rule already separates the list from the heading */
   .lost__latest :global(.ledger) {
     border-top: 0;
+  }
+
+  .lost__latest :global(.ledger__row:first-child) {
+    padding-top: var(--space-2);
   }
 </style>

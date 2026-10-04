@@ -52,10 +52,12 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       </div>
       <p class="intro__status">
         <span class="intro__dot" aria-hidden="true"></span>
-        Open to senior roles and consulting.
-        <a class="link" href="/resume/">Résumé</a>
-        <span aria-hidden="true">·</span>
-        <a class="link" href={`mailto:${site.email}`}>Email</a>
+        <span>Open to senior roles and consulting.</span>
+        <span class="intro__links">
+          <a class="link" href="/resume/">Résumé</a>
+          <span aria-hidden="true">·</span>
+          <a class="link" href={`mailto:${site.email}`}>Email</a>
+        </span>
       </p>
     </div>
 
@@ -140,7 +142,13 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     color: var(--fg-2);
   }
 
-  .intro__status a {
+  .intro__links {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .intro__links a {
     display: inline-flex;
     align-items: center;
     min-height: 36px;

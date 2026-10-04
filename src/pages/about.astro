@@ -226,7 +226,6 @@ const schema = [
 
   .pursuits {
     display: grid;
-    border-top: var(--hairline);
   }
 
   .pursuits div {
@@ -234,6 +233,10 @@ const schema = [
     gap: var(--space-1);
     padding-block: var(--space-4);
     border-bottom: var(--hairline);
+  }
+
+  .pursuits div:first-child {
+    padding-top: 0;
   }
 
   .pursuits dt {

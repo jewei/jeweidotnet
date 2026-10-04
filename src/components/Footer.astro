@@ -93,13 +93,21 @@ const isExternal = (href: string) => /^https?:/.test(href);
     color: var(--fg-2);
   }
 
+  /* Wide screens: each group fills columns of four links, so no group runs long */
   @media (min-width: 48rem) {
     .footer__grid {
-      grid-template-columns: 2fr repeat(3, 1fr);
+      grid-template-columns: minmax(0, 1fr) repeat(3, auto);
+      column-gap: var(--space-8);
     }
 
     .footer__brand {
       grid-column: auto;
+    }
+
+    .footer__group ul {
+      grid-template-rows: repeat(4, auto);
+      grid-auto-flow: column;
+      column-gap: var(--space-6);
     }
   }
 </style>
