@@ -405,7 +405,7 @@ const schema = [
   @media print {
     @page {
       size: A4;
-      margin: 12mm 14mm;
+      margin: 10mm 12mm;
     }
 
     :global(.header),
@@ -418,7 +418,7 @@ const schema = [
     :global(html) {
       background: #fff !important;
       color: #000 !important;
-      font-size: 9.5pt;
+      font-size: 8.5pt;
     }
 
     .resume {
@@ -465,7 +465,7 @@ const schema = [
     }
 
     .roles {
-      gap: 4mm;
+      gap: 3mm;
     }
 
     .role {
@@ -477,10 +477,22 @@ const schema = [
     }
 
     .role__highlights {
+      gap: 0.3mm;
+      margin-top: 1mm;
+      font-size: 8.5pt;
+      line-height: 1.32;
+    }
+
+    .strengths {
       gap: 0.5mm;
-      margin-top: 1.5mm;
-      font-size: 9pt;
-      line-height: 1.4;
+    }
+
+    .tech {
+      gap: 1mm;
+    }
+
+    .tech li {
+      padding: 0 1.5mm;
     }
 
     .role__meta {

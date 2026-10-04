@@ -155,3 +155,17 @@ describe('contrast (WCAG AAA for text)', () => {
     },
   );
 });
+
+describe('résumé print', () => {
+  test('prints on at most two A4 pages without site chrome', async () => {
+    const { page, context } = await open('/resume/');
+    await page.emulateMedia({ media: 'print' });
+    expect(await page.locator('.header').isVisible()).toBe(false);
+    expect(await page.locator('.footer').isVisible()).toBe(false);
+    const pdf = await page.pdf({ format: 'A4' });
+    const pages = pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g)?.length ?? 0;
+    expect(pages).toBeGreaterThan(0);
+    expect(pages).toBeLessThanOrEqual(2);
+    await context.close();
+  });
+});
