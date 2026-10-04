@@ -61,7 +61,7 @@ export const pages = {
     eyebrow: 'Contact',
     description:
       'How to contact Jewei Mak about software work, technical writing, and open-source projects, and what to include in a first message.',
-    card: 'Email is the best way to reach me. I read every message myself.',
+    card: 'Questions, project ideas, corrections, or just a hello.',
   },
   privacy: {
     path: '/privacy/',

@@ -64,6 +64,8 @@ export const footerNav = [
       { href: '/collections/', label: 'Collections' },
       { href: '/about/', label: 'About' },
       { href: '/resume/', label: 'Résumé' },
+      { href: '/contact/', label: 'Contact' },
+      { href: '/privacy/', label: 'Privacy' },
     ],
   },
   {
@@ -81,8 +83,6 @@ export const footerNav = [
       { href: '/rss.xml', label: 'RSS' },
       { href: '/llms.txt', label: 'llms.txt' },
       { href: '/sitemap-index.xml', label: 'Sitemap' },
-      { href: '/contact/', label: 'Contact' },
-      { href: '/privacy/', label: 'Privacy' },
     ],
   },
 ] as const;

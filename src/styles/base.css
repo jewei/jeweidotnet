@@ -299,10 +299,6 @@
   .section {
     padding-block: var(--section) 0;
   }
-
-  .section:last-child {
-    padding-bottom: var(--section);
-  }
 }
 
 /* Cross-document view transitions: a quiet cross-fade between pages */

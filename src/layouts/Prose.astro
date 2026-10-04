@@ -5,6 +5,7 @@
  */
 import Base from './Base.astro';
 import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
 import { ogPath, pages, type PageKey } from '../data/pages';
 import { absolute, breadcrumbSchema } from '../lib/seo';
 import { site } from '../site.config';
@@ -32,7 +33,17 @@ const schema = [
 
 <Base title={page.title} description={page.description} image={ogPath(key)} schema={schema}>
   <div class="wrap">
-    <PageHeader title={page.title} lede={lede ?? page.card} />
+    <PageHeader title={page.title} lede={lede ?? page.card}>
+      {
+        key === 'contact' && (
+          <p class="cta">
+            <a class="button button--primary" href={`mailto:${site.email}`}>
+              <Icon name="mail" /> {site.email}
+            </a>
+          </p>
+        )
+      }
+    </PageHeader>
     <div class="prose body">
       <slot />
     </div>
@@ -40,6 +51,10 @@ const schema = [
 </Base>
 
 <style>
+  .cta {
+    margin-top: var(--space-6);
+  }
+
   .body {
     max-width: var(--measure);
   }
