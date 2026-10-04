@@ -15,7 +15,7 @@ export const pages = {
     eyebrow: 'Software engineer',
     // The home page describes the site, so it uses the site description.
     description: site.description,
-    card: 'I build reliable software and useful tools, and write about what I learn.',
+    card: 'Senior software engineer. Backend systems, payments, and the tools around them.',
   },
   blog: {
     path: '/blog/',
@@ -23,7 +23,7 @@ export const pages = {
     eyebrow: 'Writing',
     description:
       'Technical writing by Jewei Mak on backend architecture, PHP and Laravel, developer tools, infrastructure, and AI-assisted engineering.',
-    card: 'Field notes on backend architecture, developer tools, infrastructure, and learning in public.',
+    card: 'Notes on backend architecture, developer tools, infrastructure, and working with AI.',
   },
   projects: {
     path: '/projects/',
@@ -31,15 +31,15 @@ export const pages = {
     eyebrow: 'Projects',
     description:
       'Software by Jewei Mak: native macOS tools, a browser extension, edge infrastructure on Cloudflare Workers, and open-source PHP libraries.',
-    card: 'Native tools, browser extensions, edge infrastructure, and PHP libraries.',
+    card: 'Small tools for problems in my own work: macOS apps, a browser extension, edge infrastructure, and PHP libraries.',
   },
   about: {
     path: '/about/',
     title: 'About',
     eyebrow: 'About',
     description:
-      'Jewei Mak is a senior software engineer with 15+ years in backend systems, and a builder, writer, reader, photographer, and occasional kitchen experimenter.',
-    card: 'I build durable software, useful tools, and clear notes for people who care how systems work.',
+      'About Jewei Mak, a senior software engineer: fifteen years of backend systems and payments, a few open-source tools, and notes on the work.',
+    card: 'Fifteen years of backend systems, a few small tools, and notes on the work.',
   },
   resume: {
     path: '/resume/',
@@ -47,7 +47,7 @@ export const pages = {
     eyebrow: 'Résumé',
     description:
       'Résumé of Jewei Mak, senior software engineer: 15+ years in Laravel and PHP, backend architecture, APIs, payment integrations, and production systems.',
-    card: 'Senior backend engineer. Laravel specialist. Scale-tested.',
+    card: 'Backend systems, APIs, and payments. Fifteen years of PHP and Laravel in production.',
   },
   collections: {
     path: '/collections/',
@@ -55,7 +55,7 @@ export const pages = {
     eyebrow: 'Collections',
     description:
       'A small, growing index of notes, recurring ideas, books, and everyday inputs kept by software engineer Jewei Mak.',
-    card: 'Lines and subjects worth keeping in public view.',
+    card: 'Principles I work by, and subjects I keep coming back to.',
   },
   contact: {
     path: '/contact/',
@@ -63,7 +63,7 @@ export const pages = {
     eyebrow: 'Contact',
     description:
       'How to contact Jewei Mak about software work, technical writing, and open-source projects, and what to include in a first message.',
-    card: 'Questions, project ideas, corrections, or just a hello.',
+    card: 'Work enquiries, technical questions, and corrections.',
   },
   privacy: {
     path: '/privacy/',

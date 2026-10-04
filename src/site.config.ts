@@ -16,9 +16,9 @@ export const site = {
   timeZone: 'Asia/Kuala_Lumpur',
   /** Default meta description. Keep it between 120 and 160 characters. */
   description:
-    'Jewei Mak is a senior software engineer. He builds backend systems, payment infrastructure, and developer tools, and writes about software architecture and AI.',
+    'Jewei Mak is a senior software engineer working on backend systems, payments, and developer tools. Notes on architecture, PHP, infrastructure, and AI.',
   /** Home page <title>. Other pages use `${title} · ${author}`. */
-  homeTitle: 'Jewei Mak — Senior Software Engineer and Backend Architect',
+  homeTitle: 'Jewei Mak — Senior Software Engineer',
   firstYear: 2022,
   twitter: '@jewei',
   profiles: {
