@@ -7,7 +7,7 @@ import TopicNav from '../../components/TopicNav.astro';
 import { ogPath } from '../../data/pages';
 import type { InferGetStaticPropsType } from 'astro';
 import { topics, topicName, topicUrl } from '../../data/topics';
-import { getPosts, postNumbers, postUrl, topicCounts } from '../../lib/posts';
+import { getPosts, postUrl, topicCounts } from '../../lib/posts';
 import { absolute, breadcrumbSchema } from '../../lib/seo';
 import { personId, site } from '../../site.config';
 
@@ -64,6 +64,6 @@ const schema = [
     <PageHeader label={`Topic · ${count}`} title={name} lede={description} />
     <TopicNav topics={topicCounts(posts)} current={topic} total={posts.length} />
     <h2 class="sr-only">Posts about {name}</h2>
-    <PostList posts={tagged} numbers={postNumbers(posts)} currentTopic={topic} />
+    <PostList posts={tagged} currentTopic={topic} />
   </div>
 </Base>

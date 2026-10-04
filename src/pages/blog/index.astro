@@ -6,12 +6,11 @@ import TopicNav from '../../components/TopicNav.astro';
 import Icon from '../../components/Icon.astro';
 import { ogPath, pages } from '../../data/pages';
 import { personId, site } from '../../site.config';
-import { getPosts, groupByYear, postNumbers, postUrl, topicCounts } from '../../lib/posts';
+import { getPosts, groupByYear, postUrl, topicCounts } from '../../lib/posts';
 import { absolute, breadcrumbSchema } from '../../lib/seo';
 
 const page = pages.blog;
 const posts = await getPosts();
-const numbers = postNumbers(posts);
 const years = groupByYear(posts);
 const firstYear = years.at(-1)?.[0];
 
@@ -54,7 +53,7 @@ const schema = [
             {year}
             <span class="sr-only">, {yearPosts.length} posts</span>
           </h2>
-          <PostList posts={yearPosts} numbers={numbers} />
+          <PostList posts={yearPosts} />
         </section>
       ))
     }

@@ -8,13 +8,12 @@ import portrait from '../assets/jewei.jpg';
 import { personId, site } from '../site.config';
 import { ogPath, pages } from '../data/pages';
 import { topicName, topicUrl } from '../data/topics';
-import { getPosts, postNumbers, topicCounts } from '../lib/posts';
+import { getPosts, topicCounts } from '../lib/posts';
 import { getProjects } from '../lib/projects';
 import { absolute } from '../lib/seo';
 
 const page = pages.home;
 const posts = await getPosts();
-const numbers = postNumbers(posts);
 const pinned = posts.filter((post) => post.data.pinned);
 const latest = posts.filter((post) => !post.data.pinned).slice(0, 6);
 const projects = (await getProjects()).filter((project) => project.data.featured).slice(0, 4);
@@ -119,7 +118,7 @@ const proof = [
             <p>A good place to start.</p>
           </div>
         </header>
-        <PostList posts={pinned} numbers={numbers} />
+        <PostList posts={pinned} />
       </section>
     )
   }
@@ -132,7 +131,7 @@ const proof = [
       </div>
       <a class="arrow-link" href="/blog/"><span>All {posts.length} posts</span><Icon name="arrow-right" /></a>
     </header>
-    <PostList posts={latest} numbers={numbers} />
+    <PostList posts={latest} />
     <p class="follow">
       New posts arrive in the <a class="link" href="/rss.xml">RSS feed</a> first. You can also{' '}
       <a class="link" href="/contact/">say hello</a>.

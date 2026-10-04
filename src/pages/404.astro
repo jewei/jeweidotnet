@@ -2,10 +2,9 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import PostList from '../components/PostList.astro';
-import { getPosts, postNumbers } from '../lib/posts';
+import { getPosts } from '../lib/posts';
 
 const posts = await getPosts();
-const numbers = postNumbers(posts);
 ---
 
 <Base
@@ -31,7 +30,7 @@ const numbers = postNumbers(posts);
 
     <section class="lost__latest" aria-labelledby="latest-title">
       <h2 id="latest-title" class="label">Latest writing</h2>
-      <PostList posts={posts.slice(0, 3)} numbers={numbers} showTopics={false} />
+      <PostList posts={posts.slice(0, 3)} showTopics={false} />
     </section>
   </div>
 </Base>

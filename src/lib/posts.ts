@@ -2,21 +2,34 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import type { TopicKey } from '../data/topics';
 import { site } from '../site.config';
 
-export type Post = CollectionEntry<'blog'>;
+type Entry = CollectionEntry<'blog'>;
+
+/** A published post with its catalogue number. */
+export type Post = Entry & {
+  /** Position in publication order, oldest first: "007". Shown as "No. 007". */
+  number: string;
+};
 
 /**
  * Publication order, oldest first. Posts on the same date sort by id: the
  * collection's own order can change between builds, and so would the
  * catalogue numbers and the newer/older links.
  */
-function oldestFirst(a: Post, b: Post): number {
+function oldestFirst(a: Entry, b: Entry): number {
   return a.data.pubDate.getTime() - b.data.pubDate.getTime() || a.id.localeCompare(b.id);
 }
 
-/** Published posts, newest first. Drafts never leave this function. */
+/**
+ * Published posts, newest first, each with its catalogue number. Drafts never
+ * leave this function. Numbering happens here, once, so no page can show a
+ * post without one.
+ */
 export async function getPosts(): Promise<Post[]> {
-  const posts = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
-  return posts.sort((a, b) => oldestFirst(b, a));
+  const entries = await getCollection('blog', ({ data }) => import.meta.env.DEV || !data.draft);
+  return entries
+    .sort(oldestFirst)
+    .map((entry, index) => ({ ...entry, number: String(index + 1).padStart(3, '0') }))
+    .reverse();
 }
 
 export function postSlug(post: Post): string {
@@ -25,15 +38,6 @@ export function postSlug(post: Post): string {
 
 export function postUrl(post: Post): string {
   return `/${postSlug(post)}/`;
-}
-
-/**
- * Catalogue number: the post's position in publication order, oldest first.
- * Shown as "No. 007" in lists and article headers.
- */
-export function postNumbers(posts: Post[]): Map<string, string> {
-  const chronological = [...posts].sort(oldestFirst);
-  return new Map(chronological.map((post, index) => [post.id, String(index + 1).padStart(3, '0')]));
 }
 
 export function lastModified(post: Post): Date {

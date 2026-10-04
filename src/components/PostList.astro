@@ -8,14 +8,13 @@ import { topicName, topicUrl, type TopicKey } from '../data/topics';
 
 interface Props {
   posts: Post[];
-  numbers: Map<string, string>;
   headingLevel?: 2 | 3 | 4;
   /** Hide this topic from each row (used on the topic's own page). */
   currentTopic?: TopicKey;
   showTopics?: boolean;
 }
 
-const { posts, numbers, headingLevel = 3, currentTopic, showTopics = true } = Astro.props;
+const { posts, headingLevel = 3, currentTopic, showTopics = true } = Astro.props;
 const Heading = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
 ---
 
@@ -26,7 +25,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
       return (
         <li class="ledger__row" data-md-post>
           <p class="ledger__meta">
-            <span class="ledger__no">No. {numbers.get(post.id)}</span>
+            <span class="ledger__no">No. {post.number}</span>
             <time datetime={post.data.pubDate.toISOString()}>{formatDate.short(post.data.pubDate)}</time>
           </p>
           <div class="ledger__body">

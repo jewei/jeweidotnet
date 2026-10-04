@@ -3,16 +3,15 @@
  * has no custom `image`. Keys: page keys from src/data/pages.ts,
  * `topic-<topic>`, `post-<slug>`, and `default`.
  */
-import type { APIRoute, GetStaticPaths } from 'astro';
+import type { APIRoute, GetStaticPaths, InferGetStaticPropsType } from 'astro';
 import { pages } from '../../data/pages';
 import { topics } from '../../data/topics';
 import { renderCard, type Card } from '../../lib/og';
-import { getPosts, postNumbers, postSlug } from '../../lib/posts';
+import { getPosts, postSlug } from '../../lib/posts';
 import { displayUrl, site } from '../../site.config';
 
 export const getStaticPaths = (async () => {
   const posts = await getPosts();
-  const numbers = postNumbers(posts);
   const cards: { key: string; card: Card }[] = [
     {
       key: 'default',
@@ -31,7 +30,7 @@ export const getStaticPaths = (async () => {
       .map((post) => ({
         key: `post-${postSlug(post)}`,
         card: {
-          eyebrow: `No. ${numbers.get(post.id)} · Writing`,
+          eyebrow: `No. ${post.number} · Writing`,
           title: post.data.title,
           subtitle: post.data.description,
         },
@@ -40,7 +39,7 @@ export const getStaticPaths = (async () => {
   return cards.map(({ key, card }) => ({ params: { key }, props: { card } }));
 }) satisfies GetStaticPaths;
 
-export const GET: APIRoute = async ({ props }) => {
-  const png = await renderCard(props.card as Card);
+export const GET: APIRoute<InferGetStaticPropsType<typeof getStaticPaths>> = async ({ props }) => {
+  const png = await renderCard(props.card);
   return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
 };
