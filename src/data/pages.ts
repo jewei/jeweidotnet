@@ -15,7 +15,7 @@ export const pages = {
     eyebrow: 'Software engineer',
     // The home page describes the site, so it uses the site description.
     description: site.description,
-    card: 'Senior software engineer. Backend systems, payments, and the tools around them.',
+    card: 'Tastefully opinionated. I design and build software, from the systems behind it to the experience around it.',
   },
   blog: {
     path: '/blog/',
