@@ -68,6 +68,18 @@ Each recipe ends with `vp run verify`.
 - **Design change:** read `docs/DESIGN.md` first. Change tokens before components. Run `vp run shots` and look at 320, 768, 1440 in both themes.
 - **Rename a URL:** add a 301 in `functions/_middleware.js`, a test in `tests/unit/middleware.test.ts`, and keep the old path in `legacy-urls.txt` only if it still resolves.
 
+## Skills
+
+Project skills live in `.claude/skills/`. Use them for these tasks:
+
+| Skill                    | Use for                                        |
+| ------------------------ | ---------------------------------------------- |
+| `new-blog-post`          | Drafting a post                                |
+| `open-graph-image`       | Generated or custom social cards               |
+| `resume-review`          | Résumé content, page, and PDF                  |
+| `web-perf`               | Core Web Vitals and Lighthouse work            |
+| `wrangler`, `cloudflare` | Pages deploys, headers, and the Pages Function |
+
 ## Images
 
 Use [Squoosh](https://squoosh.app/) to optimize all new raster image assets before committing them. Store the optimized files in the repository and update their code references. Check the images at their display size. Keep text and interface details legible.
