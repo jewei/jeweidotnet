@@ -11,6 +11,7 @@ import Footer from '../components/Footer.astro';
 import { site } from '../site.config';
 import { absolute, documentTitle, graph, personSchema, websiteSchema } from '../lib/seo';
 import '../styles/tokens.css';
+import tokens from '../styles/tokens.css?raw';
 import '../styles/base.css';
 import '../styles/prose.css';
 
@@ -75,6 +76,12 @@ if (typeof image === 'string') {
   };
 }
 
+// <meta name="theme-color"> takes a colour, not a custom property, so read
+// --bg from tokens.css: the light theme first, then the dark theme. site.js
+// sets both tags to the active theme's --bg at runtime.
+const [lightBg, darkBg] = Array.from(tokens.matchAll(/--bg:\s*([^;]+);/g), (match) => match[1]);
+if (!lightBg || !darkBg) throw new Error('Base.astro: no light and dark --bg in tokens.css');
+
 const jsonLd = graph(websiteSchema(), personSchema(), ...schema);
 const speculation = JSON.stringify({
   prefetch: [{ where: { href_matches: '/*' }, eagerness: 'moderate' }],
@@ -92,8 +99,8 @@ const speculation = JSON.stringify({
     <meta name="robots" content={index ? 'index, follow, max-image-preview:large' : 'noindex, follow'} />
     <meta name="author" content={site.author} />
 
-    <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content={lightBg} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={darkBg} media="(prefers-color-scheme: dark)" />
     <script is:inline src="/theme.js"></script>
 
     <Font cssVariable="--font-geist" preload />
