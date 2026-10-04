@@ -61,19 +61,17 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     </div>
 
     <div class="intro__portrait">
-      <div class="intro__frame">
-        <Image
-          src={portrait}
-          alt="Portrait of Jewei Mak."
-          widths={[176, 240, 360, 480]}
-          sizes="(min-width: 64rem) 12rem, 5.5rem"
-          layout="none"
-          format="webp"
-          quality={80}
-          loading="eager"
-          fetchpriority="high"
-        />
-      </div>
+      <Image
+        src={portrait}
+        alt="Portrait of Jewei Mak."
+        widths={[176, 240, 360, 480]}
+        sizes="(min-width: 64rem) 12rem, 5.5rem"
+        layout="none"
+        format="webp"
+        quality={80}
+        loading="eager"
+        fetchpriority="high"
+      />
     </div>
   </section>
 
@@ -190,20 +188,15 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     transition: opacity var(--dur-2) var(--ease);
   }
 
-  .intro__frame {
+  .intro__portrait img {
     position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-2);
-    transition: transform var(--dur-2) var(--ease);
-  }
-
-  .intro__frame img {
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
+    border-radius: var(--radius-2);
     filter: saturate(0.85);
     transition:
-      transform 600ms var(--ease),
+      transform var(--dur-2) var(--ease),
       filter var(--dur-2) var(--ease);
   }
 
@@ -212,12 +205,8 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       opacity: 1;
     }
 
-    .intro__portrait:hover .intro__frame {
-      transform: translate(calc(var(--space-2) * -1), calc(var(--space-2) * -1)) rotate(-1.5deg);
-    }
-
     .intro__portrait:hover img {
-      transform: scale(1.05);
+      transform: translate(calc(var(--space-2) * -1), calc(var(--space-2) * -1)) rotate(-1.5deg);
       filter: saturate(1);
     }
   }
