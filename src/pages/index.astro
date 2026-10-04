@@ -37,18 +37,17 @@ const projects = (await getProjects()).filter((project) => project.data.featured
   <section class="intro wrap" aria-labelledby="intro-title">
     <div class="intro__copy">
       <p class="label">{site.jobTitle}</p>
-      <h1 id="intro-title">{site.author}</h1>
+      <h1 id="intro-title">
+        <span>I’m {site.author}.</span>
+        <span>Tastefully opinionated.</span>
+      </h1>
       <div class="intro__text">
         <p>
-          I build backend systems: APIs, payments, data, and the infrastructure under them. Most of the last fifteen
-          years has been PHP and Laravel, on systems that ranged from early product experiments to platforms with more
-          than a million users.
+          I love designing and building useful software, both the systems behind it and the experience around it. I
+          spend a lot of time building with AI, experimenting with ideas and shipping things when they turn into
+          something useful.
         </p>
-        <p>
-          I am currently at Oneverse, where I work on payments across more than ten providers in Asia, the fraud
-          controls around them, and the services underneath. Outside work, I build small tools and write about what I
-          learn.
-        </p>
+        <p>When I’m not building software, I’m usually reading, taking photos, or trying something new in the kitchen.</p>
       </div>
       <p class="intro__status">
         <span class="intro__dot" aria-hidden="true"></span>
@@ -116,6 +115,11 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     font-size: var(--step-4);
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-display);
+  }
+
+  /* One sentence per line: the name, then the stance */
+  h1 span {
+    display: block;
   }
 
   .intro__text {
