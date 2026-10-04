@@ -7,35 +7,23 @@ import { absolute, breadcrumbSchema } from '../lib/seo';
 
 const page = pages.collections;
 
-const notes = [
-  {
-    text: 'I build software with the care of craft: minimal systems, deliberate details, and code I try to shape like art.',
-    context: 'Personal note',
-  },
-  {
-    text: 'Speed is fun, but I still obsess over clean architecture, thoughtful DX, and systems designed to age well.',
-    context: 'Building principle',
-  },
-  {
-    text: 'Cooking feels a lot like coding: precision matters, but so does instinct, timing, and knowing when to stop tinkering.',
-    context: 'Craft note',
-  },
+const principles = [
+  'Treat software as craft: small systems, deliberate details, and code shaped with care.',
+  'Speed is welcome. It does not replace clean architecture, good developer experience, or systems designed to age well.',
+  'Precision matters, but so do instinct, timing, and knowing when to stop. This is as true in the kitchen as in code.',
 ];
 
 const groups = [
   {
-    title: 'Ideas I keep returning to',
-    description: 'Recurring subjects in the work and writing.',
+    title: 'In the work',
     items: ['AI-assisted software delivery', 'Developer experience', 'Systems that stay simple', 'Product architecture'],
   },
   {
-    title: 'Bookshelf themes',
-    description: 'Subjects most likely to pull me into another chapter.',
+    title: 'On the shelf',
     items: ['Psychology', 'Systems thinking', 'Philosophy', 'Science fiction'],
   },
   {
     title: 'Everyday inputs',
-    description: 'Things outside the editor that feed the work.',
     items: ['Photography walks', 'Music for deep work', 'Kitchen experiments', 'Quiet product details'],
   },
 ];
@@ -58,51 +46,33 @@ const schema = [
 
 <Base title={page.title} description={page.description} image={ogPath('collections')} schema={schema}>
   <div class="wrap">
-    <PageHeader
-      label="A small, growing index"
-      title={page.title}
-      lede="A small, growing index of lines and subjects I want to keep in public view."
-    />
+    <PageHeader title={page.title} lede={page.card} />
 
-    <section class="section-block" aria-labelledby="notes-title">
-      <header class="section-head">
-        <div>
-          <h2 id="notes-title">Notes worth keeping</h2>
-          <p>Three working principles, for now.</p>
-        </div>
-      </header>
-      <ol class="notes" role="list">
-        {
-          notes.map((note, index) => (
-            <li>
-              <span class="notes__no" aria-hidden="true">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <figure>
-                <blockquote>
-                  <p>“{note.text}”</p>
-                </blockquote>
-                <figcaption>{note.context}</figcaption>
-              </figure>
-            </li>
-          ))
-        }
-      </ol>
+    <section class="part" aria-labelledby="principles-title">
+      <header class="part__head"><h2 id="principles-title">Principles</h2></header>
+      <div class="part__body">
+        <ol class="principles" role="list">
+          {
+            principles.map((text, index) => (
+              <li>
+                <span class="principles__no" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <p>{text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
     </section>
 
-    <section class="section-block" aria-labelledby="subjects-title">
-      <header class="section-head">
-        <div>
-          <h2 id="subjects-title">Recurring subjects</h2>
-          <p>This is a reading trail, not a complete taxonomy.</p>
-        </div>
-      </header>
-      <div class="groups">
+    <section class="part" aria-labelledby="subjects-title">
+      <header class="part__head"><h2 id="subjects-title">Subjects</h2></header>
+      <div class="part__body groups">
         {
           groups.map((group) => (
             <section>
               <h3>{group.title}</h3>
-              <p>{group.description}</p>
               <ul>
                 {group.items.map((item) => (
                   <li>{item}</li>
@@ -117,86 +87,59 @@ const schema = [
 </Base>
 
 <style>
-  .section-block + .section-block {
-    margin-top: var(--section);
+  .principles {
+    display: grid;
+    max-width: var(--measure);
   }
 
-  .notes {
+  .principles li {
     display: grid;
-  }
-
-  .notes li {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: var(--space-4);
-    padding-block: var(--space-6);
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-4);
     border-bottom: var(--hairline);
   }
 
-  .notes li:first-child {
+  .principles li:first-child {
     padding-top: 0;
   }
 
-  .notes__no {
-    font-family: var(--mono);
-    font-size: var(--step--1);
-    color: var(--accent);
-    padding-top: 0.5em;
-  }
-
-  .notes blockquote p {
-    font-family: var(--serif);
-    font-size: var(--step-2);
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    max-width: 44rem;
-    text-indent: -0.4em;
-  }
-
-  .notes figcaption {
-    margin-top: var(--space-3);
+  .principles__no {
+    padding-top: 0.35em;
     font-family: var(--mono);
     font-size: var(--step--2);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--fg-3);
+    color: var(--accent);
+  }
+
+  .principles p {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.5;
   }
 
   .groups {
     display: grid;
-    gap: var(--space-5);
-  }
-
-  .groups section {
-    padding: var(--space-5);
-    border: var(--hairline);
-    border-radius: var(--radius-3);
-    background: var(--bg-raised);
+    gap: var(--space-6);
   }
 
   .groups h3 {
-    font-size: var(--step-1);
-  }
-
-  .groups p {
-    margin-top: var(--space-1);
-    font-size: var(--step--1);
-    color: var(--fg-3);
+    font-size: var(--step-0);
   }
 
   .groups ul {
     display: grid;
-    gap: var(--space-2);
-    margin-top: var(--space-4);
+    gap: var(--space-1);
+    margin-top: var(--space-3);
     padding-left: 1.1em;
     font-family: var(--serif);
+    color: var(--fg-2);
   }
 
   .groups li::marker {
-    color: var(--accent);
+    color: var(--fg-3);
   }
 
-  @media (min-width: 56rem) {
+  @media (min-width: 48rem) {
     .groups {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
