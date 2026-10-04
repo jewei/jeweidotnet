@@ -452,8 +452,13 @@ const schema = [
   }
 
   @media (min-width: 64rem) {
+    /* The first column always fits the rail and its margin. Where the page is
+       too narrow to centre the body, the body moves right instead. */
     .article {
-      grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure)) minmax(0, 1fr);
+      grid-template-columns:
+        minmax(calc(var(--rail) + var(--space-8)), 1fr)
+        minmax(0, var(--measure))
+        minmax(0, 1fr);
       grid-template-areas:
         '. head .'
         'rail body .'
