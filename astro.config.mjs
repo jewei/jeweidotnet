@@ -48,7 +48,8 @@ export default defineConfig({
   // Compression drops newline whitespace next to tags ("also<a>"). Brotli
   // at the edge makes the saving negligible, so keep the source spacing.
   compressHTML: false,
-  build: { format: 'directory', inlineStylesheets: 'auto' },
+  // Inline CSS: it is small, and inlining removes a render-blocking request.
+  build: { format: 'directory', inlineStylesheets: 'always' },
   image: { layout: 'constrained', responsiveStyles: true },
   markdown: {
     shikiConfig: {

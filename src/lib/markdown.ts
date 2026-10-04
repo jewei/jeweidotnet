@@ -113,6 +113,24 @@ export function rehypeTables() {
     );
 }
 
+/**
+ * Light-theme token colours that fall below 7:1 on --bg-sunken, mapped to
+ * darker values of the same hue. Applied to Shiki's inline style variables.
+ */
+const contrastFixes: Record<string, string> = {
+  '--shiki-light:#66707B': '--shiki-light:#4B535D',
+};
+
+function fixTokenContrast(node: Node): void {
+  const style = node.properties?.style;
+  if (typeof style === 'string') {
+    let next = style;
+    for (const [from, to] of Object.entries(contrastFixes)) next = next.split(from).join(to);
+    node.properties!.style = next;
+  }
+  node.children?.forEach(fixTokenContrast);
+}
+
 export function rehypeCodeBlocks() {
   return (tree: Node) => {
     let index = 0;
@@ -131,6 +149,7 @@ export function rehypeCodeBlocks() {
       const id = `code-${++index}`;
 
       child.properties = { ...props, tabIndex: 0, ariaLabelledby: id };
+      fixTokenContrast(child);
       return el(
         'div',
         {

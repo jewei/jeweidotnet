@@ -60,14 +60,21 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
 
   .header__nav {
     grid-area: nav;
-    margin-inline: calc(var(--space-3) * -1);
+    margin-inline: calc(var(--space-2) * -1);
     overflow-x: auto;
     scrollbar-width: none;
   }
 
   .header__nav ul {
     display: flex;
+    justify-content: space-between;
     gap: var(--space-1);
+  }
+
+  @media (min-width: 44rem) {
+    .header__nav ul {
+      justify-content: flex-end;
+    }
   }
 
   .header__nav a {
@@ -75,7 +82,7 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    padding-inline: var(--space-3);
+    padding-inline: var(--space-2);
     font-size: var(--step--1);
     font-weight: 500;
     color: var(--fg-2);
@@ -95,7 +102,7 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
   .header__nav a[aria-current='page']::after {
     content: '';
     position: absolute;
-    inset-inline: var(--space-3);
+    inset-inline: var(--space-2);
     bottom: -1px;
     height: 2px;
     background: var(--accent-mark);
@@ -167,6 +174,14 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
       grid-template-areas: 'mark nav theme';
       min-height: 4.5rem;
       padding-top: 0;
+    }
+
+    .header__nav a {
+      padding-inline: var(--space-3);
+    }
+
+    .header__nav a[aria-current='page']::after {
+      inset-inline: var(--space-3);
     }
 
     .header__nav {

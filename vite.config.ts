@@ -16,14 +16,15 @@ export default defineConfig({
   run: {
     tasks: {
       dev: { command: 'astro dev', cache: false },
+      // Astro caches rendered Markdown. Run after editing src/lib/markdown.ts.
+      clean: { command: 'rm -rf dist .astro node_modules/.astro', cache: false },
       preview: { command: 'astro preview', cache: false },
       // Static build, then Markdown copies of every page for agents.
       build: {
         command: 'astro build && bun scripts/build-markdown.ts',
-        cache: {
-          input: [{ auto: true }, '!dist/**', '!.astro/**', '!node_modules/.astro/**', '!node_modules/.vite/**'],
-          output: ['dist/**'],
-        },
+        // Not cached: the Markdown step reads dist/, which astro build writes,
+        // so a cached replay could restore stale Markdown.
+        cache: false,
       },
       // Type-check .astro files (tsgolint in `vp check` covers .ts only).
       typecheck: {
