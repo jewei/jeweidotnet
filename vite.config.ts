@@ -21,6 +21,9 @@ export default defineConfig({
       dev: { command: 'astro dev', cache: false },
       // Astro caches rendered Markdown. Run after editing src/lib/markdown.ts.
       clean: { command: 'rm -rf dist .astro node_modules/.astro', cache: false },
+      // Generate .astro/types.d.ts (astro:content types). `vp check` needs it,
+      // and fresh clones and CI do not have it (.astro/ is gitignored).
+      sync: { command: 'astro sync', cache: false },
       preview: { command: 'astro preview', cache: false },
       // Type-check .astro files (tsgolint in `vp check` covers .ts only).
       typecheck: {
@@ -36,7 +39,7 @@ export default defineConfig({
       },
       // The full gate. CI and agents run this before a PR.
       verify: {
-        command: ['vp check', 'vp run typecheck', 'vp test tests/unit', 'vp run test:build'],
+        command: ['vp run sync', 'vp check', 'vp run typecheck', 'vp test tests/unit', 'vp run test:build'],
         cache: false,
       },
       // Screenshots of key pages at key widths into .shots/ (needs a build).
