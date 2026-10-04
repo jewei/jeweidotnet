@@ -97,6 +97,7 @@ Post images go in `src/assets/content/` and are referenced relatively from Markd
 
 ## Gotchas
 
+- `vp check` needs Astro's generated types in `.astro/` (gitignored). Fresh clones get them from `prepare`; otherwise run `vp run sync`. A local pass with a stale `.astro/` does not prove CI will pass — check the CI run after you push.
 - Astro caches rendered Markdown in `node_modules/.astro`. After changing rehype plugins, run `vp run clean`.
 - `build` is not cached on purpose: the Markdown step reads `dist/`.
 - Astro's `compressHTML` is off on purpose: it removed spaces next to links.
