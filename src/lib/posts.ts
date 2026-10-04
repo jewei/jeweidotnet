@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import type { TopicKey } from '../data/topics';
 import { site } from '../site.config';
 
 export type Post = CollectionEntry<'blog'>;
@@ -109,8 +110,8 @@ export function relatedPosts(post: Post, posts: Post[], limit = 3): Post[] {
 }
 
 /** Topic keys with post counts, most used first. */
-export function topicCounts(posts: Post[]): [string, number][] {
-  const counts = new Map<string, number>();
+export function topicCounts(posts: Post[]): [TopicKey, number][] {
+  const counts = new Map<TopicKey, number>();
   for (const post of posts) for (const tag of post.data.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }

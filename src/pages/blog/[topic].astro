@@ -5,8 +5,9 @@ import PageHeader from '../../components/PageHeader.astro';
 import PostList from '../../components/PostList.astro';
 import TopicNav from '../../components/TopicNav.astro';
 import { ogPath } from '../../data/pages';
-import { topics, topicName } from '../../data/topics';
-import { getPosts, postNumbers, postUrl, topicCounts, type Post } from '../../lib/posts';
+import type { InferGetStaticPropsType } from 'astro';
+import { topics, topicName, topicUrl } from '../../data/topics';
+import { getPosts, postNumbers, postUrl, topicCounts } from '../../lib/posts';
 import { absolute, breadcrumbSchema } from '../../lib/seo';
 import { personId, site } from '../../site.config';
 
@@ -14,15 +15,11 @@ export async function getStaticPaths() {
   const posts = await getPosts();
   return topicCounts(posts).map(([topic]) => ({
     params: { topic },
-    props: { topic, posts, tagged: posts.filter((post) => post.data.tags.includes(topic as never)) },
+    props: { topic, posts, tagged: posts.filter((post) => post.data.tags.includes(topic)) },
   }));
 }
 
-interface Props {
-  topic: keyof typeof topics;
-  posts: Post[];
-  tagged: Post[];
-}
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { topic, posts, tagged } = Astro.props;
 const name = topicName(topic);
@@ -33,7 +30,7 @@ const schema = [
   {
     '@type': 'CollectionPage',
     name: `Writing about ${name}`,
-    url: absolute(`/blog/${topic}/`),
+    url: absolute(topicUrl(topic)),
     description,
     isPartOf: { '@id': `${absolute('/blog/')}#blog` },
     author: { '@id': personId },
@@ -51,7 +48,7 @@ const schema = [
   breadcrumbSchema([
     { name: 'Home', path: '/' },
     { name: 'Writing', path: '/blog/' },
-    { name, path: `/blog/${topic}/` },
+    { name, path: topicUrl(topic) },
   ]),
 ];
 ---

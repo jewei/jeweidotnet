@@ -1,10 +1,10 @@
 ---
 /** Topic filter links for /blog/ and /blog/<topic>/. */
-import { topicName, topicUrl } from '../data/topics';
+import { topicName, topicUrl, type TopicKey } from '../data/topics';
 
 interface Props {
-  topics: [string, number][];
-  current?: string;
+  topics: [TopicKey, number][];
+  current?: TopicKey;
   total: number;
 }
 const { topics, current, total } = Astro.props;

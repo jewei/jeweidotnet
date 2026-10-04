@@ -3,6 +3,8 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { topicKeys } from './data/topics';
 
+const topic = z.enum(topicKeys);
+
 /**
  * Blog posts. One Markdown file per post in `src/content/blog/`.
  * The filename is the URL: `my-post.md` → `/my-post/`.
@@ -18,7 +20,9 @@ const blog = defineCollection({
         description: z.string().min(40).max(200),
         pubDate: z.coerce.date(),
         updatedDate: z.coerce.date().optional(),
-        tags: z.array(z.enum(topicKeys)).min(1),
+        // A non-empty tuple, not an array with min(1): the type then proves
+        // that tags[0] (the primary topic) exists.
+        tags: z.tuple([topic], topic),
         draft: z.boolean().default(false),
         pinned: z.boolean().default(false),
         image: image().optional(),

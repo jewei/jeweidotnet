@@ -4,14 +4,14 @@
  * and topics. The whole row is a click target; topic links stay separate.
  */
 import { formatDate, postUrl, type Post } from '../lib/posts';
-import { topicName, topicUrl } from '../data/topics';
+import { topicName, topicUrl, type TopicKey } from '../data/topics';
 
 interface Props {
   posts: Post[];
   numbers: Map<string, string>;
   headingLevel?: 2 | 3 | 4;
   /** Hide this topic from each row (used on the topic's own page). */
-  currentTopic?: string;
+  currentTopic?: TopicKey;
   showTopics?: boolean;
 }
 

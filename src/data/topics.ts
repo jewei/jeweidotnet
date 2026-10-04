@@ -72,12 +72,16 @@ export const topics = {
 
 export type TopicKey = keyof typeof topics;
 
-export const topicKeys = Object.keys(topics) as [TopicKey, ...TopicKey[]];
+/** True when the registry has this key. Object.keys() is typed string[]; this proves more. */
+export const isTopicKey = (key: string): key is TopicKey => Object.hasOwn(topics, key);
 
-export function topicName(key: string): string {
-  return (topics as Record<string, { name: string }>)[key]?.name ?? key;
+/** Every topic key, in registry order. */
+export const topicKeys = Object.keys(topics).filter(isTopicKey);
+
+export function topicName(key: TopicKey): string {
+  return topics[key].name;
 }
 
-export function topicUrl(key: string): string {
+export function topicUrl(key: TopicKey): string {
   return `/blog/${key}/`;
 }
