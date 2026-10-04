@@ -1,14 +1,8 @@
+// Applies the stored theme before first paint. Without a stored choice,
+// CSS follows prefers-color-scheme. Loaded render-blocking from <head>.
 (function () {
-  let stored = null;
   try {
-    stored = localStorage.getItem('theme');
-  } catch (_error) {
-    stored = null;
-  }
-  const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  const isDark = (stored ?? preferred) === 'dark';
-  document.documentElement.classList.toggle('dark', isDark);
-
-  const themeColor = document.getElementById('theme-color');
-  if (themeColor) themeColor.content = themeColor.dataset[isDark ? 'dark' : 'light'];
+    var theme = localStorage.getItem('theme');
+    if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+  } catch (_) {}
 })();

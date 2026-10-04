@@ -1,99 +1,38 @@
 # jewei.toString()
 
-Personal site at [jewei.net](https://jewei.net). It is a technical journal, project index, and professional profile for Jewei Mak.
+The personal site of Jewei Mak at [jewei.net](https://jewei.net): technical writing, projects, and a résumé.
 
-The site uses Astro static output and deploys to Cloudflare Pages. It has no client framework and uses small, native JavaScript files only where needed.
+Astro 7 static output on Cloudflare Pages. Bun for packages and scripts. Vite+ for formatting, linting, type checks, tests, tasks, and Git hooks. No client framework; about 3 KB of JavaScript.
 
-## Stack
+## Quick start
 
-| Layer | Technology |
-| --- | --- |
-| Framework | Astro 7, static output |
-| Content | Astro Content Collections and Markdown |
-| Feeds and discovery | RSS, sitemap, robots.txt, `llms.txt` |
-| Styling | Native CSS and custom tokens |
-| Fonts | Newsreader, Geist, JetBrains Mono; self-hosted |
-| Images | Astro image processing and Sharp |
-| Deployment | Cloudflare Pages |
-| Package manager | Bun 1.4 or later |
-
-## Project structure
-
-```text
-src/
-├── assets/                 # Source images and the default social card
-├── components/             # Post, project, section, social, and icon components
-├── content/blog/           # Technical articles in Markdown
-├── data/
-│   ├── projects.ts         # Project index data
-│   └── resume.ts           # Résumé data
-├── layouts/                # Site shell, article layout, and prose page layout
-├── pages/                  # Static routes, indexes, résumé, RSS, and 404
-├── styles/global.css       # Shared component and page styles
-└── support/                # Blog, metadata, code-block, and social-image helpers
-tokens.css                  # Color, type, spacing, width, and motion tokens
-functions/_middleware.js    # HTML or Markdown content negotiation
-scripts/                    # Build-output and smoke-test scripts
-tests/                      # Agent-readiness and page-quality contracts
-public/                     # Headers, icons, scripts, résumé PDF, and discovery files
+```sh
+vp install          # dependencies (Bun) and Git hooks
+vp run dev          # http://localhost:4321
+vp run verify       # format, lint, type-check, build, and every test
 ```
 
-## Write an article
+No global `vp`? Use `bunx vp …`.
 
-Create a `.md` file in `src/content/blog/`:
+## Docs
 
-```markdown
----
-title: "Your Post Title"
-description: "A short and specific summary."
-pubDate: "2026-01-15"
-updatedDate: "2026-06-01" # optional
-tags: ["php", "open-source"]
-image: ../../assets/content/my-cover.jpg # optional
-imageAlt: "A useful description of the social image."
-draft: false # optional; false by default
----
+| Doc                                          | Read it when you…                                             |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| [AGENTS.md](AGENTS.md)                       | work on the repo at all (rules, commands, recipes)            |
+| [docs/CONTENT.md](docs/CONTENT.md)           | add a post, project, topic, or page                           |
+| [docs/DESIGN.md](docs/DESIGN.md)             | change anything visual                                        |
+| [docs/SEO.md](docs/SEO.md)                   | touch metadata, structured data, feeds, or discovery files    |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | need the build, request, or test flow, or deployment settings |
+| [docs/REVIEW.md](docs/REVIEW.md)             | review a change against the AAA bar                           |
 
-Post content here.
+## Write a post
+
+```sh
+$EDITOR src/content/blog/my-post.md   # see docs/CONTENT.md for frontmatter
+vp run dev                            # drafts show in dev only
+vp run verify
 ```
 
-The filename becomes the root article URL. For example, `my-post.md` becomes `/my-post/`.
+## Deploy
 
-Add `title="filename.ext"` after a fenced-code language to show a filename and copy control:
-
-````markdown
-```php title="UserController.php"
-final class UserController {}
-```
-````
-
-## Commands
-
-| Command | Action |
-| --- | --- |
-| `bun install` | Install dependencies |
-| `bun run dev` | Start the development server |
-| `bun run check` | Check Astro and TypeScript |
-| `bun run build` | Build HTML, assets, and Markdown copies into `dist/` |
-| `bun run preview` | Preview the production build |
-| `bun test` | Run all Bun tests |
-| `bun run test:agent` | Test agent-readable output and page contracts |
-| `bun run test:smoke` | Test required build output after a build |
-
-## Quality controls
-
-CI runs the type check, build, tests, internal-link check, and Lighthouse CI. The Lighthouse minimum is 95 for Performance, Accessibility, Best Practices, and SEO on five representative routes.
-
-The résumé page has a separate A4 print layout. The current downloadable PDF is at `public/content/files/2026/09/jewei-mak-resume-2026.pdf`; the previous URL remains available for compatibility.
-
-## Deployment
-
-Cloudflare Pages builds `dist/` after each push to `main`.
-
-| Setting | Value |
-| --- | --- |
-| Build command | `bun install --frozen-lockfile && bun run build` |
-| Build output directory | `dist` |
-| `BUN_VERSION` | `1.4.0` |
-
-Keep the CI Bun version and the Cloudflare `BUN_VERSION` value equal. `wrangler.toml` also sets `pages_build_output_dir = "./dist"` for local tools.
+Cloudflare Pages builds `main` with `bun install --frozen-lockfile && bun run build` into `dist/`.

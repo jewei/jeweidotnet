@@ -20,9 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
-# Ghost export files (contain private keys — do not commit)
-*.ghost.*.json
+# jetbrains setting folder
+.idea/
 
-# MCP config (contains API keys — do not commit)
-mcp.json
-.cursor/mcp.json
+# local agent settings and screenshot output
+.claude/settings.local.json
+.shots/

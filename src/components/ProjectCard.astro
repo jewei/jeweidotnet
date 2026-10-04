@@ -1,71 +1,213 @@
 ---
+/**
+ * Project card. `compact` (home grid): image, meta, name, summary, stack.
+ * `full` (/projects/): adds a spec list and every project link.
+ */
 import { Image } from 'astro:assets';
-import type { Project } from '../data/projects';
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
 
 interface Props {
-  project: Project;
-  variant?: 'selected' | 'index';
+  project: CollectionEntry<'projects'>;
+  variant?: 'compact' | 'full';
   headingLevel?: 2 | 3;
-  priority?: boolean;
+  eager?: boolean;
 }
 
-const { project, variant = 'index', headingLevel = 2, priority = false } = Astro.props;
+const { project, variant = 'compact', headingLevel = 3, eager = false } = Astro.props;
+const p = project.data;
 const Heading = `h${headingLevel}` as 'h2' | 'h3';
-const imageSizes =
-  variant === 'selected'
-    ? '(min-width: 960px) 40rem, (min-width: 640px) 46vw, 100vw'
-    : '(min-width: 960px) 36rem, 100vw';
+const sizes =
+  variant === 'full'
+    ? '(min-width: 64rem) 40rem, calc(100vw - 2.5rem)'
+    : '(min-width: 76rem) 36rem, (min-width: 48rem) calc(50vw - 4rem), calc(100vw - 2.5rem)';
 ---
 
-<article class:list={['project-card', `project-card--${variant}`]} id={variant === 'index' ? project.id : undefined}>
-  <a
-    class="project-card__media"
-    href={project.articleHref}
-    aria-label={`Read about ${project.name}`}
-  >
+<article class:list={['project', `project--${variant}`]} id={variant === 'full' ? project.id : undefined}>
+  <div class="project__media">
     <Image
-      src={project.image}
-      alt={project.imageAlt}
-      class="project-card__image"
-      widths={[360, 640, 900, 1200]}
-      sizes={imageSizes}
+      src={p.image}
+      alt={p.imageAlt}
+      widths={[480, 720, 960, 1280]}
+      sizes={sizes}
       layout="none"
       format="webp"
-      loading={priority ? 'eager' : 'lazy'}
-      fetchpriority={priority ? 'high' : 'auto'}
+      quality={82}
+      loading={eager ? 'eager' : 'lazy'}
+      fetchpriority={eager ? 'high' : 'auto'}
       decoding="async"
     />
-  </a>
-
-  <div class="project-card__body">
-    <div class="project-card__meta">
-      <span>{project.category}</span>
-      <span aria-hidden="true">·</span>
-      <span>{project.status}</span>
-    </div>
-
-    <Heading class="project-card__title">
-      <a href={project.articleHref}>{project.name}</a>
+  </div>
+  <div class="project__body">
+    <p class="project__meta label">{p.category} <span aria-hidden="true">·</span> {p.status}</p>
+    <Heading class="project__name">
+      <a href={p.story}>{p.name}</a>
     </Heading>
+    <p class="project__summary">{p.summary}</p>
 
-    <p class="project-card__description">{project.description}</p>
-
-    <ul class="project-card__stack" aria-label={`${project.name} technology`}>
-      {project.stack.map((item) => <li>{item}</li>)}
-    </ul>
-
-    <div class="project-card__links">
-      <a class="text-link" href={project.articleHref}>
-        Read the story
-        <span aria-hidden="true">→</span>
-      </a>
-      {project.links.map((link) => (
-        <a class="text-link text-link--quiet" href={link.href} target="_blank" rel="noopener noreferrer">
-          {link.label}
-          <span aria-hidden="true">↗</span>
-          <span class="sr-only"> (opens in new tab)</span>
-        </a>
-      ))}
-    </div>
+    {
+      variant === 'full' ? (
+        <>
+          <dl class="project__spec">
+            <div>
+              <dt>Stack</dt>
+              <dd>{p.stack.join(', ')}</dd>
+            </div>
+            {p.platform && (
+              <div>
+                <dt>Platform</dt>
+                <dd>{p.platform}</dd>
+              </div>
+            )}
+            <div>
+              <dt>Language</dt>
+              <dd>{p.language.join(', ')}</dd>
+            </div>
+          </dl>
+          <ul class="project__links" role="list">
+            <li>
+              <a class="arrow-link" href={p.story}>
+                <span>Read the story</span>
+                <Icon name="arrow-right" />
+              </a>
+            </li>
+            {p.links.map((link) => (
+              <li>
+                <a class="arrow-link" href={link.href} data-external>
+                  <span>{link.label}</span>
+                  <Icon name="arrow-up-right" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
+        <ul class="project__stack" role="list" aria-label="Stack">
+          {p.stack.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      )
+    }
   </div>
 </article>
+
+<style>
+  .project {
+    position: relative;
+    display: grid;
+    gap: var(--space-5);
+    align-content: start;
+  }
+
+  .project__media {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-3);
+    background: var(--bg-sunken);
+    outline: 1px solid var(--line);
+    outline-offset: -1px;
+    aspect-ratio: 16 / 10;
+  }
+
+  .project__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms var(--ease);
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .project:hover .project__media img {
+      transform: scale(1.015);
+    }
+  }
+
+  .project__meta {
+    margin-bottom: var(--space-2);
+  }
+
+  .project__name {
+    font-size: var(--step-2);
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.15;
+  }
+
+  .project__name a {
+    text-decoration: none;
+  }
+
+  .project--compact .project__name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .project__name a:hover,
+  .project:hover .project__name a {
+    text-decoration: underline;
+    text-decoration-color: var(--accent-mark);
+    text-decoration-thickness: 1px;
+  }
+
+  .project__summary {
+    margin-top: var(--space-2);
+    color: var(--fg-2);
+    max-width: 36rem;
+  }
+
+  .project__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+  }
+
+  .project__stack li {
+    padding: 0.2rem 0.55rem;
+    border: var(--hairline);
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-2);
+  }
+
+  .project__spec {
+    display: grid;
+    margin-top: var(--space-5);
+    border-top: var(--hairline);
+    font-size: var(--step--1);
+  }
+
+  .project__spec div {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-bottom: var(--hairline);
+  }
+
+  .project__spec dt {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    padding-top: 0.15em;
+  }
+
+  .project__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-5);
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 64rem) {
+    .project--full {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      gap: var(--space-8);
+      align-items: center;
+    }
+  }
+</style>

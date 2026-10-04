@@ -1,137 +1,100 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+/**
+ * Résumé. Data lives in src/data/resume.ts. Prints as one A4 document;
+ * see the @media print rules at the end of this file.
+ */
+import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
-import { authorName, authorProfiles, personId, siteUrl } from '../support/site';
-import {
-  resumePdfUrl,
-  resumeMeta,
-  coreStrengths,
-  techStack,
-  education,
-  experience,
-} from '../data/resume';
+import { ogPath, pages } from '../data/pages';
+import { site } from '../site.config';
+import { coreStrengths, education, experience, resumeMeta, resumePdfUrl, techStack } from '../data/resume';
+import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
-const resumeJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'ProfilePage',
-  name: 'Résumé — Jewei Mak',
-  url: new URL('/resume/', siteUrl).href,
-  mainEntity: {
-    '@type': 'Person',
-    '@id': personId,
-    name: authorName,
-    url: new URL('/about/', siteUrl).href,
-    jobTitle: 'Senior Software Engineer',
-    description: resumeMeta.summary[0],
-    email: 'mailto:jewei@duck.com',
-    knowsAbout: coreStrengths,
-    sameAs: authorProfiles,
+const page = pages.resume;
+const facts = [
+  { label: 'Experience', value: '15+ years' },
+  { label: 'Systems served', value: '1M+ users' },
+  { label: 'Payment providers', value: '10+' },
+  { label: 'Primary stack', value: 'Laravel · PHP' },
+];
+
+const schema = [
+  {
+    '@type': 'ProfilePage',
+    name: `Résumé — ${site.author}`,
+    url: absolute('/resume/'),
+    description: page.description,
+    mainEntity: personSchema({ description: resumeMeta.summary[0], knowsAbout: coreStrengths }),
   },
-};
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Résumé', path: '/resume/' },
+  ]),
+];
 ---
 
-<BaseLayout
-  title={resumeMeta.title}
-  description="Résumé of Jewei Mak, a senior software engineer focused on Laravel, backend architecture, APIs, payments, and production systems."
-  socialImageAlt="Résumé of Jewei Mak — senior software engineer and Laravel specialist."
+<Base
+  title={page.title}
+  description={page.description}
+  image={ogPath('resume')}
+  imageAlt="Résumé of Jewei Mak, senior software engineer and Laravel specialist."
+  type="profile"
+  schema={schema}
 >
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(resumeJsonLd)} slot="head" />
-
-  <article class="resume-page">
-    <header class="resume-header">
-      <div class="resume-header__identity">
-        <p class="resume-kicker">Senior software engineer · backend architect</p>
-        <h1>Jewei Mak</h1>
-        <p class="resume-headline">{resumeMeta.headline}</p>
+  <article class="resume wrap">
+    <header class="resume__head">
+      <div>
+        <p class="label">Senior software engineer · backend architect</p>
+        <h1>{site.author}</h1>
+        <p class="resume__headline">{resumeMeta.headline}</p>
       </div>
-
-      <div class="resume-actions" role="group" aria-label="Résumé actions">
-        <a href={resumePdfUrl} download class="button button--primary resume-download">
-          <Icon name="download" />
-          Download PDF
-        </a>
-        <a href="mailto:jewei@duck.com" class="text-link">Email Jewei <span aria-hidden="true">↗</span></a>
-      </div>
-
-      <dl class="resume-facts">
-        <div>
-          <dt>Experience</dt>
-          <dd>15+ years</dd>
-        </div>
-        <div>
-          <dt>Systems served</dt>
-          <dd>1M+ users</dd>
-        </div>
-        <div>
-          <dt>Payment providers</dt>
-          <dd>10+</dd>
-        </div>
-        <div>
-          <dt>Primary stack</dt>
-          <dd>Laravel · PHP</dd>
-        </div>
-      </dl>
+      <ul class="resume__actions" role="list" data-print-hide>
+        <li>
+          <a class="button button--primary" href={resumePdfUrl} download>
+            <Icon name="download" /> Download PDF
+          </a>
+        </li>
+        <li>
+          <a class="button" href={`mailto:${site.email}`}><Icon name="mail" /> Email</a>
+        </li>
+      </ul>
+      <p class="resume__print-contact">
+        {site.email} · github.com/jewei · jewei.net
+      </p>
     </header>
 
-    <div class="resume-layout">
-      <aside class="resume-aside" aria-label="Profile and skills">
-        <section class="resume-section">
-          <h2>Profile</h2>
-          {resumeMeta.summary.map((paragraph) => <p>{paragraph}</p>)}
-        </section>
+    <dl class="resume__facts">
+      {
+        facts.map((fact) => (
+          <div>
+            <dt>{fact.label}</dt>
+            <dd>{fact.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
 
-        <section class="resume-section">
-          <h2>Core strengths</h2>
-          <ul class="resume-strengths">
-            {coreStrengths.map((strength) => <li>{strength}</li>)}
-          </ul>
-        </section>
-
-        <section class="resume-section">
-          <h2>Technology</h2>
-          <p class="resume-technology">{techStack.join(' · ')}</p>
-        </section>
-
-        <section class="resume-section">
-          <h2>Education</h2>
-          {
-            education.map((entry) => (
-              <div class="resume-education">
-                <p class="resume-period">{entry.period}</p>
-                <h3>{entry.degree}</h3>
-                <p>{entry.institution}</p>
-              </div>
-            ))
-          }
-        </section>
-      </aside>
-
-      <section class="resume-main" aria-labelledby="experience-heading">
-        <h2 id="experience-heading">Experience</h2>
-        <div class="resume-roles">
+    <div class="resume__grid">
+      <section class="resume__main" aria-labelledby="experience">
+        <h2 id="experience" class="resume__h2">Experience</h2>
+        <ol class="roles" role="list">
           {
             experience.map((role) => (
-              <article class="resume-role">
-                <header class="resume-role__header">
-                  <div>
-                    <h3>{role.title}</h3>
-                    {role.companyUrl ? (
-                      <a href={role.companyUrl} target="_blank" rel="noopener noreferrer" class="resume-company">
-                        {role.company}<span class="sr-only"> (opens in new tab)</span>
-                      </a>
-                    ) : (
-                      <p class="resume-company">{role.company}</p>
-                    )}
-                  </div>
-                  <p class="resume-period">{role.period}</p>
+              <li class="role">
+                <header class="role__head">
+                  <h3>{role.title}</h3>
+                  <p class="role__company">
+                    {role.companyUrl ? <a href={role.companyUrl}>{role.company}</a> : role.company}
+                  </p>
+                  <p class="role__period">{role.period}</p>
                 </header>
-
-                <ul class="resume-highlights">
-                  {role.highlights.map((highlight) => <li>{highlight}</li>)}
+                <ul class="role__highlights">
+                  {role.highlights.map((highlight) => (
+                    <li>{highlight}</li>
+                  ))}
                 </ul>
-
                 {(role.stack || role.tools) && (
-                  <dl class="resume-role__meta">
+                  <dl class="role__meta">
                     {role.stack && (
                       <div>
                         <dt>Stack</dt>
@@ -146,17 +109,412 @@ const resumeJsonLd = {
                     )}
                   </dl>
                 )}
-              </article>
+              </li>
             ))
           }
-        </div>
+        </ol>
       </section>
+
+      <aside class="resume__aside" aria-label="Profile and skills">
+        <section>
+          <h2 class="resume__h2">Profile</h2>
+          {resumeMeta.summary.map((paragraph) => <p>{paragraph}</p>)}
+        </section>
+        <section>
+          <h2 class="resume__h2">Core strengths</h2>
+          <ul class="strengths">
+            {coreStrengths.map((strength) => <li>{strength}</li>)}
+          </ul>
+        </section>
+        <section>
+          <h2 class="resume__h2">Technology</h2>
+          <ul class="tech" role="list">
+            {techStack.map((tech) => <li>{tech}</li>)}
+          </ul>
+        </section>
+        <section>
+          <h2 class="resume__h2">Education</h2>
+          {
+            education.map((entry) => (
+              <div class="edu">
+                <h3>{entry.degree}</h3>
+                <p>
+                  {entry.institution} · {entry.period}
+                </p>
+              </div>
+            ))
+          }
+        </section>
+      </aside>
     </div>
 
-    <footer class="resume-contact">
+    <footer class="resume__contact" data-print-hide>
       <h2>Contact</h2>
       <p>I am open to senior backend roles, consulting, and focused product engineering work.</p>
-      <p><a href="mailto:jewei@duck.com">jewei@duck.com</a> · <a href="https://github.com/jewei">github.com/jewei</a> · <a href="https://jewei.net">jewei.net</a></p>
+      <p>
+        <a class="link" href={`mailto:${site.email}`}>{site.email}</a> ·
+        <a class="link" href={site.profiles.github}>github.com/jewei</a> ·
+        <a class="link" href="/">jewei.net</a>
+      </p>
     </footer>
   </article>
-</BaseLayout>
+</Base>
+
+<style>
+  .resume {
+    padding-top: var(--space-8);
+  }
+
+  .resume__head {
+    display: grid;
+    gap: var(--space-5);
+    align-items: end;
+    padding-bottom: var(--space-6);
+  }
+
+  h1 {
+    margin-top: var(--space-3);
+    font-size: var(--step-5);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .resume__headline {
+    margin-top: var(--space-3);
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.3;
+    color: var(--fg-2);
+  }
+
+  .resume__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .resume__print-contact {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .resume__head {
+      grid-template-columns: 1fr auto;
+    }
+  }
+
+  .resume__facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-block: 1px solid var(--fg);
+  }
+
+  .resume__facts div {
+    padding: var(--space-4) var(--space-4) var(--space-4) 0;
+  }
+
+  .resume__facts div:nth-child(n + 3) {
+    border-top: var(--hairline);
+  }
+
+  .resume__facts dt {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  .resume__facts dd {
+    margin-top: var(--space-1);
+    font-size: var(--step-1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-heading);
+  }
+
+  @media (min-width: 48rem) {
+    .resume__facts {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .resume__facts div:nth-child(n + 3) {
+      border-top: 0;
+    }
+
+    .resume__facts div + div {
+      padding-left: var(--space-5);
+      border-left: var(--hairline);
+    }
+  }
+
+  .resume__grid {
+    display: grid;
+    gap: var(--space-8);
+    padding-top: var(--space-7);
+  }
+
+  @media (min-width: 64rem) {
+    .resume__grid {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      gap: var(--space-9);
+    }
+  }
+
+  .resume__h2 {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    padding-bottom: var(--space-3);
+    border-bottom: var(--hairline);
+    margin-bottom: var(--space-4);
+  }
+
+  .roles {
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  .role__head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 var(--space-4);
+  }
+
+  .role__head h3 {
+    font-size: var(--step-1);
+  }
+
+  .role__company {
+    grid-row: 2;
+    color: var(--fg-2);
+  }
+
+  .role__company a {
+    color: inherit;
+    text-decoration-color: var(--line-strong);
+  }
+
+  .role__period {
+    grid-row: 1;
+    grid-column: 2;
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--fg-3);
+    white-space: nowrap;
+    padding-top: 0.2em;
+  }
+
+  .role__highlights {
+    list-style: disc;
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding-left: 1.1em;
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.6;
+  }
+
+  .role__highlights li::marker {
+    color: var(--fg-3);
+  }
+
+  .role__meta {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-4);
+    font-size: var(--step--1);
+  }
+
+  .role__meta div {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: var(--space-3);
+  }
+
+  .role__meta dt {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--fg-3);
+    padding-top: 0.2em;
+  }
+
+  .role__meta dd {
+    color: var(--fg-2);
+  }
+
+  .resume__aside {
+    display: grid;
+    gap: var(--space-7);
+    align-content: start;
+    font-size: var(--step--1);
+    line-height: 1.6;
+  }
+
+  .resume__aside p {
+    color: var(--fg-2);
+  }
+
+  .strengths {
+    display: grid;
+    gap: var(--space-2);
+    padding-left: 1.1em;
+    color: var(--fg-2);
+  }
+
+  .tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .tech li {
+    padding: 0.15rem 0.5rem;
+    border: var(--hairline);
+    border-radius: var(--radius-1);
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-2);
+  }
+
+  .edu h3 {
+    font-size: var(--step-0);
+  }
+
+  .resume__contact {
+    margin-top: var(--section);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--fg);
+  }
+
+  .resume__contact h2 {
+    font-size: var(--step-2);
+  }
+
+  .resume__contact p {
+    margin-top: var(--space-2);
+    color: var(--fg-2);
+  }
+
+  /* Print: one linear A4 document, black on white */
+  @media print {
+    @page {
+      size: A4;
+      margin: 10mm 12mm;
+    }
+
+    :global(.header),
+    :global(.footer),
+    :global(.skip),
+    [data-print-hide] {
+      display: none !important;
+    }
+
+    :global(html) {
+      background: #fff !important;
+      color: #000 !important;
+      font-size: 8.5pt;
+    }
+
+    .resume {
+      padding: 0;
+      max-width: none;
+    }
+
+    h1 {
+      font-size: 24pt;
+    }
+
+    .resume__headline {
+      font-size: 12pt;
+      color: #222;
+    }
+
+    .resume__print-contact {
+      display: block;
+      font-size: 9pt;
+    }
+
+    .resume__head {
+      grid-template-columns: 1fr;
+      padding-bottom: 4mm;
+    }
+
+    .resume__facts {
+      grid-template-columns: repeat(4, 1fr);
+      border-color: #000;
+    }
+
+    .resume__facts div {
+      padding-block: 2mm;
+    }
+
+    .resume__facts dd {
+      font-size: 10pt;
+    }
+
+    .resume__grid {
+      grid-template-columns: 1fr 58mm;
+      gap: 8mm;
+      padding-top: 5mm;
+    }
+
+    .roles {
+      gap: 3mm;
+    }
+
+    .role {
+      break-inside: avoid;
+    }
+
+    .role__head h3 {
+      font-size: 10.5pt;
+    }
+
+    .role__highlights {
+      gap: 0.3mm;
+      margin-top: 1mm;
+      font-size: 8.5pt;
+      line-height: 1.32;
+    }
+
+    .strengths {
+      gap: 0.5mm;
+    }
+
+    .tech {
+      gap: 1mm;
+    }
+
+    .tech li {
+      padding: 0 1.5mm;
+    }
+
+    .role__meta {
+      margin-top: 1.5mm;
+      font-size: 8pt;
+    }
+
+    .resume__aside {
+      gap: 5mm;
+      font-size: 8.5pt;
+    }
+
+    .resume__h2 {
+      color: #000;
+      border-color: #999;
+      margin-bottom: 2mm;
+      padding-bottom: 1mm;
+    }
+
+    a {
+      color: #000 !important;
+      text-decoration: none !important;
+    }
+  }
+</style>

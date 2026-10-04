@@ -1,89 +1,106 @@
 ---
-import PostCard from '../../components/PostCard.astro';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { formatTagName, getAllTags, getPublishedPosts } from '../../support/blog';
+import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostList from '../../components/PostList.astro';
+import TopicNav from '../../components/TopicNav.astro';
+import Icon from '../../components/Icon.astro';
+import { ogPath, pages } from '../../data/pages';
+import { site } from '../../site.config';
+import { getPosts, groupByYear, postNumbers, postUrl, topicCounts } from '../../lib/posts';
+import { absolute, breadcrumbSchema } from '../../lib/seo';
 
-const posts = await getPublishedPosts();
-const allTags = getAllTags(posts);
-const latestPosts = posts.slice(0, 3);
-const archivedPosts = posts.slice(3);
-const archiveByYear = new Map<number, typeof posts>();
+const page = pages.blog;
+const posts = await getPosts();
+const numbers = postNumbers(posts);
+const years = groupByYear(posts);
+const firstYear = years.at(-1)?.[0];
 
-for (const post of archivedPosts) {
-  const year = post.data.pubDate.getFullYear();
-  const yearPosts = archiveByYear.get(year) ?? [];
-  yearPosts.push(post);
-  archiveByYear.set(year, yearPosts);
-}
+const schema = [
+  {
+    '@type': 'Blog',
+    '@id': `${absolute('/blog/')}#blog`,
+    name: `Writing by ${site.author}`,
+    url: absolute('/blog/'),
+    description: page.description,
+    author: { '@id': `${site.url}/#person` },
+    blogPost: posts.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.data.title,
+      url: absolute(postUrl(post)),
+      datePublished: post.data.pubDate.toISOString(),
+    })),
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Writing', path: '/blog/' },
+  ]),
+];
 ---
 
-<BaseLayout
-  title="Writing"
-  description="Technical writing by Jewei Mak about backend architecture, PHP, developer tools, infrastructure, and AI-assisted engineering."
-  socialImageAlt="Technical writing by software engineer Jewei Mak."
->
-  <div class="writing-page">
-    <header class="writing-head">
-      <div class="writing-head__copy">
-        <h1>Writing</h1>
-        <p>
-          Field notes on backend architecture, developer tools, infrastructure, and learning in
-          public.
-        </p>
-      </div>
-      <a class="text-link writing-head__rss" href="/rss.xml">
-        Follow by RSS
-        <span aria-hidden="true">→</span>
-      </a>
-    </header>
+<Base title={page.title} description={page.description} image={ogPath('blog')} schema={schema}>
+  <div class="wrap">
+    <PageHeader label={`${posts.length} posts since ${firstYear}`} title="Writing" lede={page.card}>
+      <p class="feed">
+        <a class="arrow-link" href="/rss.xml"><span>Follow by RSS</span><Icon name="rss" /></a>
+      </p>
+    </PageHeader>
 
-    {latestPosts.length > 0 && (
-      <section class="writing-archive writing-archive--latest" aria-labelledby="latest-writing-title">
-        <header class="writing-archive__head">
-          <h2 id="latest-writing-title">Latest</h2>
-          <p>{latestPosts.length} recent {latestPosts.length === 1 ? 'entry' : 'entries'}</p>
-        </header>
-        <div class="writing-list writing-list--latest">
-          {latestPosts.map((post) => <PostCard post={post} variant="list" headingLevel={3} />)}
-        </div>
-      </section>
-    )}
+    <TopicNav topics={topicCounts(posts)} total={posts.length} />
 
-    {allTags.length > 0 && (
-      <nav class="topic-filter" aria-labelledby="topic-filter-title">
-        <span class="topic-filter__label" id="topic-filter-title">Browse by topic</span>
-        <div class="topic-filter__links">
-          <a class="filter-chip is-active" href="/blog/" aria-current="page">All</a>
-          {allTags.map(([slug, name]) => (
-            <a class="filter-chip" href={`/blog/${slug}/`}>{formatTagName(name)}</a>
-          ))}
-        </div>
-      </nav>
-    )}
-
-    {archivedPosts.length > 0 && (
-      <section class="writing-archive writing-archive--history" aria-labelledby="writing-archive-title">
-        <header class="writing-archive__head">
-          <h2 id="writing-archive-title">Archive</h2>
-          <p>{archivedPosts.length} older {archivedPosts.length === 1 ? 'entry' : 'entries'}</p>
-        </header>
-
-        <div class="writing-years">
-          {[...archiveByYear].map(([year, yearPosts]) => (
-            <section class="writing-year" aria-labelledby={`writing-year-${year}`}>
-              <header class="writing-year__head">
-                <h3 id={`writing-year-${year}`}>{year}</h3>
-                <p>{yearPosts.length} {yearPosts.length === 1 ? 'entry' : 'entries'}</p>
-              </header>
-              <div class="writing-list">
-                {yearPosts.map((post) => (
-                  <PostCard post={post} variant="list" headingLevel={4} />
-                ))}
-              </div>
-            </section>
-          ))}
-        </div>
-      </section>
-    )}
+    {
+      years.map(([year, yearPosts]) => (
+        <section class="year" aria-labelledby={`y${year}`}>
+          <h2 id={`y${year}`} class="year__title">
+            {year}
+            <span class="sr-only">, {yearPosts.length} posts</span>
+          </h2>
+          <PostList posts={yearPosts} numbers={numbers} />
+        </section>
+      ))
+    }
   </div>
-</BaseLayout>
+</Base>
+
+<style>
+  .feed {
+    margin-top: var(--space-4);
+  }
+
+  .feed :global(svg) {
+    width: 16px;
+    height: 16px;
+  }
+
+  .year + .year {
+    margin-top: var(--space-8);
+  }
+
+  .year__title {
+    margin-bottom: var(--space-3);
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--fg-3);
+  }
+
+  @media (min-width: 64rem) {
+    .year {
+      display: grid;
+      grid-template-columns: 8rem minmax(0, 1fr);
+      gap: var(--space-6);
+    }
+
+    .year__title {
+      position: sticky;
+      top: var(--space-6);
+      align-self: start;
+      padding-top: var(--space-6);
+      font-size: var(--step-2);
+      font-family: var(--sans);
+      font-weight: 600;
+      letter-spacing: var(--tracking-heading);
+      color: var(--fg);
+    }
+  }
+</style>

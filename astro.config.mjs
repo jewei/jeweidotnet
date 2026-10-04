@@ -2,140 +2,78 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { defineConfig, fontProviders } from 'astro/config';
-import { unified } from '@astrojs/markdown-remark';
 import sitemap from '@astrojs/sitemap';
-import { parse } from 'yaml';
+import { rehypeHeadingIds, unified } from '@astrojs/markdown-remark';
 import rehypeExternalLinks from 'rehype-external-links';
-import rehypeCodeBlocks, {
-  codeFilenameTransformer,
+import { parse } from 'yaml';
+import {
+  codeFilename,
+  rehypeCodeBlocks,
   rehypeFigures,
-} from './src/support/rehype-code-blocks.ts';
+  rehypeHeadingAnchors,
+  rehypeTables,
+} from './src/lib/markdown.ts';
+
+const SITE = 'https://jewei.net';
 
 /**
- * Build a map of `/{slug}/` → ISO `lastmod` for the sitemap.
- *
- * The sitemap integration's `serialize` hook runs in the config context, where
- * `astro:content` (and therefore the blog collection) is unavailable. Reading
- * and parsing the frontmatter from disk here attaches accurate `lastmod`
- * dates without duplicating YAML parsing rules. Draft handling is kept in sync
- * with `getPublishedPosts()` in
- * `src/support/blog.ts` so the sitemap never lists an unpublished post.
- *
- * @returns {Record<string, string>}
+ * Sitemap `lastmod` per post URL. The sitemap hook runs outside Astro's
+ * content layer, so this reads post frontmatter directly. Drafts are skipped.
  */
-function loadSitemapDates() {
+function postLastModified() {
   /** @type {Record<string, string>} */
   const dates = {};
-  const blogDir = path.join(process.cwd(), 'src/content/blog');
-
-  if (!fs.existsSync(blogDir)) return dates;
-
-  for (const file of fs.readdirSync(blogDir)) {
+  const dir = path.resolve('src/content/blog');
+  for (const file of fs.readdirSync(dir)) {
     if (!/\.mdx?$/.test(file)) continue;
-
-    const raw = fs.readFileSync(path.join(blogDir, file), 'utf8');
-    const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-    if (!match) continue;
-
-    const frontmatter = parse(match[1]);
-    if (!frontmatter || typeof frontmatter !== 'object' || Array.isArray(frontmatter)) continue;
-    if (frontmatter.draft === true) continue;
-
-    const updated = frontmatter.updatedDate;
-    const published = frontmatter.pubDate;
-    const lastmod = updated ?? published;
-    if (typeof lastmod !== 'string' && !(lastmod instanceof Date)) continue;
-
-    const date = new Date(lastmod);
-    if (Number.isNaN(date.getTime())) continue;
-
-    const slug = file.replace(/\.mdx?$/, '');
-    dates[`/${slug}/`] = date.toISOString();
+    const frontmatter = fs
+      .readFileSync(path.join(dir, file), 'utf8')
+      .match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
+    const data = frontmatter ? parse(frontmatter) : null;
+    if (!data || data.draft === true) continue;
+    const date = new Date(data.updatedDate ?? data.pubDate);
+    if (!Number.isNaN(date.getTime())) dates[`${SITE}/${file.replace(/\.mdx?$/, '')}/`] = date.toISOString();
   }
-
-  const postDates = Object.values(dates).sort();
-  if (postDates.length > 0) {
-    const latest = postDates[postDates.length - 1];
-    dates['/'] = latest;
-    dates['/blog/'] = latest;
-  }
-
+  const latest = Object.values(dates).sort().at(-1);
+  if (latest) for (const page of ['/', '/blog/']) dates[`${SITE}${page}`] = latest;
   return dates;
 }
 
-const sitemapDates = loadSitemapDates();
-
-/**
- * Wrap Markdown tables in a scroll container so wide tables scroll within the
- * 672px article column instead of being clipped by the body's
- * `overflow-x-hidden` (see `.table-scroll` in global.css).
- */
-function rehypeTableScroll() {
-  /** @param {any} node */
-  function walk(node) {
-    if (!node.children) return;
-    node.children = node.children.map((/** @type {any} */ child) => {
-      if (child.type === 'element' && child.tagName === 'table') {
-        return {
-          type: 'element',
-          tagName: 'div',
-          properties: {
-            className: ['table-scroll'],
-            tabIndex: 0,
-            role: 'region',
-            ariaLabel: 'Scrollable table',
-          },
-          children: [child],
-        };
-      }
-      walk(child);
-      return child;
-    });
-  }
-  return (/** @type {any} */ tree) => walk(tree);
-}
+const lastModified = postLastModified();
 
 export default defineConfig({
-  site: 'https://jewei.net',
+  site: SITE,
   output: 'static',
+  trailingSlash: 'always',
+  // Compression drops newline whitespace next to tags ("also<a>"). Brotli
+  // at the edge makes the saving negligible, so keep the source spacing.
+  compressHTML: false,
+  // Inline CSS: it is small, and inlining removes a render-blocking request.
+  build: { format: 'directory', inlineStylesheets: 'always' },
+  image: { layout: 'constrained', responsiveStyles: true },
   markdown: {
     shikiConfig: {
-      themes: {
-        light: 'github-light-high-contrast',
-        dark: 'github-dark-high-contrast',
-      },
-      transformers: [codeFilenameTransformer],
+      themes: { light: 'github-light-high-contrast', dark: 'github-dark-high-contrast' },
+      defaultColor: false,
+      transformers: [codeFilename],
       wrap: false,
     },
     processor: unified({
       rehypePlugins: [
+        rehypeHeadingIds,
+        rehypeHeadingAnchors,
         rehypeFigures,
-        [
-          rehypeExternalLinks,
-          {
-            target: '_blank',
-            rel: ['noopener', 'noreferrer'],
-            content: { type: 'text', value: ' (opens in new tab)' },
-            contentProperties: { className: ['sr-only'] },
-          },
-        ],
-        rehypeTableScroll,
+        [rehypeExternalLinks, { target: false, rel: ['noopener'], properties: { dataExternal: '' } }],
+        rehypeTables,
         rehypeCodeBlocks,
       ],
     }),
   },
-  // Make Markdown `![]()` images responsive (auto srcset + sizes). Hand-tuned
-  // component images opt out with `layout="none"` to keep their explicit
-  // `widths`/`densities`, which are incompatible with a layout.
-  image: {
-    layout: 'constrained',
-    responsiveStyles: true,
-  },
   integrations: [
     sitemap({
+      filter: (page) => !page.endsWith('/404/'),
       serialize(item) {
-        const pathname = new URL(item.url).pathname;
-        const lastmod = sitemapDates[pathname];
+        const lastmod = lastModified[item.url];
         return lastmod ? { ...item, lastmod } : item;
       },
     }),
@@ -143,28 +81,30 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
-      name: 'Newsreader',
-      cssVariable: '--font-newsreader',
-      weights: [400, 700],
-      styles: ['normal'],
-    },
-    {
-      provider: fontProviders.google(),
       name: 'Geist',
       cssVariable: '--font-geist',
-      weights: [400, 700],
+      weights: ['400 700'],
       styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
     },
     {
       provider: fontProviders.google(),
-      name: 'JetBrains Mono',
-      cssVariable: '--font-jetbrains-mono',
-      weights: [400],
+      name: 'Geist Mono',
+      cssVariable: '--font-geist-mono',
+      weights: ['400 600'],
       styles: ['normal'],
-      fallbacks: ['monospace'],
+      subsets: ['latin'],
+      fallbacks: ['ui-monospace', 'monospace'],
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'Source Serif 4',
+      cssVariable: '--font-serif',
+      weights: ['400 700'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+      fallbacks: ['ui-serif', 'Georgia', 'serif'],
     },
   ],
-  build: {
-    inlineStylesheets: 'auto',
-  },
 });

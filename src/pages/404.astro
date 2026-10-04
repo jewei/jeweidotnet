@@ -1,48 +1,86 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
+import PostList from '../components/PostList.astro';
+import { getPosts, postNumbers } from '../lib/posts';
+
+const posts = await getPosts();
+const numbers = postNumbers(posts);
 ---
 
-<BaseLayout
-  title="Page Not Found"
-  description="The requested page does not exist or has moved."
-  robots="noindex, nofollow"
-  hasMarkdown={false}
-  canonical={false}
+<Base
+  title="Page not found"
+  description="The requested page does not exist or has moved. The work and writing are still here."
+  index={false}
+  markdown={false}
 >
-  <div class="not-found">
-    <div class="not-found__grid">
-      <div class="not-found__visual" aria-hidden="true">
-        <span class="not-found__mark">404</span>
-        <div class="not-found__code">
-          <pre><code>error = null;
-while (lost) {'{'}
+  <div class="wrap lost">
+    <p class="label">HTTP 404 · Not found</p>
+    <h1>This page got lost in the code.</h1>
+    <pre class="lost__code" aria-hidden="true"><code>while (lost) &#123;
   wander();
-{'}'}</code></pre>
-        </div>
-      </div>
+&#125;</code></pre>
+    <p class="lost__text">
+      It may have moved, or it may never have existed. The work and writing are still here.
+    </p>
+    <ul class="lost__actions" role="list">
+      <li><a class="button button--primary" href="/">Go home</a></li>
+      <li><a class="button" href="/blog/">Read the writing</a></li>
+      <li><a class="arrow-link" href="/projects/"><span>See the projects</span><Icon name="arrow-right" /></a></li>
+    </ul>
 
-      <div class="not-found__copy">
-        <p class="not-found__status">HTTP 404 · Not found</p>
-        <h1 class="not-found__title">This page got lost in the code.</h1>
-        <p>
-          It may have moved, or it may never have existed. The work and writing are still here.
-        </p>
-        <div class="not-found__actions">
-          <a href="/" class="button-link button-link--primary">
-            <Icon name="home" />
-            Go home
-          </a>
-          <a href="/projects/" class="text-link">
-            Explore projects
-            <span aria-hidden="true">→</span>
-          </a>
-          <a href="/blog/" class="text-link text-link--quiet">
-            Read writing
-            <span aria-hidden="true">→</span>
-          </a>
-        </div>
-      </div>
-    </div>
+    <section class="lost__latest" aria-labelledby="latest-title">
+      <h2 id="latest-title" class="label">Latest writing</h2>
+      <PostList posts={posts.slice(0, 3)} numbers={numbers} showTopics={false} />
+    </section>
   </div>
-</BaseLayout>
+</Base>
+
+<style>
+  .lost {
+    padding-top: var(--space-9);
+  }
+
+  h1 {
+    margin-top: var(--space-4);
+    max-width: 16ch;
+    font-size: var(--step-5);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .lost__code {
+    margin-top: var(--space-6);
+    padding: var(--space-4) var(--space-5);
+    width: fit-content;
+    border: var(--hairline);
+    border-radius: var(--radius-2);
+    background: var(--bg-sunken);
+    font-size: var(--step--1);
+    color: var(--fg-2);
+  }
+
+  .lost__text {
+    margin-top: var(--space-6);
+    max-width: 34rem;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    color: var(--fg-2);
+  }
+
+  .lost__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .lost__latest {
+    margin-top: var(--section);
+  }
+
+  .lost__latest h2 {
+    margin-bottom: var(--space-4);
+  }
+</style>

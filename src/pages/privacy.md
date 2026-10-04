@@ -1,7 +1,7 @@
 ---
-layout: ../layouts/PageLayout.astro
-title: Privacy
-description: What data jewei.net processes, why it is processed, and how to ask a privacy question.
+layout: ../layouts/Prose.astro
+page: privacy
+schemaType: WebPage
 ---
 
 _Last updated: August 24, 2026._

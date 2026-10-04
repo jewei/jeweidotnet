@@ -1,34 +1,614 @@
 ---
+/**
+ * Article pages at /<slug>/. One per published post in src/content/blog/.
+ */
 import { render } from 'astro:content';
-import BlogPostLayout from '../layouts/BlogPostLayout.astro';
-import { getPublishedPosts, getReadingTime, getRelatedPosts } from '../support/blog';
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import portrait from '../assets/jewei.jpg';
+import { personId, site } from '../site.config';
+import { ogPath } from '../data/pages';
+import { topicName, topicUrl } from '../data/topics';
+import {
+  formatDate,
+  getPosts,
+  lastModified,
+  postNumbers,
+  postSlug,
+  postUrl,
+  readingMinutes,
+  relatedPosts,
+  type Post,
+} from '../lib/posts';
+import { absolute, breadcrumbSchema } from '../lib/seo';
 
 export async function getStaticPaths() {
-  const posts = await getPublishedPosts();
-
+  const posts = await getPosts();
+  const numbers = postNumbers(posts);
   return posts.map((post, index) => ({
-    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    params: { slug: postSlug(post) },
     props: {
       post,
-      prev: posts[index + 1] ?? null,
-      next: posts[index - 1] ?? null,
-      related: getRelatedPosts(post, posts),
+      number: numbers.get(post.id)!,
+      newer: posts[index - 1] ?? null,
+      older: posts[index + 1] ?? null,
+      related: relatedPosts(post, posts),
     },
   }));
 }
 
-const { post, prev, next, related } = Astro.props;
+interface Props {
+  post: Post;
+  number: string;
+  newer: Post | null;
+  older: Post | null;
+  related: Post[];
+}
+
+const { post, number, newer, older, related } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, image, imageAlt } = post.data;
 const { Content, headings } = await render(post);
-const readingTime = getReadingTime(post.body);
+const minutes = readingMinutes(post.body);
+const toc = headings.filter((heading) => heading.depth === 2);
+const showToc = toc.length >= 3;
+const url = absolute(postUrl(post));
+const primaryTopic = tags[0];
+const adjacent = new Set([newer?.id, older?.id]);
+const more = related.filter((candidate) => !adjacent.has(candidate.id));
+
+const schema = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${url}#article`,
+    headline: title,
+    description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: pubDate.toISOString(),
+    dateModified: lastModified(post).toISOString(),
+    inLanguage: 'en',
+    wordCount: post.body?.split(/\s+/).length,
+    timeRequired: `PT${minutes}M`,
+    keywords: tags.map(topicName),
+    articleSection: topicName(primaryTopic),
+    author: { '@id': personId },
+    publisher: { '@id': personId },
+    image: image ? absolute(image.src) : absolute(ogPath(`post-${postSlug(post)}`)),
+    isPartOf: { '@type': 'Blog', '@id': `${absolute('/blog/')}#blog`, name: `Writing by ${site.author}` },
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Writing', path: '/blog/' },
+    { name: topicName(primaryTopic), path: topicUrl(primaryTopic) },
+    { name: title, path: postUrl(post) },
+  ]),
+];
 ---
 
-<BlogPostLayout
-  post={post}
-  prev={prev}
-  next={next}
-  related={related}
-  headings={headings}
-  readingTime={readingTime}
+<Base
+  title={title}
+  description={description}
+  image={image ?? ogPath(`post-${postSlug(post)}`)}
+  imageAlt={imageAlt ?? `${title}, an article by ${site.author}.`}
+  type="article"
+  published={pubDate}
+  modified={updatedDate}
+  tags={tags.map(topicName)}
+  schema={schema}
+  isPost
 >
-  <Content />
-</BlogPostLayout>
+  <div class="progress" aria-hidden="true"></div>
+
+  <article class="article wrap" data-has-toc={showToc || undefined}>
+    <header class="article__head">
+      <nav class="crumbs label" aria-label="Breadcrumb" data-md-skip>
+        <ol role="list">
+          <li><a href="/blog/">Writing</a></li>
+          <li><a href={topicUrl(primaryTopic)}>{topicName(primaryTopic)}</a></li>
+        </ol>
+      </nav>
+      <h1 class="article__title">{title}</h1>
+      <p class="article__dek">{description}</p>
+      <div class="byline">
+        <Image src={portrait} alt="" width={36} height={36} format="webp" layout="fixed" />
+        <p>
+          <span>By <a href="/about/" rel="author">{site.author}</a></span>
+          <span class="byline__meta">
+            <time datetime={pubDate.toISOString()}>{formatDate.long(pubDate)}</time>
+            <span>· {minutes} min read</span>
+          </span>
+        </p>
+      </div>
+    </header>
+
+    <aside class="article__rail" aria-label="Article details">
+      <dl class="facts">
+        <div>
+          <dt>Entry</dt>
+          <dd>No. {number}</dd>
+        </div>
+        <div>
+          <dt>Published</dt>
+          <dd><time datetime={pubDate.toISOString()}>{formatDate.short(pubDate)}</time></dd>
+        </div>
+        {
+          updatedDate && updatedDate > pubDate && (
+            <div>
+              <dt>Updated</dt>
+              <dd>
+                <time datetime={updatedDate.toISOString()}>{formatDate.short(updatedDate)}</time>
+              </dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>Topics</dt>
+          <dd>
+            <ul role="list">
+              {
+                tags.map((tag) => (
+                  <li>
+                    <a href={topicUrl(tag)}>{topicName(tag)}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </dd>
+        </div>
+      </dl>
+
+      {
+        showToc && (
+          <nav class="toc" aria-labelledby="toc-title" data-md-skip>
+            <h2 id="toc-title" class="label">
+              On this page
+            </h2>
+            <ol role="list">
+              {toc.map((heading) => (
+                <li>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+    </aside>
+
+    <div class="article__body prose">
+      <Content />
+    </div>
+
+    <footer class="article__foot">
+      <section class="author" aria-labelledby="author-title">
+        <Image src={portrait} alt="" width={72} height={72} format="webp" layout="fixed" />
+        <div>
+          <h2 id="author-title" class="author__name">Written by {site.author}</h2>
+          <p>
+            Senior software engineer. I build backend systems and small, sharp tools, and write down what I learn.
+            If this post helped, you can <a class="link" href={site.profiles.sponsor}>sponsor my work</a> or
+            <a class="link" href="/rss.xml">follow by RSS</a>.
+          </p>
+        </div>
+      </section>
+    </footer>
+  </article>
+
+  <section class="continue wrap" aria-labelledby="continue-title">
+    <header class="section-head">
+      <h2 id="continue-title">Keep reading</h2>
+      <a class="arrow-link" href="/blog/"><span>All writing</span><Icon name="arrow-right" /></a>
+    </header>
+
+    <nav class="pager" aria-label="Newer and older posts">
+      {
+        older ? (
+          <a class="pager__link" href={postUrl(older)} rel="prev">
+            <span class="label">
+              <Icon name="arrow-left" /> Older
+            </span>
+            <span class="pager__title">{older.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        newer && (
+          <a class="pager__link pager__link--newer" href={postUrl(newer)} rel="next">
+            <span class="label">
+              Newer <Icon name="arrow-right" />
+            </span>
+            <span class="pager__title">{newer.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+
+    {
+      more.length > 0 && (
+        <div class="related">
+          <h3 class="label">Related</h3>
+          <ul role="list">
+            {more.map((candidate) => (
+              <li>
+                <a href={postUrl(candidate)}>
+                  <span class="related__title">{candidate.data.title}</span>
+                  <span class="related__date">{formatDate.short(candidate.data.pubDate)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </section>
+</Base>
+
+
+<style>
+  /* Reading progress: CSS scroll-driven animation, no JavaScript */
+  .progress {
+    display: none;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    .progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 50;
+      height: 2px;
+      background: var(--accent-mark);
+      transform-origin: 0 50%;
+      animation: progress linear both;
+      animation-timeline: scroll(root);
+    }
+
+    @keyframes progress {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+
+  .article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'rail' 'body' 'foot';
+    padding-top: var(--space-7);
+  }
+
+  .article__head {
+    grid-area: head;
+    max-width: 48rem;
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .crumbs li + li::before {
+    content: '/';
+    margin-inline: 0.6em;
+    color: var(--line-strong);
+  }
+
+  .crumbs a {
+    color: var(--fg-3);
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    color: var(--fg);
+  }
+
+  .article__title {
+    margin-top: var(--space-4);
+    font-size: var(--step-4);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .article__dek {
+    margin-top: var(--space-4);
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--fg-2);
+    max-width: 40rem;
+  }
+
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+    font-size: var(--step--1);
+  }
+
+  .byline img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .byline p {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+  }
+
+  .byline a {
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .byline a:hover {
+    text-decoration: underline;
+  }
+
+  .byline__meta {
+    display: flex;
+    gap: 0.5em;
+    color: var(--fg-3);
+  }
+
+  .article__rail {
+    grid-area: rail;
+    margin-top: var(--space-6);
+    padding-block: var(--space-4);
+    border-block: var(--hairline);
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-6);
+    font-size: var(--step--1);
+  }
+
+  .facts dt {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  .facts dd {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+  }
+
+  .facts ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-3);
+  }
+
+  .facts a {
+    color: var(--fg);
+    text-decoration-color: var(--line-strong);
+  }
+
+  .facts a:hover {
+    text-decoration-color: var(--accent-mark);
+  }
+
+  /* Byline already shows the date on small screens */
+  .facts div:nth-child(2) {
+    display: none;
+  }
+
+  .toc {
+    display: none;
+  }
+
+  .article__body {
+    grid-area: body;
+    max-width: var(--measure);
+    margin-top: var(--space-7);
+  }
+
+  .article__foot {
+    grid-area: foot;
+    max-width: var(--measure);
+    margin-top: var(--space-8);
+  }
+
+  .author {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: var(--space-5);
+    padding: var(--space-5);
+    border: var(--hairline);
+    border-radius: var(--radius-3);
+    background: var(--bg-raised);
+  }
+
+  .author img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .author__name {
+    font-size: var(--step-0);
+    margin-bottom: var(--space-1);
+  }
+
+  .author p {
+    font-size: var(--step--1);
+    color: var(--fg-2);
+    line-height: 1.6;
+  }
+
+  @media (min-width: 64rem) {
+    .article {
+      grid-template-columns: minmax(0, 1fr) minmax(0, var(--measure)) minmax(0, 1fr);
+      grid-template-areas:
+        '. head .'
+        'rail body .'
+        '. foot .';
+      padding-top: var(--space-9);
+    }
+
+    .article__head {
+      max-width: none;
+    }
+
+    .article__rail {
+      justify-self: end;
+      width: var(--rail);
+      margin-right: var(--space-8);
+      align-self: start;
+      position: sticky;
+      top: var(--space-6);
+      margin-top: var(--space-8);
+      padding: 0;
+      border: 0;
+    }
+
+    .article__body {
+      margin-top: var(--space-8);
+    }
+
+    .facts {
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .facts div:nth-child(2) {
+      display: block;
+    }
+
+    .facts ul {
+      flex-direction: column;
+    }
+
+    .toc {
+      display: block;
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: var(--hairline);
+    }
+
+    .toc ol {
+      display: grid;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+    }
+
+    .toc a {
+      display: block;
+      font-size: var(--step--1);
+      line-height: 1.4;
+      color: var(--fg-3);
+      text-decoration: none;
+      transition: color var(--dur-1) var(--ease);
+    }
+
+    .toc a:hover {
+      color: var(--fg);
+    }
+  }
+
+  /* Continue reading */
+  .continue {
+    margin-top: var(--section);
+  }
+
+  .pager {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .pager__link {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border: var(--hairline);
+    border-radius: var(--radius-3);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease);
+  }
+
+  .pager__link:hover {
+    border-color: var(--line-strong);
+    background: var(--bg-raised);
+  }
+
+  .pager__link .label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .pager__link .label :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  .pager__title {
+    font-size: var(--step-1);
+    font-weight: 600;
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.3;
+  }
+
+  .pager__link--newer {
+    text-align: right;
+    justify-items: end;
+  }
+
+  @media (min-width: 48rem) {
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .related {
+    margin-top: var(--space-7);
+  }
+
+  .related ul {
+    margin-top: var(--space-3);
+    border-top: var(--hairline);
+  }
+
+  .related a {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-5);
+    padding-block: var(--space-4);
+    border-bottom: var(--hairline);
+    text-decoration: none;
+  }
+
+  .related__title {
+    font-weight: 500;
+  }
+
+  .related a:hover .related__title {
+    text-decoration: underline;
+    text-decoration-color: var(--accent-mark);
+  }
+
+  .related__date {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+  }
+</style>

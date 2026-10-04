@@ -7,50 +7,29 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
+    env:
+      VP_GIT_HOOKS: '0'
     steps:
       - uses: actions/checkout@v7
 
+      # Bun runs the build scripts; keep it equal to packageManager in package.json.
       - uses: oven-sh/setup-bun@v2
         with:
-          # Pinned to match the Cloudflare Pages BUN_VERSION env var.
-          bun-version: 1.4.0
+          bun-version: 1.4.2
 
-      - run: bun install --frozen-lockfile
-      - run: bun run check
-      - run: bun run build
-      - run: bun run test:agent
-      - run: bun run test:smoke
-
-      - name: Restore lychee binary
-        uses: actions/cache@v5
+      # Vite+ toolchain and Node. Pin an exact setup-vp release.
+      - uses: voidzero-dev/setup-vp@v1.21.1
         with:
-          path: ${{ runner.tool_cache }}/lychee
-          key: lychee-v0.24.2-${{ runner.os }}-x86_64-unknown-linux-gnu
+          node-version: '24'
+          cache: true
 
-      - name: Install lychee
-        run: |
-          LYCHEE_DIR="${RUNNER_TOOL_CACHE}/lychee"
-          TASK_BIN_DIR="${RUNNER_TEMP}/bin"
-          mkdir -p "${LYCHEE_DIR}" "${TASK_BIN_DIR}"
-          if [ ! -x "${LYCHEE_DIR}/lychee" ]; then
-            curl --fail --location --retry 3 --retry-all-errors --silent --show-error \
-              https://github.com/lycheeverse/lychee/releases/download/lychee-v0.24.2/lychee-x86_64-unknown-linux-gnu.tar.gz \
-              --output "${RUNNER_TEMP}/lychee.tar.gz"
-            tar -xzf "${RUNNER_TEMP}/lychee.tar.gz" -C "${RUNNER_TEMP}"
-            install -Dm755 \
-              "${RUNNER_TEMP}/lychee-x86_64-unknown-linux-gnu/lychee" \
-              "${LYCHEE_DIR}/lychee"
-          fi
-          install -Dm755 "${LYCHEE_DIR}/lychee" "${TASK_BIN_DIR}/lychee"
-          echo "${TASK_BIN_DIR}" >> "${GITHUB_PATH}"
+      - run: vp install --frozen-lockfile
+      - run: vp exec playwright install --with-deps chromium
 
-      - name: Check internal links
-        run: >-
-          lychee --offline --no-progress
-          --root-dir "${{ github.workspace }}/dist"
-          './dist/**/*.html'
+      # Format, lint, type checks, unit tests, build, SEO/quality/browser tests.
+      - run: vp run verify
 
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12

@@ -4,8 +4,6 @@ description: "Choosing a database primary key between big integers, ordered UUID
 pubDate: "2022-08-31T16:00:00.000Z"
 updatedDate: "2026-05-31T15:37:35.000Z"
 tags: ["system-design", "database"]
-image: ../../assets/og-image-editorial.jpg
-imageAlt: "Editorial jewei.toString() card for a technical article by Jewei Mak."
 ---
 
 > Update (May 2026): For most systems with under 1 million users and moderate complexity, the best approach is still to use an integer as the primary key and a UUID/ULID for external references.

@@ -1,0 +1,15 @@
+order: 2
+name: Bopop
+category: macOS launcher
+summary: A keyboard-first launcher for apps, files, clipboard history, calculations, and small answers.
+image: ../../assets/projects/bopop.webp
+imageAlt: Bopop cover with the launcher showing Finder, Safari, and Ghostty.
+stack: [Swift, AppKit, macOS]
+status: Open source · MIT
+story: /bopop-press-type-go/
+links:
+  - { label: Source, href: "https://github.com/jewei/bopop" }
+  - { label: Releases, href: "https://github.com/jewei/bopop/releases" }
+schemaType: SoftwareApplication
+language: [Swift]
+platform: macOS 15 or later on Apple silicon

@@ -1,0 +1,313 @@
+/*
+ * Long-form reading styles for Markdown output (posts and prose pages).
+ * Apply with class="prose". Headings are sans; body text is serif.
+ */
+
+.prose {
+  font-family: var(--serif);
+  font-size: var(--step-prose);
+  line-height: var(--leading-prose);
+  color: var(--fg);
+  font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures;
+  overflow-wrap: break-word;
+}
+
+.prose > * + * {
+  margin-top: 1.25em;
+}
+
+.prose :is(h2, h3, h4) {
+  position: relative;
+  font-family: var(--sans);
+  color: var(--fg);
+  scroll-margin-top: var(--space-6);
+}
+
+.prose h2 {
+  font-size: var(--step-2);
+  letter-spacing: var(--tracking-heading);
+  line-height: 1.25;
+  margin-top: 2.4em;
+}
+
+.prose h3 {
+  font-size: var(--step-1);
+  line-height: 1.35;
+  margin-top: 2em;
+}
+
+.prose h4 {
+  font-size: var(--step-0);
+  margin-top: 1.75em;
+}
+
+.prose :is(h2, h3, h4) + * {
+  margin-top: 0.75em;
+}
+
+/* Permalink "#" after headings */
+.prose .anchor {
+  margin-left: 0.35em;
+  padding-inline: 0.15em;
+  color: var(--fg-3);
+  font-weight: 400;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease);
+}
+
+.prose :is(h2, h3):hover .anchor,
+.prose .anchor:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .prose .anchor {
+    display: none;
+  }
+}
+
+.prose a:not(.anchor) {
+  color: var(--fg);
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent-mark);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: text-decoration-thickness var(--dur-1) var(--ease);
+}
+
+.prose a:not(.anchor):hover {
+  text-decoration-thickness: 2px;
+}
+
+.prose a[data-external]::after {
+  content: '↗';
+  display: inline-block;
+  margin-left: 0.1em;
+  font-family: var(--sans);
+  font-size: 0.7em;
+  color: var(--fg-3);
+  vertical-align: 0.35em;
+  text-decoration: none;
+}
+
+.prose a:has(img)::after {
+  content: none;
+}
+
+.prose strong {
+  font-weight: 650;
+}
+
+.prose :is(ul, ol) {
+  padding-left: 1.4em;
+}
+
+.prose li + li {
+  margin-top: 0.45em;
+}
+
+.prose li > :is(ul, ol) {
+  margin-top: 0.45em;
+}
+
+.prose li::marker {
+  color: var(--fg-3);
+  font-family: var(--sans);
+  font-size: 0.9em;
+}
+
+.prose blockquote {
+  padding-left: 1.25em;
+  border-left: 2px solid var(--accent-mark);
+  color: var(--fg-2);
+}
+
+.prose blockquote > * + * {
+  margin-top: 0.75em;
+}
+
+.prose hr {
+  margin-block: 3em;
+  border: 0;
+  height: 1em;
+  text-align: center;
+}
+
+.prose hr::before {
+  content: '· · ·';
+  color: var(--fg-3);
+  letter-spacing: 0.5em;
+}
+
+.prose :not(pre) > code {
+  padding: 0.12em 0.36em;
+  border-radius: var(--radius-1);
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  font-size: 0.82em;
+  white-space: break-spaces;
+}
+
+.prose kbd {
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-1);
+  font-size: 0.8em;
+}
+
+/* Images and figures */
+.prose img {
+  border-radius: var(--radius-2);
+  outline: 1px solid var(--line);
+  outline-offset: -1px;
+}
+
+.prose p:has(> img:only-child),
+.prose figure {
+  margin-block: 2em;
+}
+
+.prose figcaption {
+  margin-top: 0.75em;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--fg-3);
+}
+
+/* Calm bright screenshots in dark mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .prose img {
+    filter: brightness(0.9) contrast(1.05);
+  }
+}
+
+:root[data-theme='dark'] .prose img {
+  filter: brightness(0.9) contrast(1.05);
+}
+
+/* Tables */
+.prose .table-scroll {
+  overflow-x: auto;
+  margin-block: 2em;
+  border: var(--hairline);
+  border-radius: var(--radius-2);
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--sans);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose :is(th, td) {
+  padding: 0.65em 1em;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: var(--hairline);
+}
+
+.prose th {
+  background: var(--bg-raised);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.prose tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Code blocks (frame built by rehypeCodeBlocks in src/lib/markdown.ts) */
+.prose .code {
+  margin-block: 1.75em;
+  border: var(--hairline);
+  border-radius: var(--radius-2);
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+
+.code__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  min-height: 2.5rem;
+  padding-left: var(--space-4);
+  border-bottom: var(--hairline);
+  background: var(--bg-raised);
+}
+
+.code__label {
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  color: var(--fg-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.code__copy {
+  align-self: stretch;
+  min-width: 4.5rem;
+  min-height: 44px;
+  margin-block: -2px;
+  padding-inline: var(--space-4);
+  font-family: var(--mono);
+  font-size: var(--step--2);
+  color: var(--fg-2);
+  border-left: var(--hairline);
+  transition:
+    color var(--dur-1) var(--ease),
+    background-color var(--dur-1) var(--ease);
+}
+
+.code__copy:hover {
+  color: var(--fg);
+  background: var(--bg);
+}
+
+.code__copy[data-state='done'] {
+  color: var(--accent);
+}
+
+.prose pre {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  overflow-x: auto;
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  tab-size: 2;
+  background: transparent !important;
+}
+
+.prose pre code {
+  font-size: inherit;
+}
+
+.prose pre:focus-visible {
+  outline-offset: -2px;
+}
+
+/* Shiki dual themes (Astro adds class astro-code) (defaultColor: false) */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .astro-code,
+  :root:not([data-theme='light']) .astro-code span {
+    color: var(--shiki-dark);
+  }
+}
+
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark);
+}

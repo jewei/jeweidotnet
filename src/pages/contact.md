@@ -1,7 +1,7 @@
 ---
-layout: ../layouts/PageLayout.astro
-title: Contact
-description: How to contact Jewei Mak about software work, technical writing, and open-source projects.
+layout: ../layouts/Prose.astro
+page: contact
+schemaType: ContactPage
 ---
 
 The best way to reach me is by email at **[jewei@duck.com](mailto:jewei@duck.com)**. This is the public contact address for jewei.net and for me, **Jewei Mak**. I read messages myself. There is no contact form, sales desk, or automated ticket queue behind this site.

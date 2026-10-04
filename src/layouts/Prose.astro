@@ -1,0 +1,61 @@
+---
+/**
+ * Layout for Markdown pages in src/pages/*.md (contact, privacy).
+ * Frontmatter: `page` is a key in src/data/pages.ts; optional `updated`.
+ */
+import Base from './Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { ogPath, pages, type PageKey } from '../data/pages';
+import { absolute, breadcrumbSchema } from '../lib/seo';
+import { site } from '../site.config';
+
+interface Props {
+  frontmatter: { page: PageKey; lede?: string; schemaType?: string };
+}
+
+const { page: key, lede, schemaType = 'WebPage' } = Astro.props.frontmatter;
+const page = pages[key];
+const schema = [
+  {
+    '@type': schemaType,
+    name: page.title,
+    url: absolute(page.path),
+    description: page.description,
+    author: { '@id': `${site.url}/#person` },
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: page.title, path: page.path },
+  ]),
+];
+---
+
+<Base title={page.title} description={page.description} image={ogPath(key)} schema={schema}>
+  <div class="wrap">
+    <PageHeader title={page.title} lede={lede ?? page.card}>
+      {
+        key === 'contact' && (
+          <p class="cta">
+            <a class="button button--primary" href={`mailto:${site.email}`}>
+              <Icon name="mail" /> {site.email}
+            </a>
+          </p>
+        )
+      }
+    </PageHeader>
+    <div class="prose body">
+      <slot />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .cta {
+    margin-top: var(--space-6);
+  }
+
+  .body {
+    max-width: var(--measure);
+  }
+</style>

@@ -1,0 +1,139 @@
+---
+import Wordmark from './Wordmark.astro';
+import { footerNav, site } from '../site.config';
+
+const year = new Date().getFullYear();
+const isExternal = (href: string) => /^https?:/.test(href);
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__sign">
+      <p class="footer__thanks">Thanks for reading.</p>
+      <p class="footer__by">— Jewei</p>
+    </div>
+
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <Wordmark size="lg" />
+        <p class="footer__motto">Build. Write. Learn. Share.</p>
+      </div>
+
+      {
+        footerNav.map((group) => (
+          <nav class="footer__group" aria-label={group.title}>
+            <h2 class="label">{group.title}</h2>
+            <ul role="list">
+              {group.links.map((link) => (
+                <li>
+                  <a href={link.href} rel={isExternal(link.href) ? 'me noopener' : undefined}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="footer__base">
+      <p>© {site.firstYear}–{year} {site.author}</p>
+      <p>
+        Built with Astro on Cloudflare Pages. Set in Geist and Source Serif. Every page is also{' '}
+        <a href="/llms.txt">Markdown for agents</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: var(--section);
+    border-top: var(--hairline);
+    background: var(--bg-raised);
+  }
+
+  .footer__sign {
+    padding-block: var(--space-8) var(--space-7);
+    border-bottom: var(--hairline);
+  }
+
+  .footer__thanks {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-3);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+
+  .footer__by {
+    margin-top: var(--space-2);
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    color: var(--fg-2);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-7) var(--space-5);
+    padding-block: var(--space-7);
+  }
+
+  .footer__brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer__motto {
+    margin-top: var(--space-2);
+    font-size: var(--step--1);
+    color: var(--fg-3);
+  }
+
+  .footer__group ul {
+    display: grid;
+    margin-top: var(--space-3);
+  }
+
+  .footer__group a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    color: var(--fg-2);
+    text-decoration: none;
+    font-size: var(--step--1);
+    transition: color var(--dur-1) var(--ease);
+  }
+
+  .footer__group a:hover {
+    color: var(--fg);
+    text-decoration: underline;
+    text-decoration-color: var(--accent-mark);
+  }
+
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-6);
+    padding-block: var(--space-5) var(--space-6);
+    border-top: var(--hairline);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+  }
+
+  .footer__base a {
+    color: var(--fg-2);
+  }
+
+  @media (min-width: 48rem) {
+    .footer__grid {
+      grid-template-columns: 2fr repeat(3, 1fr);
+    }
+
+    .footer__brand {
+      grid-column: auto;
+    }
+  }
+</style>

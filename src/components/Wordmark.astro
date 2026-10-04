@@ -1,0 +1,48 @@
+---
+/** The `jewei.toString()` wordmark. Links home. */
+interface Props {
+  size?: 'md' | 'lg';
+}
+const { size = 'md' } = Astro.props;
+---
+
+<a href="/" class:list={['wordmark', `wordmark--${size}`]} aria-label="jewei.toString(), home">
+  <span class="wordmark__name">jewei</span><span class="wordmark__method">.toString</span><span
+    class="wordmark__parens">()</span
+  >
+</a>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--mono);
+    font-size: 0.9375rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--fg);
+  }
+
+  .wordmark--lg {
+    font-size: clamp(1.5rem, 1rem + 2.5vw, 2.5rem);
+    letter-spacing: -0.03em;
+  }
+
+  .wordmark__name {
+    font-weight: 600;
+  }
+
+  .wordmark__method {
+    color: var(--fg-3);
+    transition: color var(--dur-2) var(--ease);
+  }
+
+  .wordmark__parens {
+    color: var(--accent);
+  }
+
+  .wordmark:hover .wordmark__method {
+    color: var(--fg);
+  }
+</style>

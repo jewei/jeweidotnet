@@ -1,7 +1,9 @@
 const PRODUCES = ['text/html', 'text/markdown'];
-const STATIC_EXTENSION = /\.(?:css|js|mjs|map|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|eot|xml|txt|json|pdf|mp4|webm|mp3|wav|ogg|zip)$/i;
+const STATIC_EXTENSION =
+  /\.(?:css|js|mjs|map|png|jpe?g|webp|gif|svg|avif|ico|woff2?|ttf|otf|eot|xml|txt|json|pdf|mp4|webm|mp3|wav|ogg|zip|webmanifest)$/i;
 const SECURITY_HEADERS = {
-  'Content-Security-Policy': "default-src 'self'; script-src 'self' https://cloud.umami.is https://static.cloudflareinsights.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloud.umami.is https://gateway.umami.is https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
+  'Content-Security-Policy':
+    "default-src 'self'; script-src 'self' 'inline-speculation-rules' https://cloud.umami.is https://static.cloudflareinsights.com; script-src-attr 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloud.umami.is https://gateway.umami.is https://cloudflareinsights.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests",
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
@@ -13,7 +15,10 @@ function parseAccept(header) {
   return header
     .split(',')
     .map((raw) => {
-      const parts = raw.trim().split(';').map((part) => part.trim());
+      const parts = raw
+        .trim()
+        .split(';')
+        .map((part) => part.trim());
       const type = parts[0].toLowerCase();
       if (!type) return null;
 

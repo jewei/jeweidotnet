@@ -1,0 +1,121 @@
+/*
+ * Design tokens. The single source for colour, type, space, and motion.
+ * docs/DESIGN.md explains each token's role. Components use tokens only.
+ *
+ * Contrast (checked against --bg in both themes):
+ *   --fg ≥ 15:1, --fg-2 ≥ 9:1, --fg-3 ≥ 7:1 (AAA body text), --accent ≥ 7:1.
+ *   --accent-mark is decorative only (bars, dots, underlines). Never text.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Light theme */
+  --bg: oklch(98.6% 0.004 95);
+  --bg-raised: oklch(96.4% 0.005 95);
+  --bg-sunken: oklch(95% 0.005 95);
+  --fg: oklch(19% 0.01 260);
+  --fg-2: oklch(36% 0.01 260);
+  --fg-3: oklch(45% 0.01 260);
+  --line: oklch(89.5% 0.005 95);
+  --line-strong: oklch(78% 0.006 95);
+  --accent: oklch(43% 0.115 152);
+  --accent-mark: oklch(62% 0.165 152);
+  --accent-wash: oklch(93% 0.045 152);
+  --focus: oklch(50% 0.17 152);
+  --shadow: 0 1px 2px oklch(19% 0.01 260 / 0.06), 0 8px 24px -12px oklch(19% 0.01 260 / 0.18);
+
+  /* Type families (variables come from Astro's font API) */
+  --sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', monospace;
+  --serif: var(--font-serif), ui-serif, Georgia, serif;
+
+  /* Type scale: fluid between 20rem and 80rem viewports */
+  --step--2: 0.75rem;
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-prose: clamp(1.0625rem, 1.02rem + 0.2vw, 1.1875rem);
+  --step-1: clamp(1.125rem, 1.07rem + 0.3vw, 1.3125rem);
+  --step-2: clamp(1.375rem, 1.25rem + 0.6vw, 1.75rem);
+  --step-3: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);
+  --step-4: clamp(2.125rem, 1.65rem + 2.4vw, 3.5rem);
+  --step-5: clamp(2.5rem, 1.7rem + 4vw, 5rem);
+
+  --leading-tight: 1.08;
+  --leading-snug: 1.3;
+  --leading-body: 1.55;
+  --leading-prose: 1.72;
+  --tracking-display: -0.035em;
+  --tracking-heading: -0.02em;
+  --tracking-label: 0.06em;
+
+  /* Space: 4px base */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --section: clamp(4rem, 3rem + 4vw, 7rem);
+
+  /* Layout */
+  --page: 76rem;
+  --gutter: clamp(1.25rem, 0.6rem + 3vw, 3rem);
+  --measure: 40rem;
+  --rail: 12rem;
+
+  /* Shape */
+  --radius-1: 4px;
+  --radius-2: 8px;
+  --radius-3: 12px;
+  --hairline: 1px solid var(--line);
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-1: 120ms;
+  --dur-2: 220ms;
+}
+
+/* Dark theme: system preference unless the visitor chose light */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: oklch(16% 0.008 260);
+    --bg-raised: oklch(19.5% 0.009 260);
+    --bg-sunken: oklch(13.5% 0.008 260);
+    --fg: oklch(94% 0.006 95);
+    --fg-2: oklch(82% 0.006 95);
+    --fg-3: oklch(73% 0.006 95);
+    --line: oklch(28% 0.008 260);
+    --line-strong: oklch(40% 0.008 260);
+    --accent: oklch(81% 0.13 152);
+    --accent-mark: oklch(74% 0.16 152);
+    --accent-wash: oklch(28% 0.05 152);
+    --focus: oklch(80% 0.15 152);
+    --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -12px oklch(0% 0 0 / 0.6);
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: oklch(16% 0.008 260);
+  --bg-raised: oklch(19.5% 0.009 260);
+  --bg-sunken: oklch(13.5% 0.008 260);
+  --fg: oklch(94% 0.006 95);
+  --fg-2: oklch(82% 0.006 95);
+  --fg-3: oklch(73% 0.006 95);
+  --line: oklch(28% 0.008 260);
+  --line-strong: oklch(40% 0.008 260);
+  --accent: oklch(81% 0.13 152);
+  --accent-mark: oklch(74% 0.16 152);
+  --accent-wash: oklch(28% 0.05 152);
+  --focus: oklch(80% 0.15 152);
+  --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -12px oklch(0% 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}

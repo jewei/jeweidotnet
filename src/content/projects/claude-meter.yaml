@@ -1,0 +1,15 @@
+order: 1
+name: Claude Meter
+category: macOS utility
+summary: A local-first menu bar app that shows how much Claude usage remains across each account.
+image: ../../assets/content/claude-meter-v2.jpg
+imageAlt: Claude Meter menu bar app showing separate energy levels for personal, team, and family accounts.
+stack: [Swift, macOS, Claude Code]
+status: Free and open source
+story: /claude-meter-v2/
+links:
+  - { label: Source, href: "https://github.com/jewei/claude-meter" }
+  - { label: Download, href: "https://github.com/jewei/claude-meter/releases/latest" }
+schemaType: SoftwareApplication
+language: [Swift]
+platform: macOS 14 or later
