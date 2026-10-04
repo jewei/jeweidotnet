@@ -93,7 +93,46 @@ describe('agent-readable output', () => {
   });
 });
 
+/** A Pages URL pattern (`*` splat, `:name` placeholder) as a RegExp. */
+const pagesPattern = (pattern: string) =>
+  new RegExp(
+    `^${pattern
+      .replace(/[.+?^${}()|[\]\\]/g, '\\$&')
+      .replace('*', '.*')
+      .replace(/:[A-Za-z]\w*/g, '[^/]+')}$`,
+  );
+
+/** Every URL the build serves: each file, plus `/dir/` for each `dir/index.html`. */
+const builtUrls = fs
+  .readdirSync(dist, { recursive: true, encoding: 'utf8' })
+  .filter((file) => fs.statSync(path.join(dist, file)).isFile())
+  .flatMap((file) => {
+    const url = `/${file.split(path.sep).join('/')}`;
+    return url.endsWith('/index.html') ? [url, url.replace(/index\.html$/, '')] : [url];
+  });
+
 describe('security headers', () => {
+  test('no two _headers rules set the same header for one URL', () => {
+    // Pages applies every matching rule and joins a repeated header with a comma.
+    const rules: { source: string; pattern: RegExp; names: string[] }[] = [];
+    for (const line of read('_headers').split('\n')) {
+      if (!line.trim() || line.trim().startsWith('#')) continue;
+      if (/^\s/.test(line)) rules.at(-1)?.names.push(line.split(':')[0].trim().toLowerCase());
+      else rules.push({ source: line.trim(), pattern: pagesPattern(line.trim()), names: [] });
+    }
+    const clashes: string[] = [];
+    for (const url of builtUrls) {
+      const setBy = new Map<string, string>();
+      for (const rule of rules.filter(({ pattern }) => pattern.test(url))) {
+        for (const name of rule.names) {
+          if (setBy.has(name)) clashes.push(`${url}: ${name} from ${setBy.get(name)} and ${rule.source}`);
+          else setBy.set(name, rule.source);
+        }
+      }
+    }
+    expect(clashes).toEqual([]);
+  });
+
   test('_headers and the middleware send the same CSP', () => {
     const headers = read('_headers');
     const middleware = fs.readFileSync(path.join(root, 'functions/_middleware.js'), 'utf8');

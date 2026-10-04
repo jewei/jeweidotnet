@@ -1,16 +1,37 @@
 # Cloudflare Pages headers. Keep the CSP equal to SECURITY_HEADERS in
-# functions/_middleware.js (tests/build/headers.test.ts checks this).
+# functions/_middleware.js (tests/build/quality.test.ts checks this).
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
-/content/*
+# Résumé PDFs. A new version gets a new dated file name.
+/content/files/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Post images keep their file names when they are replaced.
+/content/images/*
+  Cache-Control: public, max-age=86400
 
 /og/*
   Cache-Control: public, max-age=86400
 
-/*.png
+# Root icons by name. Pages applies every matching rule and joins a repeated
+# header with a comma, so no two rules may set the same header for one file
+# (tests/build/quality.test.ts checks this). A /*.png rule would also match
+# /og/ and /_astro/.
+/apple-touch-icon.png
+  Cache-Control: public, max-age=604800
+
+/android-chrome-192x192.png
+  Cache-Control: public, max-age=604800
+
+/android-chrome-512x512.png
+  Cache-Control: public, max-age=604800
+
+/favicon-16x16.png
+  Cache-Control: public, max-age=604800
+
+/favicon-32x32.png
   Cache-Control: public, max-age=604800
 
 /favicon.ico
