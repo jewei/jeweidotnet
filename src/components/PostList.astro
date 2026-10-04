@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { posts, headingLevel = 3, currentTopic, showTopics = true } = Astro.props;
-const Heading = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
+const Heading = `h${headingLevel}` as const;
 ---
 
 <ol class="ledger" role="list">
