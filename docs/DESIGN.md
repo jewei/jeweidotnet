@@ -71,7 +71,7 @@ Dark theme: same names, values under `prefers-color-scheme: dark` and `[data-the
 
 ## Motion
 
-Small and purposeful: underline colour changes, a 3px arrow nudge, a 1.5% cover zoom on project hover, theme icon rotate, and a 180ms cross-document view transition. `prefers-reduced-motion` turns all of it off. No scroll reveals, counters, or infinite animations.
+Small and purposeful: underline colour changes, a 3px arrow nudge, a 1.5% cover zoom on project hover, the home portrait lifting off a green card on hover (8px, −1.5°), theme icon rotate, and a 180ms cross-document view transition. `prefers-reduced-motion` turns all of it off. No scroll reveals, counters, or infinite animations.
 
 ## Breakpoints and checks
 
