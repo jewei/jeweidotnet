@@ -14,7 +14,7 @@ Read this before you change any visual code. Change this file first when the sys
 
 ## Tokens
 
-All in `src/styles/tokens.css`. Components use tokens only.
+All in `src/styles/tokens.css`. Components use tokens only: no raw colours, font stacks, or spacing in `px` or `rem`. Two exceptions: `em` offsets that scale with the text (prose rhythm, list indents, icon gaps), and `mm`/`pt` sizes inside `@media print`.
 
 | Group   | Tokens                                                                                       | Notes                                               |
 | ------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------- |
@@ -29,6 +29,7 @@ All in `src/styles/tokens.css`. Components use tokens only.
 | Layout  | `--page` 76rem, `--gutter`, `--measure` 40rem, `--rail` 12rem                                |                                                     |
 | Shape   | `--radius-1` 4px, `--radius-2` 8px, `--radius-3` 12px                                        | Pills (999px) only for chips and the status badge   |
 | Motion  | `--ease`, `--dur-1` 120ms, `--dur-2` 220ms                                                   |                                                     |
+| Print   | `--print-bg`, `--print-fg`, `--print-fg-2`, `--print-line`                                   | Résumé print: black on white in every theme         |
 
 Dark theme: same names, values under `prefers-color-scheme: dark` and `[data-theme='dark']`. The toggle stores an explicit choice; with no choice, the system decides.
 
