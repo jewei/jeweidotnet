@@ -5,7 +5,6 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import type { AddressInfo } from 'node:net';
 import { chromium, type Browser, type Page } from 'playwright';
 import { afterAll, beforeAll, describe, expect, test } from 'vite-plus/test';
 import { findOverflow } from '../../scripts/overflow';
@@ -39,7 +38,9 @@ beforeAll(async () => {
     fs.createReadStream(file).pipe(response);
   });
   await new Promise<void>((resolve) => server.listen(0, resolve));
-  origin = `http://localhost:${(server.address() as AddressInfo).port}`;
+  const address = server.address();
+  if (address === null || typeof address === 'string') throw new Error('The test server has no TCP port.');
+  origin = `http://localhost:${address.port}`;
   browser = await chromium.launch();
 });
 
@@ -125,7 +126,7 @@ describe('keyboard', () => {
     const skip = page.locator('a.skip');
     await expect.poll(() => skip.evaluate((el) => el === document.activeElement)).toBe(true);
     const box = await skip.boundingBox();
-    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box?.y).toBeGreaterThanOrEqual(0);
     await page.keyboard.press('Enter');
     await expect.poll(() => page.evaluate(() => document.activeElement?.id)).toBe('main');
     await context.close();
@@ -134,7 +135,9 @@ describe('keyboard', () => {
   test('focused links show a visible outline', async () => {
     const { page, context } = await open('/');
     await page.locator('.header__nav a').first().focus();
-    const outline = await page.evaluate(() => getComputedStyle(document.activeElement!).outlineStyle);
+    const outline = await page.evaluate(
+      () => document.activeElement && getComputedStyle(document.activeElement).outlineStyle,
+    );
     expect(outline).toBe('solid');
     await context.close();
   });
@@ -142,8 +145,10 @@ describe('keyboard', () => {
 
 async function contrastOf(page: Page, selector: string) {
   return page.evaluate((sel) => {
-    const el = document.querySelector(sel)!;
-    const canvas = document.createElement('canvas').getContext('2d')!;
+    const el = document.querySelector(sel);
+    if (!el) throw new Error(`No element matches ${sel}`);
+    const canvas = document.createElement('canvas').getContext('2d');
+    if (!canvas) throw new Error('The browser has no 2D canvas');
     const rgb = (color: string) => {
       canvas.fillStyle = color;
       canvas.fillRect(0, 0, 1, 1);

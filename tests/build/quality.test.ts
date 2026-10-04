@@ -4,7 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, test } from 'vite-plus/test';
-import { dist, exists, htmlPages, read, resolveLocal, root } from './helpers';
+import { attr, dist, exists, htmlPages, read, resolveLocal, root } from './helpers';
 
 describe.each(htmlPages)('%s', (_route, doc) => {
   test('has lang, a skip link, and one main landmark', () => {
@@ -50,10 +50,10 @@ describe.each(htmlPages)('%s', (_route, doc) => {
 
   test('every internal link and asset resolves', () => {
     const refs = [
-      ...Array.from(doc.querySelectorAll('a[href^="/"]'), (a) => a.getAttribute('href')!),
+      ...Array.from(doc.querySelectorAll('a[href^="/"]'), (a) => attr(a, 'href')),
       ...Array.from(
         doc.querySelectorAll('img[src^="/"], link[href^="/"], script[src^="/"]'),
-        (el) => (el.getAttribute('src') ?? el.getAttribute('href'))!,
+        (el) => el.getAttribute('src') ?? attr(el, 'href'),
       ),
     ];
     for (const ref of refs) expect(resolveLocal(ref), ref).toBeDefined();
@@ -61,7 +61,7 @@ describe.each(htmlPages)('%s', (_route, doc) => {
 
   test('in-page anchors point at existing ids', () => {
     for (const a of Array.from(doc.querySelectorAll('a[href^="#"]'))) {
-      const id = decodeURIComponent(a.getAttribute('href')!.slice(1));
+      const id = decodeURIComponent(attr(a, 'href').slice(1));
       expect(doc.getElementById(id), `#${id}`).not.toBeNull();
     }
   });
