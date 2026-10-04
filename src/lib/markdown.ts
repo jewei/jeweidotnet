@@ -11,14 +11,10 @@
  * Elements marked `data-md-skip` are dropped from the Markdown copies
  * that scripts/build-markdown.ts writes for agents.
  */
+import type { ShikiConfig } from '@astrojs/markdown-remark';
+import type { Element, ElementContent, Properties, Root, Text } from 'hast';
 
-interface Node {
-  type: string;
-  tagName?: string;
-  value?: string;
-  properties?: Record<string, unknown>;
-  children?: Node[];
-}
+type ShikiTransformer = NonNullable<ShikiConfig['transformers']>[number];
 
 const languageNames: Record<string, string> = {
   bash: 'Bash',
@@ -42,48 +38,47 @@ const languageNames: Record<string, string> = {
   plaintext: 'Text',
 };
 
-const text = (value: string): Node => ({ type: 'text', value });
-const el = (tagName: string, properties: Record<string, unknown>, children: Node[] = []): Node => ({
+const text = (value: string): Text => ({ type: 'text', value });
+const el = (tagName: string, properties: Properties, children: ElementContent[] = []): Element => ({
   type: 'element',
   tagName,
   properties,
   children,
 });
-const isBlank = (node: Node) => node.type === 'text' && !(node.value ?? '').trim();
+const isBlank = (node: ElementContent) => node.type === 'text' && !node.value.trim();
 
-function textContent(node: Node): string {
-  if (node.type === 'text') return node.value ?? '';
-  return (node.children ?? []).map(textContent).join('');
+function textContent(node: ElementContent): string {
+  if (node.type === 'text') return node.value;
+  if (node.type === 'element') return node.children.map(textContent).join('');
+  return '';
 }
 
-/** Depth-first map over element children. Return a node to replace the child. */
-function mapChildren(tree: Node, visit: (child: Node, parent: Node) => Node | undefined): void {
-  const walk = (node: Node) => {
-    if (!node.children) return;
-    node.children = node.children.map((child) => {
-      const replaced = visit(child, node);
-      if (replaced) return replaced;
-      walk(child);
-      return child;
+/** Depth-first map over elements. Return an element to replace the child. */
+function mapElements(tree: Root, visit: (child: Element) => Element | undefined): void {
+  const walk = (node: Root | Element) => {
+    node.children.forEach((child, index) => {
+      if (child.type !== 'element') return;
+      const replaced = visit(child);
+      if (replaced) node.children[index] = replaced;
+      else walk(child);
     });
   };
   walk(tree);
 }
 
-function fenceFilename(meta: unknown): string | undefined {
-  if (typeof meta !== 'string') return undefined;
-  const match = meta.match(/(?:^|\s)(?:filename|title)=(?:"([^"]+)"|'([^']+)'|(\S+))/i);
+function fenceFilename(meta: string | undefined): string | undefined {
+  const match = meta?.match(/(?:^|\s)(?:filename|title)=(?:"([^"]+)"|'([^']+)'|(\S+))/i);
   return match?.[1] ?? match?.[2] ?? match?.[3];
 }
 
 /** Shiki transformer: copy the fence filename onto <pre data-filename>. */
 export const codeFilename = {
   name: 'jewei:code-filename',
-  pre(this: { options: { meta?: { __raw?: string } } }, node: { properties: Record<string, unknown> }) {
+  pre(node) {
     const filename = fenceFilename(this.options.meta?.__raw);
     if (filename) node.properties['data-filename'] = filename;
   },
-};
+} satisfies ShikiTransformer;
 
 /**
  * Prose is at most --measure (40rem) wide, and at 45rem the page gutters leave
@@ -94,38 +89,37 @@ export const codeFilename = {
 const PROSE_IMAGE_SIZES = '(min-width: 45rem) 40rem, calc(100vw - 2.5rem)';
 
 export function rehypeImageSizes() {
-  return (tree: Node) =>
-    mapChildren(tree, (child) => {
-      if (child.tagName === 'img' && child.properties && !child.properties.sizes) {
-        child.properties.sizes = PROSE_IMAGE_SIZES;
-      }
+  return (tree: Root) =>
+    mapElements(tree, (child) => {
+      if (child.tagName === 'img' && !child.properties.sizes) child.properties.sizes = PROSE_IMAGE_SIZES;
       return undefined;
     });
 }
 
+/** The only child that is not blank text, or undefined when there are more or none. */
+function soleChild(node: Element): ElementContent | undefined {
+  const visible = node.children.filter((child) => !isBlank(child));
+  return visible.length === 1 ? visible[0] : undefined;
+}
+
 export function rehypeFigures() {
-  return (tree: Node) =>
-    mapChildren(tree, (child) => {
+  return (tree: Root) =>
+    mapElements(tree, (child) => {
       if (child.tagName !== 'p') return undefined;
-      const visible = (child.children ?? []).filter((node) => !isBlank(node));
-      if (visible.length !== 1) return undefined;
-      const only = visible[0];
-      const img =
-        only.tagName === 'img'
-          ? only
-          : only.tagName === 'a' && only.children?.filter((n) => !isBlank(n)).length === 1
-            ? only.children.find((n) => n.tagName === 'img')
-            : undefined;
-      const caption = img?.properties?.title;
+      const only = soleChild(child);
+      if (only?.type !== 'element') return undefined;
+      const inner = only.tagName === 'a' ? soleChild(only) : only;
+      const img = inner?.type === 'element' && inner.tagName === 'img' ? inner : undefined;
+      const caption = img?.properties.title;
       if (!img || typeof caption !== 'string' || !caption.trim()) return undefined;
-      delete img.properties!.title;
+      delete img.properties.title;
       return el('figure', {}, [only, el('figcaption', {}, [text(caption.trim())])]);
     });
 }
 
 export function rehypeTables() {
-  return (tree: Node) =>
-    mapChildren(tree, (child) =>
+  return (tree: Root) =>
+    mapElements(tree, (child) =>
       child.tagName === 'table'
         ? el('div', { className: ['table-scroll'], tabIndex: 0, role: 'region', ariaLabel: 'Table' }, [child])
         : undefined,
@@ -140,30 +134,34 @@ const contrastFixes: Record<string, string> = {
   '--shiki-light:#66707B': '--shiki-light:#4B535D',
 };
 
-function fixTokenContrast(node: Node): void {
-  const style = node.properties?.style;
+function fixTokenContrast(node: Element): void {
+  const { style } = node.properties;
   if (typeof style === 'string') {
     let next = style;
     for (const [from, to] of Object.entries(contrastFixes)) next = next.split(from).join(to);
-    node.properties!.style = next;
+    node.properties.style = next;
   }
-  node.children?.forEach(fixTokenContrast);
+  for (const child of node.children) if (child.type === 'element') fixTokenContrast(child);
 }
 
 export function rehypeCodeBlocks() {
-  return (tree: Node) => {
+  return (tree: Root) => {
     let index = 0;
-    mapChildren(tree, (child) => {
+    mapElements(tree, (child) => {
       if (child.tagName !== 'pre') return undefined;
-      const props = child.properties ?? {};
-      const code = child.children?.find((node) => node.tagName === 'code');
-      const classes = ([] as unknown[]).concat(code?.properties?.className ?? []);
-      const fromClass = classes.find((c): c is string => typeof c === 'string' && c.startsWith('language-'));
+      const props = child.properties;
+      const code = child.children.find((node) => node.type === 'element' && node.tagName === 'code');
+      const className = code?.type === 'element' ? code.properties.className : undefined;
+      const classes = (Array.isArray(className) ? className : [className]).filter(
+        (c) => typeof c === 'string',
+      );
+      const fromClass = classes.find((c) => c.startsWith('language-'));
       const declared = props.dataLanguage ?? props['data-language'];
       const language = (
         typeof declared === 'string' ? declared : (fromClass?.slice(9) ?? 'text')
       ).toLowerCase();
-      const filename = (props['data-filename'] ?? props.dataFilename) as string | undefined;
+      const fenced = props['data-filename'] ?? props.dataFilename;
+      const filename = typeof fenced === 'string' ? fenced : undefined;
       const label = filename ?? languageNames[language] ?? language.toUpperCase();
       const id = `code-${++index}`;
 
@@ -193,14 +191,13 @@ export function rehypeCodeBlocks() {
 }
 
 export function rehypeHeadingAnchors() {
-  return (tree: Node) =>
-    mapChildren(tree, (child) => {
-      if ((child.tagName !== 'h2' && child.tagName !== 'h3') || typeof child.properties?.id !== 'string')
-        return undefined;
-      const id = child.properties.id;
+  return (tree: Root) =>
+    mapElements(tree, (child) => {
+      const { id } = child.properties;
+      if ((child.tagName !== 'h2' && child.tagName !== 'h3') || typeof id !== 'string') return undefined;
       const label = textContent(child).trim();
       child.children = [
-        ...(child.children ?? []),
+        ...child.children,
         el(
           'a',
           { className: ['anchor'], href: `#${id}`, ariaLabel: `Link to section: ${label}`, dataMdSkip: '' },
