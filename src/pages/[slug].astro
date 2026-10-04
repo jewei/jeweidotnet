@@ -82,12 +82,8 @@ const schema = [
   description={description}
   image={image ?? ogPath(`post-${postSlug(post)}`)}
   imageAlt={imageAlt ?? `${title}, an article by ${site.author}.`}
-  type="article"
-  published={pubDate}
-  modified={updatedDate}
-  tags={tags.map(topicName)}
+  article={{ published: pubDate, modified: updatedDate, tags: tags.map(topicName) }}
   schema={schema}
-  isPost
 >
   <div class="progress" aria-hidden="true"></div>
 

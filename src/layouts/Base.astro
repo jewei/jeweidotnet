@@ -15,7 +15,16 @@ import tokens from '../styles/tokens.css?raw';
 import '../styles/base.css';
 import '../styles/prose.css';
 
-interface Props {
+/** Open Graph article data. Only article pages have it. */
+interface Article {
+  published: Date;
+  /** Only when the post was updated after it was published. */
+  modified?: Date;
+  /** Topic names, one article:tag each. */
+  tags: string[];
+}
+
+interface Common {
   /** Page title without the site suffix. The home page passes site.homeTitle. */
   title: string;
   /** 50–160 characters. Required: every indexable page needs one. */
@@ -23,10 +32,6 @@ interface Props {
   /** Social card: an imported image, or a root path such as /og/blog.png. */
   image?: ImageMetadata | string;
   imageAlt?: string;
-  type?: 'website' | 'article' | 'profile';
-  published?: Date;
-  modified?: Date;
-  tags?: string[];
   /** JSON-LD nodes for this page. WebSite and Person are always added. */
   schema?: Record<string, unknown>[];
   /** Set false for pages that must not be indexed (404). */
@@ -35,9 +40,13 @@ interface Props {
   markdown?: boolean;
   /** Use the exact title, without the author suffix. */
   rawTitle?: boolean;
-  /** Marks "Writing" active in the nav on article pages. */
-  isPost?: boolean;
 }
+
+/**
+ * An article page passes `article`: its og:type is "article", and the nav
+ * marks Writing active. Any other page can set og:type with `type`.
+ */
+type Props = Common & ({ type?: 'website' | 'profile'; article?: never } | { type?: never; article: Article });
 
 const {
   title,
@@ -45,14 +54,11 @@ const {
   image = '/og/default.png',
   imageAlt = `${site.name}: the work and writing of ${site.author}.`,
   type = 'website',
-  published,
-  modified,
-  tags = [],
+  article,
   schema = [],
   index = true,
   markdown = true,
   rawTitle = false,
-  isPost = false,
 } = Astro.props;
 
 const path = Astro.url.pathname;
@@ -119,7 +125,7 @@ const speculation = JSON.stringify({
 
     <meta property="og:site_name" content={site.name} />
     <meta property="og:locale" content={site.locale} />
-    <meta property="og:type" content={type} />
+    <meta property="og:type" content={article ? 'article' : type} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {canonical && <meta property="og:url" content={canonical} />}
@@ -127,10 +133,10 @@ const speculation = JSON.stringify({
     <meta property="og:image:width" content={String(social.width)} />
     <meta property="og:image:height" content={String(social.height)} />
     <meta property="og:image:alt" content={imageAlt} />
-    {type === 'article' && published && <meta property="article:published_time" content={published.toISOString()} />}
-    {type === 'article' && modified && <meta property="article:modified_time" content={modified.toISOString()} />}
-    {type === 'article' && <meta property="article:author" content={absolute('/about/')} />}
-    {type === 'article' && tags.map((tag) => <meta property="article:tag" content={tag} />)}
+    {article && <meta property="article:published_time" content={article.published.toISOString()} />}
+    {article?.modified && <meta property="article:modified_time" content={article.modified.toISOString()} />}
+    {article && <meta property="article:author" content={absolute('/about/')} />}
+    {article?.tags.map((tag) => <meta property="article:tag" content={tag} />)}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content={site.twitter} />
     <meta name="twitter:creator" content={site.twitter} />
@@ -151,7 +157,7 @@ const speculation = JSON.stringify({
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <Header isPost={isPost} />
+    <Header isPost={article !== undefined} />
     <main id="main" tabindex="-1">
       <slot />
     </main>
