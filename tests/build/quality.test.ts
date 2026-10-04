@@ -178,7 +178,11 @@ test('catalogue numbers follow publication date, then slug', () => {
     .map((file) => {
       const raw = fs.readFileSync(path.join(blogDir, file), 'utf8');
       const pubDate = raw.match(/^pubDate:\s*["']?([^"'\n]+)/m)?.[1] ?? '';
-      return { slug: file.replace(/\.mdx?$/, ''), date: Date.parse(pubDate), draft: /^draft:\s*true/m.test(raw) };
+      return {
+        slug: file.replace(/\.mdx?$/, ''),
+        date: Date.parse(pubDate),
+        draft: /^draft:\s*true/m.test(raw),
+      };
     })
     .filter((post) => !post.draft)
     .sort((a, b) => a.date - b.date || a.slug.localeCompare(b.slug));

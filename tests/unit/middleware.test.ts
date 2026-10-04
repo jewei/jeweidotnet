@@ -38,7 +38,8 @@ function createContext({
     }
     if (assetPath === '/about/index.html')
       return new Response(null, { status: 308, headers: { Location: '/about/' } });
-    if (assetPath === '/about/') return assetResponse('<h1>About Jewei</h1>', 200, 'text/html; charset=utf-8');
+    if (assetPath === '/about/')
+      return assetResponse('<h1>About Jewei</h1>', 200, 'text/html; charset=utf-8');
     return assetResponse('<h1>Page not found</h1>', 404, 'text/html; charset=utf-8');
   };
   return {
@@ -128,7 +129,9 @@ describe('HTTP content negotiation', () => {
   });
 
   test('passes a redirect through to a Markdown-only client instead of 406', async () => {
-    const response = await onRequest(createContext({ accept: 'text/markdown', pathname: '/about/index.html' }));
+    const response = await onRequest(
+      createContext({ accept: 'text/markdown', pathname: '/about/index.html' }),
+    );
 
     expect(response.status).toBe(308);
     expect(response.headers.get('Location')).toBe('/about/');
