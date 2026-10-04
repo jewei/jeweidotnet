@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local agent settings and screenshot output
+.claude/settings.local.json
+.shots/

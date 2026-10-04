@@ -1,0 +1,446 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import portrait from '../assets/jewei.jpg';
+import { ogPath, pages } from '../data/pages';
+import { site } from '../site.config';
+import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
+
+const page = pages.about;
+
+const interests = [
+  {
+    title: 'Photography',
+    text: 'Capturing the right light, expression, or quiet detail at the right moment. Portraits, landscapes, and everyday scenes all help me notice more.',
+  },
+  {
+    title: 'Books',
+    text: 'Psychology, systems thinking, philosophy, science fiction, and anything that makes the world feel stranger, wider, or more understandable.',
+  },
+  {
+    title: 'Cooking',
+    text: 'Cooking feels a lot like coding: precision matters, but so do instinct, timing, and knowing when to stop tinkering.',
+  },
+  {
+    title: 'Music',
+    text: 'The right song can reset a mood, sharpen a thought, or turn an ordinary stretch of time into something cinematic.',
+  },
+];
+
+const schema = [
+  {
+    '@type': 'ProfilePage',
+    name: `About ${site.author}`,
+    url: absolute('/about/'),
+    description: page.description,
+    mainEntity: personSchema({ image: absolute(portrait.src), description: page.description }),
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about/' },
+  ]),
+];
+---
+
+<Base title={page.title} description={page.description} image={ogPath('about')} type="profile" schema={schema}>
+  <div class="wrap">
+    <header class="intro">
+      <div class="intro__copy">
+        <p class="greeting" aria-label="Hello, in nine languages">
+          <span>Hello.</span>
+          <span lang="zh">你好。</span>
+          <span lang="ms">Apa khabar.</span>
+          <span lang="ja">こんにちは。</span>
+          <span lang="fr">Bonjour.</span>
+          <span lang="ko">안녕하세요.</span>
+          <span lang="es">Hola.</span>
+          <span lang="hi">नमस्ते.</span>
+          <span lang="el">Γεια σας.</span>
+        </p>
+        <h1>About me</h1>
+        <p class="intro__lede">
+          I build durable software, useful tools, and clear notes for people who care how systems work.
+        </p>
+        <p class="intro__text">
+          Hey there. I’m <strong>Jewei</strong>, a senior software engineer who enjoys building useful things for
+          product teams and for myself. <strong>jewei.toString()</strong> is my workshop and public notebook for
+          the work.
+        </p>
+        <ul class="intro__actions" role="list">
+          <li><a class="button button--primary" href="/projects/">View selected work</a></li>
+          <li><a class="arrow-link" href="/blog/"><span>Read my writing</span><Icon name="arrow-right" /></a></li>
+        </ul>
+      </div>
+      <figure class="intro__portrait">
+        <Image
+          src={portrait}
+          alt="Jewei, smiling like someone whose tests just passed."
+          widths={[320, 480, 640, 800]}
+          sizes="(min-width: 64rem) 22rem, calc(100vw - 2.5rem)"
+          layout="none"
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <figcaption>Jewei in an unknown parallel universe.</figcaption>
+      </figure>
+    </header>
+
+    <dl class="facts" aria-label="Professional experience">
+      <div>
+        <dt>years building software</dt>
+        <dd>15+</dd>
+      </div>
+      <div>
+        <dt>people served by systems I have helped build</dt>
+        <dd>1M+</dd>
+      </div>
+    </dl>
+
+    <div class="chapters">
+      <section class="chapter" aria-labelledby="engineer">
+        <h2 id="engineer">Engineer</h2>
+        <div class="prose">
+          <p>
+            I have spent more than 15 years working on backend systems, product architecture, APIs, payments, and
+            infrastructure. The systems have ranged from early product experiments to services used by more than a
+            million people.
+          </p>
+          <p>
+            Laravel and PHP have been steady tools through much of that work. So have Cloudflare, AWS, distributed
+            services, and the less glamorous work of making data and money move safely between systems.
+          </p>
+          <p>
+            These days, I spend less time handcrafting every line and more time designing good boundaries, steering
+            AI-assisted workflows, and reviewing what the machines produce. Speed is useful. Clean architecture,
+            thoughtful developer experience, and systems that age well still matter more.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter" aria-labelledby="builder">
+        <h2 id="builder">Builder</h2>
+        <div class="prose">
+          <p>
+            I like small tools with a clear job. <a href="/projects/#claude-meter">Claude Meter</a>,
+            <a href="/projects/#bopop">Bopop</a>, <a href="/projects/#uppa">Uppa</a>, and
+            <a href="/projects/#typeid-php">TypeID PHP</a> started with problems I wanted to solve or questions I
+            wanted to test.
+          </p>
+          <p>
+            Some become open-source packages. Some become macOS utilities. Some remain experiments. Each one teaches
+            me something that client work does not.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter" aria-labelledby="writer">
+        <h2 id="writer">Writer</h2>
+        <div class="prose">
+          <p>
+            Writing is how I slow the work down enough to understand it. I write about architecture, software scale,
+            PHP, tools, and the changing practice of building with AI. The useful notes live in
+            <a href="/blog/">Writing</a>.
+          </p>
+          <p>
+            I try to publish details that another engineer can use. This means commands, trade-offs, mistakes, and
+            results instead of general advice.
+          </p>
+        </div>
+      </section>
+
+      <section class="chapter" aria-labelledby="away">
+        <h2 id="away">Away from the keyboard</h2>
+        <ul class="interests" role="list">
+          {
+            interests.map((item) => (
+              <li>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="chapter" aria-labelledby="think">
+        <h2 id="think">How I think</h2>
+        <div class="prose">
+          <p>
+            Personality tests are imperfect shorthand, but the shorthand is sometimes useful. Myers-Briggs calls me an
+            <a
+              href="https://www.16personalities.com/articles/assertive-architect-intj-a-vs-turbulent-architect-intj-t?ref=jewei.net"
+              data-external>assertive INTJ architect</a
+            >. The Enneagram calls me a
+            <a href="https://enneagramuniverse.com/enneagram/learn/enneagram-wings/enneagram_5w6/?ref=jewei.net" data-external
+              >5w6 investigator</a
+            >. Both descriptions point to the same habit: I like taking tangled problems apart and putting them back
+            together as clear systems.
+          </p>
+          <p>More notes and recurring subjects live in <a href="/collections/">Collections</a>.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="hello" aria-labelledby="hello-title">
+      <div>
+        <h2 id="hello-title">Say hello</h2>
+        <p class="hello__sub">I read the messages myself.</p>
+      </div>
+      <div>
+        <p>
+          Reach out if you have an interesting software problem, want to collaborate on something useful or
+          delightfully strange, or want to talk about code, products, books, photography, or food.
+        </p>
+        <ul class="hello__actions" role="list">
+          <li><a class="button button--primary" href={`mailto:${site.email}`}><Icon name="mail" /> Email me</a></li>
+          <li>
+            <a class="arrow-link" href={site.profiles.sponsor} data-external>
+              <span>Sponsor my work</span><Icon name="arrow-up-right" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .intro {
+    display: grid;
+    gap: var(--space-7);
+    padding-block: var(--space-8) var(--space-7);
+  }
+
+  .greeting {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.6em;
+    max-width: 30rem;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--fg-3);
+  }
+
+  .greeting span:first-child {
+    color: var(--accent);
+  }
+
+  h1 {
+    margin-top: var(--space-5);
+    font-size: var(--step-5);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+  }
+
+  .intro__lede {
+    margin-top: var(--space-5);
+    max-width: 34rem;
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: var(--tracking-heading);
+    line-height: 1.3;
+  }
+
+  .intro__text {
+    margin-top: var(--space-4);
+    max-width: 36rem;
+    font-family: var(--serif);
+    font-size: var(--step-prose);
+    line-height: 1.65;
+    color: var(--fg-2);
+  }
+
+  .intro__text strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  .intro__actions,
+  .hello__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-5);
+    margin-top: var(--space-6);
+  }
+
+  .intro__portrait img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius-3);
+  }
+
+  .intro__portrait figcaption {
+    margin-top: var(--space-3);
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+  }
+
+  @media (min-width: 40rem) and (max-width: 63.99rem) {
+    .intro__portrait {
+      max-width: 22rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .intro {
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      align-items: end;
+      gap: var(--space-9);
+      padding-block: var(--space-9) var(--space-8);
+    }
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-block: 1px solid var(--fg);
+  }
+
+  .facts div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: var(--space-1);
+    padding-block: var(--space-5);
+  }
+
+  .facts div + div {
+    padding-left: var(--space-5);
+    border-left: var(--hairline);
+  }
+
+  .facts dd {
+    font-size: var(--step-4);
+    font-weight: 600;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+  }
+
+  .facts dt {
+    font-size: var(--step--1);
+    color: var(--fg-3);
+  }
+
+  .chapters {
+    display: grid;
+    gap: var(--space-8);
+    padding-top: var(--section);
+  }
+
+  .chapter h2 {
+    font-size: var(--step-3);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+    margin-bottom: var(--space-5);
+  }
+
+  .chapter .prose {
+    max-width: var(--measure);
+  }
+
+  @media (min-width: 64rem) {
+    .chapter {
+      display: grid;
+      grid-template-columns: 18rem minmax(0, var(--measure));
+      gap: var(--space-8);
+    }
+
+    .chapter h2 {
+      position: sticky;
+      top: var(--space-6);
+      align-self: start;
+      font-size: var(--step-2);
+      letter-spacing: var(--tracking-heading);
+      padding-top: 0.15em;
+    }
+  }
+
+  .interests {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .interests li {
+    padding: var(--space-5);
+    border: var(--hairline);
+    border-radius: var(--radius-3);
+    background: var(--bg-raised);
+  }
+
+  .interests h3 {
+    font-size: var(--step-1);
+  }
+
+  .interests p {
+    margin-top: var(--space-2);
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    color: var(--fg-2);
+  }
+
+  @media (min-width: 40rem) {
+    .interests {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .hello {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--section);
+    padding: var(--space-7) var(--space-6);
+    border-radius: var(--radius-3);
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .hello h2 {
+    font-size: var(--step-3);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+  }
+
+  .hello__sub {
+    margin-top: var(--space-2);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    opacity: 0.8;
+  }
+
+  .hello p {
+    max-width: 34rem;
+  }
+
+  .hello .button--primary {
+    background: var(--bg);
+    border-color: var(--bg);
+    color: var(--fg);
+  }
+
+  .hello .button--primary:hover {
+    background: var(--bg-raised);
+  }
+
+  .hello .arrow-link {
+    color: var(--bg);
+  }
+
+  .hello .arrow-link > span {
+    text-decoration-color: currentColor;
+  }
+
+  @media (min-width: 64rem) {
+    .hello {
+      grid-template-columns: 18rem minmax(0, 1fr);
+      gap: var(--space-8);
+      padding: var(--space-8);
+    }
+  }
+</style>

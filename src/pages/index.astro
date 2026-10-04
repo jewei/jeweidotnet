@@ -1,0 +1,377 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PostList from '../components/PostList.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import portrait from '../assets/jewei.jpg';
+import { site } from '../site.config';
+import { ogPath, pages } from '../data/pages';
+import { topicName, topicUrl } from '../data/topics';
+import { getPosts, postNumbers, topicCounts } from '../lib/posts';
+import { getProjects } from '../lib/projects';
+import { absolute } from '../lib/seo';
+
+const page = pages.home;
+const posts = await getPosts();
+const numbers = postNumbers(posts);
+const pinned = posts.filter((post) => post.data.pinned);
+const latest = posts.filter((post) => !post.data.pinned).slice(0, 6);
+const projects = (await getProjects()).filter((project) => project.data.featured).slice(0, 4);
+const topics = topicCounts(posts);
+
+const proof = [
+  { value: '15+', label: 'years building software' },
+  { value: '1M+', label: 'users served' },
+  { value: '50K+', label: 'monthly transactions supported' },
+  { value: '10+', label: 'payment providers integrated' },
+];
+---
+
+<Base
+  title={site.homeTitle}
+  rawTitle
+  description={page.description}
+  image={ogPath('home')}
+  imageAlt="jewei.toString(): the work and writing of software engineer Jewei Mak."
+  schema={[
+    {
+      '@type': 'ProfilePage',
+      '@id': `${absolute('/')}#page`,
+      url: absolute('/'),
+      name: site.homeTitle,
+      mainEntity: { '@id': `${absolute('/')}#person` },
+      primaryImageOfPage: absolute(portrait.src),
+    },
+  ]}
+>
+  <section class="hero wrap" aria-labelledby="hero-title">
+    <div class="hero__copy">
+      <a class="hero__status" href="/resume/">
+        <span class="hero__dot" aria-hidden="true"></span>
+        Open to senior backend roles and consulting
+      </a>
+      <h1 id="hero-title" class="hero__title">
+        <span class="hero__hello">Hi, I’m Jewei Mak.</span>
+        I build reliable software and useful tools, and I write about what I learn.
+      </h1>
+      <p class="hero__lede">
+        Senior software engineer and backend architect. Fifteen years of backend systems, product architecture,
+        payments, and developer experience. Lately, a lot of AI-assisted engineering.
+      </p>
+      <ul class="hero__actions" role="list">
+        <li><a class="button button--primary" href="/blog/">Read the writing</a></li>
+        <li><a class="button" href="/projects/">See the projects</a></li>
+        <li>
+          <a class="arrow-link" href="/resume/"><span>Résumé</span><Icon name="arrow-right" /></a>
+        </li>
+      </ul>
+    </div>
+
+    <figure class="hero__portrait">
+      <Image
+        src={portrait}
+        alt="Portrait of Jewei Mak, smiling."
+        widths={[240, 360, 480, 640, 800]}
+        sizes="(min-width: 64rem) 22rem, 9rem"
+        layout="none"
+        format="webp"
+        quality={80}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <figcaption>Fig. 1 — Jewei, smiling like someone whose tests just passed.</figcaption>
+    </figure>
+  </section>
+
+  <section class="wrap proof" aria-label="Experience at a glance">
+    <dl class="proof__grid">
+      {
+        proof.map((item) => (
+          <div>
+            <dt>{item.label}</dt>
+            <dd>{item.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="section wrap" aria-labelledby="work-title">
+    <header class="section-head">
+      <div>
+        <h2 id="work-title">Selected work</h2>
+        <p>Tools and libraries for problems that kept asking to be solved.</p>
+      </div>
+      <a class="arrow-link" href="/projects/"><span>All projects</span><Icon name="arrow-right" /></a>
+    </header>
+    <div class="work-grid">
+      {projects.map((project) => <ProjectCard project={project} />)}
+    </div>
+  </section>
+
+  {
+    pinned.length > 0 && (
+      <section class="section wrap" aria-labelledby="start-title">
+        <header class="section-head">
+          <div>
+            <h2 id="start-title">Start here</h2>
+            <p>A good place to start.</p>
+          </div>
+        </header>
+        <PostList posts={pinned} numbers={numbers} />
+      </section>
+    )
+  }
+
+  <section class="section wrap" aria-labelledby="latest-title">
+    <header class="section-head">
+      <div>
+        <h2 id="latest-title">Latest writing</h2>
+        <p>Recent notes on software, systems, and making things.</p>
+      </div>
+      <a class="arrow-link" href="/blog/"><span>All {posts.length} posts</span><Icon name="arrow-right" /></a>
+    </header>
+    <PostList posts={latest} numbers={numbers} />
+    <p class="follow">
+      New posts arrive in the <a class="link" href="/rss.xml">RSS feed</a> first. You can also
+      <a class="link" href="/contact/">say hello</a>.
+    </p>
+  </section>
+
+  <section class="section wrap" aria-labelledby="topics-title">
+    <header class="section-head">
+      <div>
+        <h2 id="topics-title">Topics</h2>
+        <p>Threads through the working notebook.</p>
+      </div>
+    </header>
+    <ul class="topics" role="list">
+      {
+        topics.map(([topic, count]) => (
+          <li>
+            <a href={topicUrl(topic)}>
+              <span>{topicName(topic)}</span>
+              <span class="topics__count">{count}<span class="sr-only"> {count === 1 ? 'post' : 'posts'}</span></span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    gap: var(--space-7);
+    padding-block: var(--space-8) var(--space-7);
+  }
+
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 32px;
+    padding: 0 var(--space-3);
+    border: var(--hairline);
+    border-radius: 999px;
+    background: var(--bg-raised);
+    font-size: var(--step--1);
+    color: var(--fg-2);
+    text-decoration: none;
+    transition: border-color var(--dur-1) var(--ease);
+  }
+
+  .hero__status:hover {
+    border-color: var(--line-strong);
+    color: var(--fg);
+  }
+
+  .hero__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent-mark);
+    box-shadow: 0 0 0 3px var(--accent-wash);
+  }
+
+  .hero__title {
+    margin-top: var(--space-5);
+    max-width: 18ch;
+    font-size: var(--step-5);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
+    text-wrap: balance;
+  }
+
+  .hero__hello {
+    display: block;
+    margin-bottom: var(--space-3);
+    font-size: var(--step-2);
+    font-weight: 500;
+    letter-spacing: var(--tracking-heading);
+    color: var(--fg-3);
+  }
+
+  .hero__lede {
+    margin-top: var(--space-5);
+    max-width: 36rem;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--fg-2);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3) var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  .hero__actions li:last-child {
+    margin-left: var(--space-2);
+  }
+
+  .hero__portrait {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    align-items: end;
+    gap: var(--space-4);
+  }
+
+  .hero__portrait img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius-2);
+    filter: saturate(0.9);
+  }
+
+  .hero__portrait figcaption {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    line-height: 1.5;
+    color: var(--fg-3);
+    max-width: 22rem;
+  }
+
+  @media (min-width: 64rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+      align-items: end;
+      gap: var(--space-9);
+      padding-block: var(--space-10) var(--space-8);
+    }
+
+    .hero__portrait {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .proof__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--fg);
+    border-bottom: var(--hairline);
+  }
+
+  .proof__grid div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: start;
+    gap: var(--space-1);
+    padding: var(--space-5) var(--space-4) var(--space-5) 0;
+  }
+
+  .proof__grid div:nth-child(n + 3) {
+    border-top: var(--hairline);
+  }
+
+  .proof__grid dd {
+    font-size: var(--step-4);
+    font-weight: 600;
+    letter-spacing: var(--tracking-display);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .proof__grid dt {
+    font-size: var(--step--1);
+    color: var(--fg-3);
+    line-height: 1.4;
+  }
+
+  @media (min-width: 48rem) {
+    .proof__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .proof__grid div:nth-child(n + 3) {
+      border-top: 0;
+    }
+
+    .proof__grid div + div {
+      padding-left: var(--space-5);
+      border-left: var(--hairline);
+    }
+  }
+
+  .work-grid {
+    display: grid;
+    gap: var(--space-8) var(--space-7);
+  }
+
+  @media (min-width: 48rem) {
+    .work-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .follow {
+    margin-top: var(--space-6);
+    color: var(--fg-2);
+  }
+
+  .topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .topics a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 44px;
+    padding: 0 var(--space-2) 0 var(--space-4);
+    border: var(--hairline);
+    border-radius: 999px;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      border-color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease);
+  }
+
+  .topics a:hover {
+    border-color: var(--line-strong);
+    background: var(--bg-raised);
+  }
+
+  .topics__count {
+    display: grid;
+    place-items: center;
+    min-width: 28px;
+    height: 28px;
+    padding-inline: var(--space-2);
+    border-radius: 999px;
+    background: var(--bg-sunken);
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-2);
+  }
+</style>

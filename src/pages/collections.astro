@@ -1,0 +1,204 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { ogPath, pages } from '../data/pages';
+import { site } from '../site.config';
+import { absolute, breadcrumbSchema } from '../lib/seo';
+
+const page = pages.collections;
+
+const notes = [
+  {
+    text: 'I build software with the care of craft: minimal systems, deliberate details, and code I try to shape like art.',
+    context: 'Personal note',
+  },
+  {
+    text: 'Speed is fun, but I still obsess over clean architecture, thoughtful DX, and systems designed to age well.',
+    context: 'Building principle',
+  },
+  {
+    text: 'Cooking feels a lot like coding: precision matters, but so does instinct, timing, and knowing when to stop tinkering.',
+    context: 'Craft note',
+  },
+];
+
+const groups = [
+  {
+    title: 'Ideas I keep returning to',
+    description: 'Recurring subjects in the work and writing.',
+    items: ['AI-assisted software delivery', 'Developer experience', 'Systems that stay simple', 'Product architecture'],
+  },
+  {
+    title: 'Bookshelf themes',
+    description: 'Subjects most likely to pull me into another chapter.',
+    items: ['Psychology', 'Systems thinking', 'Philosophy', 'Science fiction'],
+  },
+  {
+    title: 'Everyday inputs',
+    description: 'Things outside the editor that feed the work.',
+    items: ['Photography walks', 'Music for deep work', 'Kitchen experiments', 'Quiet product details'],
+  },
+];
+
+const schema = [
+  {
+    '@type': 'CollectionPage',
+    name: 'Collections',
+    url: absolute('/collections/'),
+    description: page.description,
+    author: { '@id': `${site.url}/#person` },
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about/' },
+    { name: 'Collections', path: '/collections/' },
+  ]),
+];
+---
+
+<Base title={page.title} description={page.description} image={ogPath('collections')} schema={schema}>
+  <div class="wrap">
+    <PageHeader
+      label="A small, growing index"
+      title="Collections"
+      lede="A small, growing index of lines and subjects I want to keep in public view."
+    />
+
+    <section class="section-block" aria-labelledby="notes-title">
+      <header class="section-head">
+        <div>
+          <h2 id="notes-title">Notes worth keeping</h2>
+          <p>Three working principles, for now.</p>
+        </div>
+      </header>
+      <ol class="notes" role="list">
+        {
+          notes.map((note, index) => (
+            <li>
+              <span class="notes__no" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <figure>
+                <blockquote>
+                  <p>“{note.text}”</p>
+                </blockquote>
+                <figcaption>{note.context}</figcaption>
+              </figure>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="section-block" aria-labelledby="subjects-title">
+      <header class="section-head">
+        <div>
+          <h2 id="subjects-title">Recurring subjects</h2>
+          <p>This is a reading trail, not a complete taxonomy.</p>
+        </div>
+      </header>
+      <div class="groups">
+        {
+          groups.map((group) => (
+            <section>
+              <h3>{group.title}</h3>
+              <p>{group.description}</p>
+              <ul>
+                {group.items.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .section-block + .section-block {
+    margin-top: var(--section);
+  }
+
+  .notes {
+    display: grid;
+  }
+
+  .notes li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: var(--space-4);
+    padding-block: var(--space-6);
+    border-bottom: var(--hairline);
+  }
+
+  .notes li:first-child {
+    padding-top: 0;
+  }
+
+  .notes__no {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    color: var(--accent);
+    padding-top: 0.5em;
+  }
+
+  .notes blockquote p {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    max-width: 44rem;
+    text-indent: -0.4em;
+  }
+
+  .notes figcaption {
+    margin-top: var(--space-3);
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+
+  .groups {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .groups section {
+    padding: var(--space-5);
+    border: var(--hairline);
+    border-radius: var(--radius-3);
+    background: var(--bg-raised);
+  }
+
+  .groups h3 {
+    font-size: var(--step-1);
+  }
+
+  .groups p {
+    margin-top: var(--space-1);
+    font-size: var(--step--1);
+    color: var(--fg-3);
+  }
+
+  .groups ul {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding-left: 1.1em;
+    font-family: var(--serif);
+  }
+
+  .groups li::marker {
+    color: var(--accent);
+  }
+
+  @media (min-width: 56rem) {
+    .groups {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,46 @@
+---
+/**
+ * Layout for Markdown pages in src/pages/*.md (contact, privacy).
+ * Frontmatter: `page` is a key in src/data/pages.ts; optional `updated`.
+ */
+import Base from './Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { ogPath, pages, type PageKey } from '../data/pages';
+import { absolute, breadcrumbSchema } from '../lib/seo';
+import { site } from '../site.config';
+
+interface Props {
+  frontmatter: { page: PageKey; lede?: string; schemaType?: string };
+}
+
+const { page: key, lede, schemaType = 'WebPage' } = Astro.props.frontmatter;
+const page = pages[key];
+const schema = [
+  {
+    '@type': schemaType,
+    name: page.title,
+    url: absolute(page.path),
+    description: page.description,
+    author: { '@id': `${site.url}/#person` },
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: page.title, path: page.path },
+  ]),
+];
+---
+
+<Base title={page.title} description={page.description} image={ogPath(key)} schema={schema}>
+  <div class="wrap">
+    <PageHeader title={page.title} lede={lede ?? page.card} />
+    <div class="prose body">
+      <slot />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .body {
+    max-width: var(--measure);
+  }
+</style>

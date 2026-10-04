@@ -1,0 +1,13 @@
+order: 4
+name: TypeID PHP
+category: PHP library
+summary: Type-safe, sortable identifiers for PHP applications, with readable prefixes built on UUIDv7.
+image: ../../assets/projects/typeid-php.webp
+imageAlt: TypeID for PHP cover with UserId and OrderId classes and identifier generation code.
+stack: [PHP 8.4+, Composer, UUIDv7]
+status: Open source
+story: /introducing-typeid-php/
+links:
+  - { label: Source, href: "https://github.com/jewei/typeid-php" }
+schemaType: SoftwareSourceCode
+language: [PHP]

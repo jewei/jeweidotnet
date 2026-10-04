@@ -1,0 +1,173 @@
+---
+/**
+ * The writing ledger: one row per post with number, date, title, summary,
+ * and topics. The whole row is a click target; topic links stay separate.
+ */
+import { formatDate, postUrl, type Post } from '../lib/posts';
+import { topicName, topicUrl } from '../data/topics';
+
+interface Props {
+  posts: Post[];
+  numbers: Map<string, string>;
+  headingLevel?: 2 | 3 | 4;
+  /** Hide this topic from each row (used on the topic's own page). */
+  currentTopic?: string;
+  showTopics?: boolean;
+}
+
+const { posts, numbers, headingLevel = 3, currentTopic, showTopics = true } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3' | 'h4';
+---
+
+<ol class="ledger" role="list">
+  {
+    posts.map((post) => {
+      const topics = post.data.tags.filter((tag) => tag !== currentTopic);
+      return (
+        <li class="ledger__row" data-md-post>
+          <p class="ledger__meta">
+            <span class="ledger__no">№ {numbers.get(post.id)}</span>
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate.short(post.data.pubDate)}</time>
+          </p>
+          <div class="ledger__body">
+            <Heading class="ledger__title">
+              <a href={postUrl(post)}>{post.data.title}</a>
+            </Heading>
+            <p class="ledger__summary">{post.data.description}</p>
+            {showTopics && topics.length > 0 && (
+              <ul class="ledger__topics" role="list" aria-label="Topics">
+                {topics.map((topic) => (
+                  <li>
+                    <a href={topicUrl(topic)}>{topicName(topic)}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {post.data.draft && <span class="ledger__draft label">Draft</span>}
+        </li>
+      );
+    })
+  }
+</ol>
+
+<style>
+  .ledger {
+    border-top: var(--hairline);
+  }
+
+  .ledger__row {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-bottom: var(--hairline);
+  }
+
+  .ledger__meta {
+    display: flex;
+    gap: var(--space-3);
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+    letter-spacing: 0.02em;
+  }
+
+  .ledger__no {
+    color: var(--fg-2);
+  }
+
+  .ledger__title {
+    font-size: var(--step-1);
+    line-height: var(--leading-snug);
+  }
+
+  .ledger__title a {
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent-mark), var(--accent-mark));
+    background-size: 0 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--dur-2) var(--ease);
+  }
+
+  /* Stretch the title link over the row */
+  .ledger__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .ledger__row:hover .ledger__title a,
+  .ledger__title a:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .ledger__title a:focus-visible {
+    outline: none;
+  }
+
+  .ledger__row:has(.ledger__title a:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 4px;
+    border-radius: var(--radius-1);
+  }
+
+  .ledger__summary {
+    margin-top: var(--space-1);
+    max-width: 44rem;
+    color: var(--fg-2);
+    font-size: var(--step--1);
+    line-height: 1.6;
+  }
+
+  .ledger__topics {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin-top: var(--space-2);
+  }
+
+  .ledger__topics a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+    text-decoration: none;
+  }
+
+  .ledger__topics a::before {
+    content: '#';
+    margin-right: 0.15em;
+    color: var(--accent);
+  }
+
+  .ledger__topics a:hover {
+    color: var(--fg);
+  }
+
+  .ledger__draft {
+    position: absolute;
+    top: var(--space-5);
+    right: 0;
+    color: var(--accent);
+  }
+
+  @media (min-width: 48rem) {
+    .ledger__row {
+      grid-template-columns: 11rem minmax(0, 1fr);
+      gap: var(--space-6);
+      padding-block: var(--space-6);
+    }
+
+    .ledger__meta {
+      flex-direction: column;
+      gap: var(--space-1);
+      padding-top: 0.4em;
+    }
+  }
+</style>

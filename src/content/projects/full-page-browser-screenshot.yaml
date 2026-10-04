@@ -1,0 +1,15 @@
+order: 5
+name: Full Page
+category: Browser extension
+summary: A Brave extension that captures a complete web page as one PNG, with a local preview and no image uploads.
+image: ../../assets/content/full-page-cover.webp
+imageAlt: Full Page cover with a screenshot preview of a complete sample page and a Download PNG button.
+stack: [JavaScript, Manifest V3, Brave]
+status: Source available
+story: /full-page-browser-screenshot/
+links:
+  - { label: Source, href: "https://github.com/jewei/browser-screenshot" }
+  - { label: Install locally, href: "https://github.com/jewei/browser-screenshot#install-locally-for-development" }
+schemaType: SoftwareApplication
+language: [JavaScript]
+platform: macOS, Windows, Linux with Brave

@@ -1,0 +1,88 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Icon from '../components/Icon.astro';
+import { ogPath, pages } from '../data/pages';
+import { site } from '../site.config';
+import { getProjects, projectSchema } from '../lib/projects';
+import { absolute, breadcrumbSchema } from '../lib/seo';
+
+const page = pages.projects;
+const projects = await getProjects();
+
+const schema = [
+  {
+    '@type': 'CollectionPage',
+    name: `Projects by ${site.author}`,
+    url: absolute('/projects/'),
+    description: page.description,
+    mainEntity: {
+      '@type': 'ItemList',
+      name: `Software projects by ${site.author}`,
+      numberOfItems: projects.length,
+      itemListElement: projects.map((project, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: projectSchema(project),
+      })),
+    },
+  },
+  breadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Projects', path: '/projects/' },
+  ]),
+];
+---
+
+<Base title={page.title} description={page.description} image={ogPath('projects')} schema={schema}>
+  <div class="wrap">
+    <PageHeader
+      label={`${projects.length} projects`}
+      title="Projects"
+      lede="Native tools, browser extensions, edge infrastructure, and PHP libraries. Each one solves a problem that I wanted out of my way."
+    >
+      <p class="more">
+        <a class="arrow-link" href={site.profiles.github} data-external>
+          <span>More on GitHub</span><Icon name="arrow-up-right" />
+        </a>
+      </p>
+    </PageHeader>
+
+    <h2 class="sr-only">All projects</h2>
+    <div class="list">
+      {projects.map((project, index) => <ProjectCard project={project} variant="full" eager={index === 0} />)}
+    </div>
+
+    <p class="note">
+      The source links show the implementation. The stories explain the decisions, trade-offs, and lessons that
+      survived the build.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .more {
+    margin-top: var(--space-4);
+  }
+
+  .list {
+    display: grid;
+    gap: var(--space-9);
+    padding-top: var(--space-7);
+    border-top: 1px solid var(--fg);
+  }
+
+  .list > :global(*) + :global(*) {
+    padding-top: var(--space-9);
+    border-top: var(--hairline);
+  }
+
+  .note {
+    margin-top: var(--space-9);
+    max-width: 38rem;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    color: var(--fg-2);
+  }
+</style>

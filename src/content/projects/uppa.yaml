@@ -1,0 +1,14 @@
+order: 3
+name: Uppa
+category: Edge infrastructure
+summary: A self-hosted uptime monitor and public status page that runs on Cloudflare Workers.
+image: ../../assets/projects/uppa.webp
+imageAlt: Uppa cover with a green uptime chart, monitor results, and recent incidents.
+stack: [Cloudflare Workers, D1, Bun CLI]
+status: Open source · Self-hosted
+story: /uppa/
+links:
+  - { label: Source, href: "https://github.com/jewei/uppa" }
+  - { label: Live demo, href: "https://edge-uptime.jewei-mak.workers.dev/" }
+schemaType: SoftwareSourceCode
+language: [TypeScript]

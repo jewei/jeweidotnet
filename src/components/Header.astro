@@ -1,0 +1,182 @@
+---
+import Icon from './Icon.astro';
+import Wordmark from './Wordmark.astro';
+import { primaryNav } from '../site.config';
+
+const path = Astro.url.pathname;
+interface Props {
+  isPost?: boolean;
+}
+
+const { isPost = false } = Astro.props;
+const active = (match: readonly string[]) => match.some((prefix) => path.startsWith(prefix));
+---
+
+<header class="header">
+  <div class="wrap header__inner">
+    <Wordmark />
+    <nav class="header__nav" aria-label="Main">
+      <ul role="list">
+        {
+          primaryNav.map((item) => {
+            const current = active(item.match) || (isPost && item.href === '/blog/');
+            return (
+              <li>
+                <a href={item.href} aria-current={current ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+    <button class="header__theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch theme">
+      <Icon name="sun" class="icon-sun" />
+      <Icon name="moon" class="icon-moon" />
+    </button>
+  </div>
+</header>
+
+<style>
+  .header {
+    border-bottom: var(--hairline);
+  }
+
+  .header__inner {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'mark theme'
+      'nav nav';
+    align-items: center;
+    column-gap: var(--space-4);
+    padding-top: var(--space-3);
+  }
+
+  .header__inner > :global(.wordmark) {
+    grid-area: mark;
+  }
+
+  .header__nav {
+    grid-area: nav;
+    margin-inline: calc(var(--space-3) * -1);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .header__nav ul {
+    display: flex;
+    gap: var(--space-1);
+  }
+
+  .header__nav a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-inline: var(--space-3);
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--fg-2);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--dur-1) var(--ease);
+  }
+
+  .header__nav a:hover {
+    color: var(--fg);
+  }
+
+  .header__nav a[aria-current='page'] {
+    color: var(--fg);
+  }
+
+  .header__nav a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    inset-inline: var(--space-3);
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent-mark);
+  }
+
+  .header__theme {
+    grid-area: theme;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-right: -10px;
+    border-radius: 50%;
+    color: var(--fg-2);
+    transition:
+      color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease);
+  }
+
+  .header__theme:hover {
+    color: var(--fg);
+    background: var(--bg-raised);
+  }
+
+  .header__theme svg {
+    grid-area: 1 / 1;
+    width: 20px;
+    height: 20px;
+    transition:
+      opacity var(--dur-2) var(--ease),
+      transform var(--dur-2) var(--ease);
+  }
+
+  /* Show the icon of the theme you would switch to */
+  .icon-moon {
+    opacity: 1;
+  }
+
+  .icon-sun {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.6);
+  }
+
+  :global(:root[data-theme='dark']) .icon-moon {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.6);
+  }
+
+  :global(:root[data-theme='dark']) .icon-sun {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .icon-moon {
+      opacity: 0;
+      transform: rotate(45deg) scale(0.6);
+    }
+
+    :global(:root:not([data-theme='light'])) .icon-sun {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (min-width: 44rem) {
+    .header__inner {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: 'mark nav theme';
+      min-height: 4.5rem;
+      padding-top: 0;
+    }
+
+    .header__nav {
+      justify-self: end;
+      margin-inline: 0;
+      overflow: visible;
+    }
+
+    .header__nav a[aria-current='page']::after {
+      bottom: calc((4.5rem - 44px) / -2 - 1px);
+    }
+  }
+</style>

@@ -1,0 +1,79 @@
+---
+/** Topic filter links for /blog/ and /blog/<topic>/. */
+import { topicName, topicUrl } from '../data/topics';
+
+interface Props {
+  topics: [string, number][];
+  current?: string;
+  total: number;
+}
+const { topics, current, total } = Astro.props;
+---
+
+<nav class="topic-nav" aria-label="Topics">
+  <ul role="list">
+    <li>
+      <a href="/blog/" aria-current={current ? undefined : 'page'}>All <span>{total}</span></a>
+    </li>
+    {
+      topics.map(([topic, count]) => (
+        <li>
+          <a href={topicUrl(topic)} aria-current={topic === current ? 'page' : undefined}>
+            {topicName(topic)} <span>{count}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .topic-nav {
+    margin-bottom: var(--space-7);
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 36px;
+    padding-inline: var(--space-3);
+    border: var(--hairline);
+    border-radius: 999px;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--fg-2);
+    text-decoration: none;
+    transition:
+      border-color var(--dur-1) var(--ease),
+      color var(--dur-1) var(--ease);
+  }
+
+  a:hover {
+    border-color: var(--line-strong);
+    color: var(--fg);
+  }
+
+  a span {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+  }
+
+  a[aria-current='page'] {
+    border-color: var(--fg);
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  a[aria-current='page'] span {
+    color: var(--bg);
+    opacity: 0.75;
+  }
+</style>
