@@ -5,7 +5,6 @@ image: ../../assets/content/claude-meter-v2.jpg
 imageAlt: "Claude Meter 2.0 social card with energy levels for personal, team, and family Claude accounts."
 pubDate: "2026-06-26T00:00:00.000Z"
 tags: ["ai", "macos", "swift"]
-pinned: true
 ---
 
 When we introduced **Claude Meter**, it had one job: never let a _rate limit_ blindside you again. It put your Claude usage up in the menu bar so you could stay in flow instead of digging through dashboards. That job hasn't changed.

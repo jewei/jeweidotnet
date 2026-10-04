@@ -1,0 +1,115 @@
+---
+/**
+ * A text index of projects, one row each, in the same grid as the writing
+ * ledger: category on the left, name, summary, and stack on the right.
+ * The whole row links to the project's story.
+ */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projects: CollectionEntry<'projects'>[];
+}
+
+const { projects } = Astro.props;
+---
+
+<ol class="works" role="list">
+  {
+    projects.map(({ data: p }) => (
+      <li class="work">
+        <p class="work__category">{p.category}</p>
+        <div>
+          <h3 class="work__name">
+            <a href={p.story}>{p.name}</a>
+          </h3>
+          <p class="work__summary">{p.summary}</p>
+          <p class="work__stack">{p.stack.join(' · ')}</p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .works {
+    border-top: var(--hairline);
+  }
+
+  .work {
+    position: relative;
+    display: grid;
+    gap: var(--space-2);
+    padding-block: var(--space-5);
+    border-bottom: var(--hairline);
+  }
+
+  .work__category {
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    letter-spacing: 0.02em;
+    color: var(--fg-3);
+  }
+
+  .work__name {
+    font-size: var(--step-1);
+    line-height: var(--leading-snug);
+  }
+
+  .work__name a {
+    text-decoration: none;
+    background-image: linear-gradient(var(--accent-mark), var(--accent-mark));
+    background-size: 0 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size var(--dur-2) var(--ease);
+  }
+
+  /* Stretch the name link over the row */
+  .work__name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .work:hover .work__name a,
+  .work__name a:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .work__name a:focus-visible {
+    outline: none;
+  }
+
+  .work:has(.work__name a:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 4px;
+    border-radius: var(--radius-1);
+  }
+
+  .work__summary {
+    margin-top: var(--space-1);
+    max-width: 44rem;
+    font-size: var(--step--1);
+    line-height: 1.6;
+    color: var(--fg-2);
+  }
+
+  .work__stack {
+    margin-top: var(--space-2);
+    font-family: var(--mono);
+    font-size: var(--step--2);
+    color: var(--fg-3);
+  }
+
+  @media (min-width: 48rem) {
+    .work {
+      grid-template-columns: 9rem minmax(0, 1fr);
+      gap: var(--space-6);
+      padding-block: var(--space-6);
+    }
+
+    .work__category {
+      padding-top: 0.4em;
+    }
+  }
+</style>
