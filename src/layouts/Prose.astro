@@ -8,7 +8,7 @@ import PageHeader from '../components/PageHeader.astro';
 import Icon from '../components/Icon.astro';
 import { ogPath, pages, type PageKey } from '../data/pages';
 import { absolute, breadcrumbSchema } from '../lib/seo';
-import { site } from '../site.config';
+import { personId, site } from '../site.config';
 
 interface Props {
   frontmatter: { page: PageKey; lede?: string; schemaType?: string };
@@ -22,7 +22,7 @@ const schema = [
     name: page.title,
     url: absolute(page.path),
     description: page.description,
-    author: { '@id': `${site.url}/#person` },
+    author: { '@id': personId },
   },
   breadcrumbSchema([
     { name: 'Home', path: '/' },

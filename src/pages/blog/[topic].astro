@@ -8,7 +8,7 @@ import { ogPath } from '../../data/pages';
 import { topics, topicName } from '../../data/topics';
 import { getPosts, postNumbers, postUrl, topicCounts, type Post } from '../../lib/posts';
 import { absolute, breadcrumbSchema } from '../../lib/seo';
-import { site } from '../../site.config';
+import { personId, site } from '../../site.config';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -36,7 +36,7 @@ const schema = [
     url: absolute(`/blog/${topic}/`),
     description,
     isPartOf: { '@id': `${absolute('/blog/')}#blog` },
-    author: { '@id': `${site.url}/#person` },
+    author: { '@id': personId },
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: tagged.length,

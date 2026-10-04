@@ -5,7 +5,7 @@ import Icon from '../components/Icon.astro';
 import PostList from '../components/PostList.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import portrait from '../assets/jewei.jpg';
-import { site } from '../site.config';
+import { personId, site } from '../site.config';
 import { ogPath, pages } from '../data/pages';
 import { topicName, topicUrl } from '../data/topics';
 import { getPosts, postNumbers, topicCounts } from '../lib/posts';
@@ -40,7 +40,7 @@ const proof = [
       '@id': `${absolute('/')}#page`,
       url: absolute('/'),
       name: site.homeTitle,
-      mainEntity: { '@id': `${absolute('/')}#person` },
+      mainEntity: { '@id': personId },
       primaryImageOfPage: absolute(portrait.src),
     },
   ]}

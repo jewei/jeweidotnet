@@ -6,7 +6,7 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { ogPath, pages } from '../data/pages';
-import { site } from '../site.config';
+import { displayUrl, site } from '../site.config';
 import { coreStrengths, education, experience, resumeMeta, resumePdfUrl, techStack } from '../data/resume';
 import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
@@ -59,7 +59,7 @@ const schema = [
         </li>
       </ul>
       <p class="resume__print-contact">
-        {site.email} · github.com/jewei · jewei.net
+        {site.email} · {displayUrl(site.profiles.github)} · {displayUrl(site.url)}
       </p>
     </header>
 
@@ -153,8 +153,8 @@ const schema = [
       <p>I am open to senior backend roles, consulting, and focused product engineering work.</p>
       <p>
         <a class="link" href={`mailto:${site.email}`}>{site.email}</a> ·
-        <a class="link" href={site.profiles.github}>github.com/jewei</a> ·
-        <a class="link" href="/">jewei.net</a>
+        <a class="link" href={site.profiles.github}>{displayUrl(site.profiles.github)}</a> ·
+        <a class="link" href="/">{displayUrl(site.url)}</a>
       </p>
     </footer>
   </article>

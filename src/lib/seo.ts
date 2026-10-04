@@ -1,4 +1,4 @@
-import { personId, site, websiteId } from '../site.config';
+import { displayUrl, personId, site, websiteId } from '../site.config';
 
 /** Absolute URL on the canonical domain. */
 export function absolute(path: string): string {
@@ -36,7 +36,7 @@ export function websiteSchema(): Json {
     '@type': 'WebSite',
     '@id': websiteId,
     name: site.name,
-    alternateName: [site.author, 'jewei.net'],
+    alternateName: [site.author, displayUrl(site.url)],
     url: absolute('/'),
     description: site.description,
     inLanguage: 'en',

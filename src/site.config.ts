@@ -44,6 +44,8 @@ export const site = {
 } as const;
 
 export const personId = `${site.url}/#person`;
+/** A URL as people write it, without the scheme: "jewei.net", "github.com/jewei". */
+export const displayUrl = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
 export const websiteId = `${site.url}/#website`;
 
 /** Primary navigation, in display order. `match` marks the active item. */

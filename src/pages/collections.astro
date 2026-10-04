@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
 import { ogPath, pages } from '../data/pages';
-import { site } from '../site.config';
+import { personId } from '../site.config';
 import { absolute, breadcrumbSchema } from '../lib/seo';
 
 const page = pages.collections;
@@ -46,7 +46,7 @@ const schema = [
     name: 'Collections',
     url: absolute('/collections/'),
     description: page.description,
-    author: { '@id': `${site.url}/#person` },
+    author: { '@id': personId },
   },
   breadcrumbSchema([
     { name: 'Home', path: '/' },
@@ -60,7 +60,7 @@ const schema = [
   <div class="wrap">
     <PageHeader
       label="A small, growing index"
-      title="Collections"
+      title={page.title}
       lede="A small, growing index of lines and subjects I want to keep in public view."
     />
 
