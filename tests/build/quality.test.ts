@@ -21,6 +21,15 @@ describe.each(htmlPages)('%s', (_route, doc) => {
     }
   });
 
+  test('no accessible name on an element whose role cannot have one', () => {
+    // ARIA prohibits naming paragraph, generic, and inline text roles; screen readers ignore it.
+    const unnamed = 'p, span, div, em, strong, b, i, small, code, sub, sup, del, ins';
+    const named = Array.from(doc.querySelectorAll('[aria-label], [aria-labelledby]')).filter(
+      (el) => el.matches(unnamed) && !el.hasAttribute('role'),
+    );
+    expect(named.map((el) => el.outerHTML.slice(0, 120))).toEqual([]);
+  });
+
   test('ids are unique', () => {
     const ids = Array.from(doc.querySelectorAll('[id]'), (el) => el.id);
     expect(ids.filter((id, index) => ids.indexOf(id) !== index)).toEqual([]);
