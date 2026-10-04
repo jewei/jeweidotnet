@@ -20,8 +20,24 @@ const out = path.join(root, '.shots');
 const args = process.argv.slice(2);
 const flag = (name: string) => args.find((arg) => arg.startsWith(`--${name}=`))?.split('=')[1];
 const routes = args.filter((arg) => arg.startsWith('/'));
-const widths = (flag('widths') ?? '375,768,1440').split(',').map(Number);
-const themes = (flag('theme') ?? 'light,dark').split(',') as ('light' | 'dark')[];
+/** A comma-separated flag, each item parsed. Stops the script on a bad item. */
+function list<T>(name: string, fallback: string, parse: (item: string) => T | undefined): T[] {
+  return (flag(name) ?? fallback).split(',').map((item) => {
+    const value = parse(item);
+    if (value === undefined) {
+      console.error(`shots: bad --${name} value: ${item}`);
+      process.exit(1);
+    }
+    return value;
+  });
+}
+const widths = list('widths', '375,768,1440', (item) => {
+  const width = Number(item);
+  return Number.isInteger(width) && width > 0 ? width : undefined;
+});
+const themes = list('theme', 'light,dark', (item) =>
+  item === 'light' || item === 'dark' ? item : undefined,
+);
 const fullPage = args.includes('--full');
 
 const defaultRoutes = [
