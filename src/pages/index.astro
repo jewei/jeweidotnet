@@ -164,6 +164,7 @@ const proof = [
 <style>
   .hero {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-7);
     padding-block: var(--space-8) var(--space-7);
   }
@@ -237,10 +238,10 @@ const proof = [
     margin-left: var(--space-2);
   }
 
+  /* Narrow screens: the buttons share a row when they fit and stack when they do not */
   @media (max-width: 30rem) {
-    .hero__actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .hero__actions li {
+      flex: 1 1 auto;
     }
 
     .hero__actions .button {
@@ -249,7 +250,7 @@ const proof = [
     }
 
     .hero__actions li:last-child {
-      grid-column: 1 / -1;
+      flex-basis: 100%;
       margin-left: 0;
     }
   }
