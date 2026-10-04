@@ -2,9 +2,9 @@ export const resumePdfUrl = '/content/files/2026/09/jewei-mak-resume-2026.pdf';
 
 export const resumeMeta = {
   title: 'Résumé',
-  headline: 'Senior backend engineer. Laravel specialist. Scale-tested.',
+  headline: 'Backend systems, APIs, and payments. Fifteen years of PHP and Laravel in production.',
   summary: [
-    'Senior Laravel/PHP engineer with 15+ years building and scaling backend systems, APIs, and payment integrations for products serving 1,000,000+ users across SaaS, edtech, and e-commerce.',
+    'Senior Laravel/PHP engineer with 15+ years building and scaling backend systems, APIs, and payment integrations for products serving 1,000,000+ users across SaaS, edtech, and e-commerce. Sets architecture and code-quality standards, mentors engineers, and works with AI coding agents day to day.',
   ],
 };
 
@@ -15,7 +15,7 @@ export const coreStrengths = [
   'CI/CD, deployment workflows, observability, and production operations',
   'Cloud and platform work across Cloudflare, AWS, OpenShift, Docker, and Linux servers',
   'Technical mentoring, code review, engineering standards, and delivery planning',
-  'Agentic AI-assisted engineering workflows with harness agents',
+  'AI-assisted engineering with coding agents such as Claude Code and Codex',
 ];
 
 export const education = [
@@ -68,12 +68,12 @@ export const experience: ResumeRole[] = [
     companyUrl: 'https://oneone.com/?ref=jewei.net',
     period: '2024 – Present',
     highlights: [
-      'Engineered and maintained a Laravel/PostgreSQL platform serving 1,000,000+ users and processing 50,000+ monthly transactions',
+      'Developed and maintained a Laravel and PostgreSQL platform serving 1,000,000+ users and 50,000+ monthly transactions',
       'Integrated 10+ payment providers and 70+ payment channels across Asia, expanding regional checkout coverage',
-      'Elevated backend engineering standards by defining Laravel architecture patterns, code-quality practices, and implementation guidance as the team Laravel SME',
-      'Co-architected 5 microservices, enabling 10x scalability while improving modularity, reliability, and maintainability',
+      'Built fraud prevention against bot registrations and promotional campaign abuse using behavioral signals, rate limits, anomaly detection, and risk scoring',
+      'Co-architected 5 microservices, enabling 10x scalability while improving modularity and reliability',
+      'Defined Laravel architecture patterns, code-quality practices, and implementation guidance as Laravel subject-matter expert for the team',
       'Applied agentic AI coding workflows to accelerate development, testing, debugging, and refactoring',
-      'Built fraud prevention systems mitigating bot registrations and promotional campaign abuse using behavioral signals, rate limits, anomaly detection, and risk scoring',
     ],
     stack: 'Laravel, Filament, Livewire, PostgreSQL, Claude Code, Codex',
   },
@@ -83,10 +83,10 @@ export const experience: ResumeRole[] = [
     companyUrl: '',
     period: '2023 – 2024',
     highlights: [
-      'Refactored and migrated 2 legacy Laravel applications into a more maintainable foundation',
-      'Introduced CI/CD and error tracking, increasing deploy frequency from weekly to daily while improving production visibility and incident response',
-      'Established coding standards and streamlined Git workflows, including the repository migration from Bitbucket to GitHub',
       'Drove a 3-month-delayed project to an on-time soft launch by standing up the AWS production environment, sharpening delivery focus, and mentoring the team',
+      'Introduced CI/CD and error tracking, increasing deploy frequency from weekly to daily while improving production visibility and incident response',
+      'Refactored and migrated 2 legacy Laravel applications into a more maintainable foundation',
+      'Established coding standards and streamlined Git workflows, including the repository migration from Bitbucket to GitHub',
     ],
     stack: 'Laravel, MySQL, Livewire, Filament, PHPStan, Pest',
     tools: 'GitHub, Forge, Flare, Bagisto, AWS',
