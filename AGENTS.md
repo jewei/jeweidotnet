@@ -52,7 +52,7 @@ src/
   styles/               tokens.css, base.css, prose.css
 public/                 _headers, theme.js, site.js, icons, /content files (PDF, legacy images)
 functions/_middleware.js  Markdown negotiation, redirects, security headers
-scripts/                build-markdown.ts, screenshots.ts, optimize-og-image.ts
+scripts/                build-markdown.ts (+ markdown.ts rules), screenshots.ts (+ overflow.ts), optimize-og-image.ts
 tests/unit/             no-build tests;   tests/build/  needs dist/
 docs/                   ARCHITECTURE, DESIGN, CONTENT, SEO, REVIEW
 ```
