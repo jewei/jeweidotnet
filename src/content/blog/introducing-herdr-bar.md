@@ -3,7 +3,7 @@ title: "Herdr Bar: agent status in the macOS menu bar"
 description: "Herdr Bar shows which coding agents are running, need input, or have finished, and opens their terminal panes from the macOS menu bar."
 pubDate: "2026-10-08T00:00:00.000+08:00"
 tags: ["macos", "ai"]
-draft: true
+draft: false
 ---
 
 When several coding agents are working in different terminal panes, checking each one becomes another task. Herdr Bar puts their status in the macOS menu bar. Open the panel, choose an agent, and return to its pane.
