@@ -2,6 +2,8 @@
 
 Use this for every visual or content change. Capture with `vp run shots -- <routes> --widths=320,768,1440 --full` (light and dark by default) and look at every image. If any line below fails, the change is not done.
 
+The screenshot script loads and decodes all images before capture. Full-page screenshots alone do not trigger every lazy image below the viewport; missing covers in a capture can otherwise hide image problems.
+
 ## Layout
 
 - [ ] No horizontal overflow at 320px (the script and browser tests report it).

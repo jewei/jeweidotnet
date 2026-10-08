@@ -81,6 +81,15 @@ for (const theme of themes) {
       await page.setViewportSize({ width, height: width < 600 ? 812 : 900 });
       await page.goto(`http://localhost:${server.port}${route}`, { waitUntil: 'networkidle' });
       await page.evaluate(() => document.fonts.ready);
+      // Full-page captures do not scroll far enough to load every lazy image.
+      await page.evaluate(async () => {
+        await Promise.all(
+          Array.from(document.images, async (image) => {
+            image.loading = 'eager';
+            await image.decode();
+          }),
+        );
+      });
       for (const offender of await findOverflow(page)) {
         overflow++;
         console.warn(`overflow: ${route} @${width} (${theme}) ${offender}`);
