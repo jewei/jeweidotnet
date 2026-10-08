@@ -1,4 +1,4 @@
-order: 1
+order: 4
 name: Claude Meter
 category: macOS utility
 summary: A local-first menu bar app that shows how much Claude usage remains across each account.

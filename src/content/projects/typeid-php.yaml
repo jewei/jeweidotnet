@@ -1,4 +1,4 @@
-order: 4
+order: 6
 name: TypeID PHP
 category: PHP library
 summary: Type-safe, sortable identifiers for PHP applications, with readable prefixes built on UUIDv7.

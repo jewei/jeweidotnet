@@ -4,11 +4,11 @@
  * and every project link. The home page uses ProjectList instead.
  */
 import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
+import type { Project } from '../lib/projects';
 import Icon from './Icon.astro';
 
 interface Props {
-  project: CollectionEntry<'projects'>;
+  project: Project;
   headingLevel?: 2 | 3;
   eager?: boolean;
 }
@@ -36,7 +36,7 @@ const Heading = `h${headingLevel}` as const;
   <div class="project__body">
     <p class="project__meta label">{p.category} <span aria-hidden="true">·</span> {p.status}</p>
     <Heading class="project__name">
-      <a href={p.story}>{p.name}</a>
+      <a href={project.primaryUrl} data-external={!project.storyUrl || undefined}>{p.name}</a>
     </Heading>
     <p class="project__summary">{p.summary}</p>
 
@@ -59,12 +59,16 @@ const Heading = `h${headingLevel}` as const;
       </div>
     </dl>
     <ul class="project__links" role="list">
-      <li>
-        <a class="arrow-link" href={p.story}>
-          <span>Write-up</span>
-          <Icon name="arrow-right" />
-        </a>
-      </li>
+      {
+        project.storyUrl && (
+          <li>
+            <a class="arrow-link" href={project.storyUrl}>
+              <span>Write-up</span>
+              <Icon name="arrow-right" />
+            </a>
+          </li>
+        )
+      }
       {
         p.links.map((link) => (
           <li>
