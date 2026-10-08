@@ -1,0 +1,15 @@
+order: 1
+name: Jerd
+category: Local PHP development
+summary: A native macOS app for local PHP sites over HTTPS, with per-project PHP versions, databases, mail, and S3 storage.
+image: ../../assets/content/jerd-dashboard.webp
+imageAlt: Jerd dashboard showing Sites, Databases, Storage, Mail, and the default PHP runtime.
+stack: [Swift, PHP, Caddy]
+status: Source available
+story: /introducing-jerd/
+links:
+  - { label: Source, href: "https://github.com/jewei/jerd" }
+  - { label: Download, href: "https://github.com/jewei/jerd/releases/latest" }
+schemaType: SoftwareApplication
+language: [Swift]
+platform: macOS 14 or later on Apple silicon

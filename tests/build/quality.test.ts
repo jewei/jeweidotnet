@@ -4,7 +4,38 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, test } from 'vite-plus/test';
-import { attr, dist, exists, htmlPages, read, resolveLocal, root } from './helpers';
+import { attr, dist, exists, htmlPages, page, read, resolveLocal, root } from './helpers';
+
+test('projects link to a built story or their source repository', () => {
+  for (const project of Array.from(page('/projects/').querySelectorAll('article.project'))) {
+    const links = Array.from(project.querySelectorAll('.project__links a'));
+    const story = links.find((link) => link.textContent?.trim() === 'Write-up');
+    const source = links.find((link) => link.textContent?.trim() === 'Source');
+    const target = story ?? source;
+    expect(target, project.id).toBeDefined();
+    expect(project.querySelector('.project__name a')?.getAttribute('href')).toBe(
+      target?.getAttribute('href'),
+    );
+    if (story) expect(resolveLocal(attr(story, 'href')), project.id).toBeDefined();
+  }
+});
+
+test('draft posts are absent from production pages and feeds', () => {
+  const blog = path.join(root, 'src/content/blog');
+  for (const file of fs.readdirSync(blog).filter((file) => file.endsWith('.md'))) {
+    if (!/^draft:\s*true\s*$/m.test(fs.readFileSync(path.join(blog, file), 'utf8'))) continue;
+    const url = `/${file.replace(/\.md$/, '')}/`;
+    expect(resolveLocal(url), url).toBeUndefined();
+    for (const [route, doc] of htmlPages) {
+      expect(doc.querySelector(`a[href="${url}"]`), route).toBeNull();
+      for (const script of Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))) {
+        expect(script.textContent, route).not.toContain(url);
+      }
+    }
+    expect(read('rss.xml')).not.toContain(url);
+    expect(read('sitemap-0.xml')).not.toContain(url);
+  }
+});
 
 describe.each(htmlPages)('%s', (_route, doc) => {
   test('has lang, a skip link, and one main landmark', () => {

@@ -2,12 +2,12 @@
 /**
  * A text index of projects, one row each, in the same grid as the writing
  * ledger: category on the left, name, summary, and stack on the right.
- * The whole row links to the project's story.
+ * The whole row links to the visible story, or the source while it is a draft.
  */
-import type { CollectionEntry } from 'astro:content';
+import type { Project } from '../lib/projects';
 
 interface Props {
-  projects: CollectionEntry<'projects'>[];
+  projects: Project[];
 }
 
 const { projects } = Astro.props;
@@ -15,12 +15,12 @@ const { projects } = Astro.props;
 
 <ol class="works" role="list">
   {
-    projects.map(({ data: p }) => (
+    projects.map(({ data: p, primaryUrl, storyUrl }) => (
       <li class="work">
         <p class="work__category">{p.category}</p>
         <div>
           <h3 class="work__name">
-            <a href={p.story}>{p.name}</a>
+            <a href={primaryUrl} data-external={!storyUrl || undefined}>{p.name}</a>
           </h3>
           <p class="work__summary">{p.summary}</p>
           <p class="work__stack">{p.stack.join(' · ')}</p>

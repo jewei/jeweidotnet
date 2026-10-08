@@ -1,4 +1,4 @@
-order: 3
+order: 5
 name: Uppa
 category: Edge infrastructure
 summary: A self-hosted uptime monitor and public status page that runs on Cloudflare Workers.

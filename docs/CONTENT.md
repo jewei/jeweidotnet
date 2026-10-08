@@ -38,15 +38,15 @@ Tags must be keys in `src/data/topics.ts`. Each topic has a page at `/blog/<key>
 
 One YAML file per project: `src/content/projects/<id>.yaml`. The filename is the anchor on `/projects/`.
 
-| Field               | Rule                                                                                                  |
-| ------------------- | ----------------------------------------------------------------------------------------------------- |
-| `order`             | Unique positive integer. Lower shows first. The first four `featured` projects show on the home page. |
-| `summary`           | 40–160 characters. One sentence about what it does.                                                   |
-| `image`, `imageAlt` | 16:10 cover in `src/assets/projects/` or `src/assets/content/`                                        |
-| `story`             | Root-relative URL of the post about it, for example `/uppa/`. Must exist.                             |
-| `links`             | Labelled absolute URLs. `Source` becomes `codeRepository` / `sameAs` in structured data.              |
-| `schemaType`        | `SoftwareApplication` (apps, extensions) or `SoftwareSourceCode` (libraries, self-hosted code)        |
-| `platform`          | Operating system line for apps                                                                        |
+| Field               | Rule                                                                                                                                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `order`             | Unique positive integer. Lower shows first. The first four `featured` projects show on the home page.                                                                                    |
+| `summary`           | 40–160 characters. One sentence about what it does.                                                                                                                                      |
+| `image`, `imageAlt` | 16:10 cover in `src/assets/projects/` or `src/assets/content/`                                                                                                                           |
+| `story`             | Root-relative URL of the post about it, for example `/uppa/`. Must exist. Draft stories link to the project's Source instead in production; the Write-up link appears after publication. |
+| `links`             | Labelled absolute URLs. `Source` becomes `codeRepository` / `sameAs` in structured data.                                                                                                 |
+| `schemaType`        | `SoftwareApplication` (apps, extensions) or `SoftwareSourceCode` (libraries, self-hosted code)                                                                                           |
+| `platform`          | Operating system line for apps                                                                                                                                                           |
 
 ## Fixed pages
 

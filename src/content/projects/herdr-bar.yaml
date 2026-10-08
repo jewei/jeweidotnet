@@ -1,0 +1,15 @@
+order: 3
+name: Herdr Bar
+category: Agent status
+summary: A native macOS menu bar app that shows which Herdr agents are running, need input, or have finished, with links to their terminal panes.
+image: ../../assets/projects/herdr-bar.webp
+imageAlt: Herdr Bar panel listing six agents with running, idle, and done states.
+stack: [Swift, SwiftUI, AppKit]
+status: Source available
+story: /introducing-herdr-bar/
+links:
+  - { label: Source, href: "https://github.com/jewei/herdr-bar" }
+  - { label: Download, href: "https://github.com/jewei/herdr-bar/releases/latest" }
+schemaType: SoftwareApplication
+language: [Swift]
+platform: macOS 14 or later; release download for Apple silicon

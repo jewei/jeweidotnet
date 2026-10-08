@@ -1,0 +1,15 @@
+order: 2
+name: TinyDash
+category: Desktop launcher
+summary: A keyboard-first launcher for apps, files, clipboard history, and quick answers, with a dashboard of small widgets.
+image: ../../assets/content/tinydash-launcher.webp
+imageAlt: TinyDash launcher with app results beside clipboard, clock, weather, and focus timer widgets.
+stack: [Rust, Tauri, SolidJS]
+status: Open source · MIT
+story: /introducing-tinydash/
+links:
+  - { label: Source, href: "https://github.com/jewei/tinydash" }
+  - { label: Download, href: "https://github.com/jewei/tinydash/releases/latest" }
+schemaType: SoftwareApplication
+language: [Rust, TypeScript]
+platform: macOS, Windows, Linux
