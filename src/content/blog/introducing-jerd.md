@@ -3,7 +3,7 @@ title: "Meet Jerd: Local PHP Development, Native on macOS"
 description: "Jerd is a native macOS app that serves your .test sites over HTTPS, gives each project its own PHP version, and runs databases, mail, and S3 storage."
 pubDate: "2026-10-08T00:00:00.000+08:00"
 tags: ["php", "macos"]
-draft: true
+draft: false
 ---
 
 Jerd is a native macOS app for local PHP development. It serves my projects at `https://<name>.test`, runs the databases and services they need, and stays out of the way while I work.
