@@ -89,7 +89,7 @@ test('articles publish BlogPosting and BreadcrumbList data', () => {
   const doc = page('/database-primary-key/');
   const graph = jsonLd(doc)[0]['@graph'];
   const article = graph.find((node) => node['@type'] === 'BlogPosting');
-  expect(article?.headline).toBe('Database Primary Key');
+  expect(article?.headline).toBe('Database Primary Key: Integer vs UUID vs NanoID');
   expect(article?.datePublished).toBeTruthy();
   expect(article?.dateModified).toBeTruthy();
   expect(graph.some((node) => node['@type'] === 'BreadcrumbList')).toBe(true);

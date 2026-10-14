@@ -1,6 +1,6 @@
 ---
-title: "Introducing TypeID PHP"
-description: "Type-Safe, Sortable Identifiers for Modern Applications"
+title: "TypeID PHP: Type-Safe, Sortable IDs for PHP"
+description: "A PHP library for TypeIDs: UUIDv7 with a type prefix, like user_01h455vb4pex5vsknk084sn02q. Sortable, URL-safe, and one composer require away."
 image: ../../assets/projects/typeid-php.webp
 imageAlt: "TypeID for PHP cover with UserId and OrderId classes and identifier generation code."
 pubDate: "2025-04-26T10:53:29.000Z"

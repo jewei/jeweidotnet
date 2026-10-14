@@ -1,6 +1,6 @@
 ---
 title: "Meet Claude Meter — Know Your Claude Usage at a Glance"
-description: "I wanted to see my Claude Code usage before hitting the wall. So I built a macOS menu bar app — and learned that picking the right data source matters more than the parser."
+description: "I wanted to see my Claude Code usage before hitting the wall, so I built a macOS menu bar app. Picking the data source mattered more than the parser."
 image: ../../assets/content/claude-meter.jpg
 imageAlt: "Claude Meter social card with current-session and weekly Claude usage meters."
 pubDate: "2026-06-24T00:00:00.000Z"
