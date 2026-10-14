@@ -1,0 +1,16 @@
+order: 9
+name: Bopop
+category: Launcher
+summary: A keyboard-first macOS launcher for apps, files, clipboard history, and quick tools. TinyDash replaces it on macOS, Windows, and Linux.
+image: ../../assets/projects/bopop.webp
+imageAlt: Bopop launcher palette with tabs for apps, files, clipboard, emoji, and translation, and a list of apps.
+stack: [Swift, SwiftUI, AppKit]
+status: Succeeded by TinyDash
+story: /bopop-press-type-go/
+links:
+  - { label: Source, href: "https://github.com/jewei/bopop" }
+  - { label: Download, href: "https://github.com/jewei/bopop/releases/latest" }
+schemaType: SoftwareApplication
+language: [Swift]
+platform: macOS 15 or later
+featured: false
