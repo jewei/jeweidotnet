@@ -1,0 +1,13 @@
+order: 8
+name: Laravel Skeleton
+category: Laravel starter kit
+summary: A Laravel starter kit with Livewire Flux and Tailwind CSS, plus strict Eloquent defaults, Pest architecture tests, Pint, and Rector.
+image: ../../assets/projects/laravel-skeleton.webp
+imageAlt: Laravel Skeleton cover with the composer create-project command and a list of strict defaults.
+stack: [PHP 8.3+, Laravel 12, Livewire Flux, Tailwind CSS 4, Pest]
+status: Open source
+story: /laravel-skeleton/
+links:
+  - { label: Source, href: "https://github.com/jewei/laravel-skeleton" }
+schemaType: SoftwareSourceCode
+language: [PHP]
