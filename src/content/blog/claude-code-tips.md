@@ -247,10 +247,10 @@ Long tasks hit limits. The context window fills up, or the account reaches its r
 
 The first option is a handoff note. Ask Claude to write one: the goal, what is done, what is left, the decisions made, and the branch. Paste it into a new session. A fresh session with a good handoff often works better than a long one full of old tool output.
 
-The second option is to continue on your other account. Claude Code stores each session as a JSONL file under `<config dir>/projects/<project>/`, where `<project>` is the working directory with every character that is not a letter or number replaced by `-`. With the two accounts from tip 3, resume a personal session on the work account by its absolute path:
+The second option is to continue on your other account. Claude Code stores each session as a JSONL file under `<config dir>/projects/<project>/`, where `<project>` is the working directory with every character that is not a letter or number replaced by `-`. With the two accounts from tip 3, resume a session from the other account by the absolute path of its transcript:
 
 ```bash
-claude-work --resume ~/.claude/projects/-Users-me-code-blog/SESSION_ID.jsonl
+claude --resume /path/to/other-config-dir/projects/PROJECT/SESSION_ID.jsonl
 ```
 
 The transcript format is internal and can change between versions, so treat this as a convenience, not a backup.
