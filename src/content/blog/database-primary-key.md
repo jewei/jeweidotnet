@@ -1,6 +1,6 @@
 ---
-title: "Database Primary Key"
-description: "Choosing a database primary key between big integers, ordered UUID, and nanoid."
+title: "Database Primary Key: Integer vs UUID vs NanoID"
+description: "Integer, UUID, ULID, or NanoID as a primary key? My default: an auto-increment integer for joins plus a UUID or ULID for public URLs, with a comparison table."
 pubDate: "2022-08-31T16:00:00.000Z"
 updatedDate: "2026-05-31T15:37:35.000Z"
 tags: ["system-design", "database"]

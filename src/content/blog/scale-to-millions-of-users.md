@@ -1,6 +1,6 @@
 ---
-title: "Scale to Millions of Users"
-description: "How to design a system that supports millions of users? What are the challenges to scaling it up to serve millions of users?"
+title: "How to Scale a System to Millions of Users"
+description: "From one server to millions of users: stateless web servers, load balancers, read replicas, caching, and a CDN, plus why DigitalOcean is usually enough."
 pubDate: "2022-11-10T16:00:00.000Z"
 updatedDate: "2024-09-22T16:25:01.000Z"
 tags: ["system-design", "infrastructure"]

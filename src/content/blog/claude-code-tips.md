@@ -1,5 +1,5 @@
 ---
-title: "Claude Code Tips"
+title: "Claude Code Tips: 10 Settings and Habits I Use Daily"
 description: "Ten Claude Code tips I use every day: auto mode setup, a global CLAUDE.md working agreement, critic agents, effort per model, and settings that cut noise."
 pubDate: "2026-06-26T00:00:00.000Z"
 updatedDate: "2026-10-14T00:00:00.000+08:00"
