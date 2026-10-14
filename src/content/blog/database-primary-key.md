@@ -6,7 +6,7 @@ updatedDate: "2026-10-14T00:00:00.000+08:00"
 tags: ["system-design", "database"]
 ---
 
-> Update (October 2026): UUIDv7 is now a standard (RFC 9562). Laravel 12 generates it by default, and PostgreSQL 18 has a built-in `uuidv7()` function. It fixes index order but not key size. For most systems with under 1 million users and moderate complexity, I still use an integer as the primary key and a UUID/ULID for external references.
+> Update (October 2026): UUIDv7 is now a standard (RFC 9562). Laravel 12 generates it by default, and PostgreSQL 18 has a built-in `uuidv7()` function. It fixes index order but not key size. For most systems with under 1 million users and moderate complexity, I still use an integer as the primary key. For the public ID, I now use a TypeID: a UUIDv7 with a type prefix.
 
 TLDR: Use Both Integer (as PK) and UUID/ULID.
 
@@ -56,7 +56,7 @@ Here’s the proposed structure:
 
 In this way, you achieve both **database optimization** and **external security and flexibility**.
 
-If people will read your IDs, add a type prefix. Stripe-style IDs such as `user_01h455vb4pex5vsknk084sn02q` say what they point to. I wrote [TypeID PHP](/introducing-typeid-php/) for this: it encodes a UUIDv7 with a prefix, so the database can still store a 16-byte UUID.
+If people will read your IDs, add a type prefix. Stripe-style IDs such as `user_01h455vb4pex5vsknk084sn02q` say what they point to. I wrote [TypeID PHP](/introducing-typeid-php/) for this, and TypeIDs are now the public IDs in my own apps. A TypeID encodes a UUIDv7 with a prefix, so the database can still store a 16-byte UUID.
 
 ## Why Not Just UUIDv7?
 
