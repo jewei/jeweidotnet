@@ -75,6 +75,7 @@ export async function renderCard(card: Card): Promise<Buffer> {
     {
       width: '100%',
       height: '100%',
+      boxSizing: 'border-box',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between',
