@@ -1,6 +1,6 @@
 ---
 title: "They said PHP is dead"
-description: "PHP in the Modern Web: A Relic or a Resilient Force. Here's my 2 cents."
+description: "Is PHP dead? Why PHP earned its bad reputation, how PHP 7 and 8 made it fast and modern, and why Laravel keeps it the workhorse of the web."
 pubDate: "2023-08-12T16:00:00.000Z"
 updatedDate: "2024-09-22T16:52:22.000Z"
 tags: ["php"]

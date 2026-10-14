@@ -1,6 +1,6 @@
 ---
 title: "The Eight Levels of AI Adoption"
-description: "A practical guide to how AI goes from answering questions to running systems. Most people say they 'use AI' when they mean they ask ChatGPT questions. AI adoption has levels."
+description: "Most people who say they use AI mean they ask ChatGPT questions. A practical guide to the eight levels, from answering questions to running systems."
 pubDate: "2026-06-16T00:00:00.000Z"
 tags: ["ai"]
 image: ../../assets/content/eight-levels-of-ai-og-image.jpg

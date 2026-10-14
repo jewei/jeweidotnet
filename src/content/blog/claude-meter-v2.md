@@ -1,6 +1,6 @@
 ---
 title: "Claude Meter 2.0: Your Claude Usage, Now With Energy"
-description: "Claude Meter 2.0 reimagines your Claude usage as energy you have left — a playful redesign with a card per account and make-it-yours customization. Free and open source for macOS."
+description: "Claude Meter 2.0 shows your Claude usage as the energy you have left, with a card per account and settings to make it yours. Free and open source for macOS."
 image: ../../assets/content/claude-meter-v2.jpg
 imageAlt: "Claude Meter 2.0 social card with energy levels for personal, team, and family Claude accounts."
 pubDate: "2026-06-26T00:00:00.000Z"
