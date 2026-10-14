@@ -41,7 +41,7 @@ These are habits I can change, not fixed traits.
 
 - **I do not consistently check the full production path.** In one permission incident, tests created records that deployment did not create. The feature passed in the test environment but failed in production. I checked a related repository after the fix, but that check would have been more useful before release.
 
-- **I can turn AI tooling into another project.** Skills, agent coordination, usage tools, and configuration all interest me. Each addition can seem useful on its own. I need to check whether the whole setup saves more work than it creates.
+- **I can turn AI tooling into another project.** Skills, [agent coordination](/introducing-herdr-bar/), [usage tools](/claude-meter-v2/), and configuration all interest me. Each addition can seem useful on its own. I need to check whether the whole setup saves more work than it creates.
 
 ## How I can get better
 

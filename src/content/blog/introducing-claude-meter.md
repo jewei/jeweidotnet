@@ -1,5 +1,5 @@
 ---
-title: "Meet Claude Meter — Know Your Claude Usage at a Glance"
+title: "Meet Claude Meter: Know Your Claude Usage at a Glance"
 description: "I wanted to see my Claude Code usage before hitting the wall, so I built a macOS menu bar app. Picking the data source mattered more than the parser."
 image: ../../assets/content/claude-meter.jpg
 imageAlt: "Claude Meter social card with current-session and weekly Claude usage meters."

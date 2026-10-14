@@ -88,7 +88,7 @@ alias claude-work='CLAUDE_CONFIG_DIR=~/.claude-work claude'
 
 Add these to `~/.zshrc` or `~/.bashrc`. Run `claude-personal` and log in with your personal account, `claude-work` with your work account. Each keeps separate credentials, history, and settings, so you never collide between the two.
 
-This also keeps work session history out of your personal projects, and lets each account carry its own permissions and plugins.
+This also keeps work session history out of your personal projects, and lets each account carry its own permissions and plugins. To watch usage on both accounts at once, I use [Claude Meter](/claude-meter-v2/), which shows each account on its own card.
 
 Two caveats. Set `CLAUDE_CONFIG_DIR` in your shell or user settings; Claude Code ignores it in a project's settings. And a Console login without an API key is stored outside the config directory, so this trick does not keep two Console logins apart.
 
@@ -259,4 +259,4 @@ Reference: https://code.claude.com/docs/en/sessions#resume-a-session
 
 ## More tips coming
 
-I will keep adding to this list as I find settings and workflows worth sharing.
+I will keep adding to this list as I find settings and workflows worth sharing. For what these habits cost me as well as what they save, read [A performance review of how I use AI](/a-performance-review-of-how-i-use-ai/).
