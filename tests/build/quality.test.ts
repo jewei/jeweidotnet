@@ -125,7 +125,9 @@ describe('agent-readable output', () => {
 
   test('index Markdown lists posts as one-line links', () => {
     const markdown = read('blog/index.md');
-    expect(markdown).toMatch(/^- \[Database Primary Key\]\(\/database-primary-key\/\) — Sep 1, 2022\. /m);
+    expect(markdown).toMatch(
+      /^- \[Database Primary Key: Integer vs UUID vs NanoID\]\(\/database-primary-key\/\) — Sep 1, 2022\. /m,
+    );
   });
 
   test('llms.txt guides agents and every link resolves', () => {
