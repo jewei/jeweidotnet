@@ -7,7 +7,7 @@ pubDate: "2026-06-26T00:00:00.000Z"
 tags: ["ai", "macos", "swift"]
 ---
 
-When we introduced **Claude Meter**, it had one job: never let a _rate limit_ blindside you again. It put your Claude usage up in the menu bar so you could stay in flow instead of digging through dashboards. That job hasn't changed.
+When we [introduced **Claude Meter**](/introducing-claude-meter/), it had one job: never let a _rate limit_ blindside you again. It put your Claude usage up in the menu bar so you could stay in flow instead of digging through dashboards. That job hasn't changed.
 
 But the popover behind that little percentage? It was a tidy spreadsheet — gray bars, gray numbers, very Correct, very forgettable. So for 2.0 we rebuilt the whole thing around a single reframe: you're not watching a quota drain. You've got **energy**, and you're spending it. ⚡
 
