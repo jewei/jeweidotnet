@@ -34,4 +34,6 @@ $productId = TypeID::fromUuid('product', $uuid);
 
 TypeID PHP integrates seamlessly with existing systems while enhancing readability and safety. Install today with *`composer require jewei/typeid-php`* and bring more clarity to your identifiers.
 
+To see where TypeIDs fit next to integer keys, read [Database Primary Key: Integer vs UUID vs NanoID](/database-primary-key/).
+
 [![TypeID PHP (TypeID logo thumbnail)](../../assets/content/typeid-php-thumb.png "PHP implementation of TypeIDs: type-safe, K-sortable, and globally unique identifiers inspired by Stripe IDs")](https://github.com/jewei/typeid-php)

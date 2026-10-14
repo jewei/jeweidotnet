@@ -117,8 +117,8 @@ describe('agent-readable output', () => {
 
   test('article Markdown keeps code fences with language and filename, and GFM tables', () => {
     const markdown = read('database-primary-key/index.md');
-    expect(markdown).toContain('```sql title="schema.sql"');
-    expect(markdown).toMatch(/\| Feature \| Big Integers \| Ordered UUIDv4 \| nanoid \|\n\| --- \|/);
+    expect(markdown).toContain('```sql title="schema-mysql.sql"');
+    expect(markdown).toMatch(/\| Feature \| Big Integers \| UUIDv7 \| nanoid \|\n\| --- \|/);
     expect(markdown).not.toContain('<table');
     expect(markdown).not.toMatch(/Copy\b.*code/);
   });
