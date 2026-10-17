@@ -77,6 +77,12 @@ Download the build for your system from the [releases page](https://github.com/j
 - **Windows**, x64. Not code-signed, so SmartScreen may ask you to confirm.
 - **Linux**, a Debian package. The global shortcut needs X11; on Wayland, bind a desktop shortcut to `tinydash`.
 
+On macOS, you can also install it with Homebrew:
+
+```sh
+brew install jewei/tap/tinydash
+```
+
 On macOS and Windows, TinyDash updates itself when you choose Install and Restart.
 
 It is built with Rust, Tauri, and SolidJS. To build it yourself:
