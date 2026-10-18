@@ -12,6 +12,10 @@
 /content/images/*
   Cache-Control: public, max-age=86400
 
+# Post videos and their posters keep their file names when they are replaced.
+/content/videos/*
+  Cache-Control: public, max-age=86400
+
 /og/*
   Cache-Control: public, max-age=86400
 

@@ -159,10 +159,16 @@
 }
 
 /* Images and figures */
-.prose img {
+.prose img,
+.prose video {
   border-radius: var(--radius-2);
   outline: 1px solid var(--line);
   outline-offset: -1px;
+}
+
+.prose video {
+  width: 100%;
+  height: auto;
 }
 
 .prose p:has(> img:only-child),

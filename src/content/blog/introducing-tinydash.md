@@ -1,18 +1,27 @@
 ---
 title: "TinyDash: a tiny dashboard behind a shortcut"
-description: "TinyDash is a keyboard-first launcher for macOS, Windows, and Linux. Version 0.5.0 adds Spotlight file search, hidden results, and a copy confirmation."
+description: "TinyDash is a keyboard-first launcher for macOS, Windows, and Linux. Version 0.6 adds aliases, calculator history, and Homebrew and Linux packages."
 pubDate: "2026-10-08T00:00:00.000+08:00"
+updatedDate: "2026-10-18T00:00:00.000+08:00"
 tags: ["open-source", "macos"]
 draft: false
+image: ../../assets/content/introducing-tinydash-og-image.jpg
+imageAlt: "The TinyDash icon, name, and tagline next to the launcher with apps on the left and clock, weather, and focus timer widgets on the right"
 ---
 
 TinyDash is a keyboard-first launcher for macOS, Windows, and Linux. It is the successor to [Bopop](/bopop-press-type-go/), my macOS-only launcher.
 
 Press Control+Shift+Space, type a few letters, press Enter. An app opens, a file opens, or an answer lands on your clipboard, and the window gets out of the way.
 
-Version 0.5.0 is out today, free and open source under the MIT license. [Download TinyDash](https://github.com/jewei/tinydash/releases/latest).
+Version 0.6.2 is out, free and open source under the MIT license. [Download TinyDash](https://github.com/jewei/tinydash/releases/latest).
 
-![The TinyDash launcher with apps on the left, each with a short description, and the widget pane on the right with a JSON clipboard card, a clock, the weather in Kuala Lumpur, and a focus timer](../../assets/content/tinydash-launcher.webp "An empty search shows your apps and the widget pane.")
+<figure>
+<video controls preload="none" playsinline width="1920" height="1080" poster="/content/videos/tinydash/tinydash-demo-poster.webp" aria-label="TinyDash demo: a shortcut opens the launcher, a few letters find an app, and the actions menu pins, aliases, or hides a result">
+<source src="/content/videos/tinydash/tinydash-demo.mp4" type="video/mp4">
+<a href="/content/videos/tinydash/tinydash-demo.mp4">Download the TinyDash demo video (MP4, 20 seconds, 7.9 MB)</a>
+</video>
+<figcaption>TinyDash in 20 seconds. The video uses ⌘ Space, which works after you turn off the Spotlight shortcut in macOS and set ⌘ Space in Settings > General. The files, clipboard, and weather are demo data.</figcaption>
+</figure>
 
 ## What it does
 
@@ -49,6 +58,18 @@ The name means "tiny dashboard". When the search is empty, the right side shows 
 
 Type one letter, and the widgets give way to your results.
 
+![The TinyDash launcher with apps on the left, each with a short description, and the widget pane on the right with a JSON clipboard card, a clock, the weather in Kuala Lumpur, and a focus timer](../../assets/content/tinydash-launcher.webp "An empty search shows your apps and the widget pane.")
+
+## New in 0.6
+
+- **Aliases.** Give any app, file, snippet, quicklink, emoji, or command a short alias, such as `vsc`, with Add Alias in its actions. Type the alias, and that result comes first.
+- **Calculator history.** Copy an answer, and TinyDash keeps it. Type `=` to see past results, or `= cm` to find one.
+- **Snippets take text.** A snippet with `{query}` uses what you type after its keyword: `hi Sam` copies `Hello Sam,`.
+- **More system commands:** Open Trash, Sleep Displays, Toggle Dark Mode, and Make Clipboard Plain Text.
+- **More ways to install:** Homebrew on macOS, and an `.rpm` package and an AppImage on Linux.
+
+Versions 0.6.1 and 0.6.2 fix many small bugs. The [changelog](https://github.com/jewei/tinydash/blob/main/CHANGELOG.md) lists them all.
+
 ## New in 0.5.0
 
 - **Spotlight file search on macOS.** Turn on "Also search with Spotlight" in Settings > Files, and the Files tab also finds names anywhere in your home folder. Your own folders answer first; Spotlight results follow.
@@ -75,7 +96,7 @@ Download the build for your system from the [releases page](https://github.com/j
 
 - **macOS 12 or later**, Apple silicon or Intel. Signed and notarized.
 - **Windows**, x64. Not code-signed, so SmartScreen may ask you to confirm.
-- **Linux**, a Debian package. The global shortcut needs X11; on Wayland, bind a desktop shortcut to `tinydash`.
+- **Linux**, a Debian package, an `.rpm` package for Fedora and openSUSE, or an AppImage for most other distributions. The global shortcut needs X11; on Wayland, bind a desktop shortcut to `tinydash`.
 
 On macOS, you can also install it with Homebrew:
 
