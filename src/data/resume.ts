@@ -1,4 +1,4 @@
-export const resumePdfUrl = '/content/files/2026/09/jewei-mak-resume-2026.pdf';
+export const resumePdfUrl = '/content/files/2026/10/jewei-mak-resume-2026.pdf';
 
 export const resumeMeta = {
   title: 'Résumé',

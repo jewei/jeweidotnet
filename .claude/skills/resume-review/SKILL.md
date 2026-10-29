@@ -24,7 +24,7 @@ This repo holds the résumé in three coupled places. A review usually touches a
 |---|---|---|
 | Structured data | `src/data/resume.ts` | Source of truth: summary, strengths, experience, skills, education |
 | Web page | `src/pages/resume.astro` | Renders the data; can be slightly richer than print |
-| Downloadable PDF | `public/content/files/<year>/<month>/jewei-mak-resume-<year>.pdf` (current: `2026/09`) | The artifact recruiters actually read — apply the wiki rules **strictly** here |
+| Downloadable PDF | `public/content/files/<year>/<month>/jewei-mak-resume-<year>.pdf` (current: `2026/10`) | The artifact recruiters actually read — apply the wiki rules **strictly** here |
 | PDF link | `resumePdfUrl` in `src/data/resume.ts` | Point it at the newest PDF. Add new versions in a new folder; keep old PDFs so old links work. |
 | Browser print | `@media print` in `src/pages/resume.astro` | A fallback, not the PDF. Two-column A4; `tests/build/browser.test.ts` keeps it at ≤ 2 pages. |
 
