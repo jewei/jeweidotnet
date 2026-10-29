@@ -97,7 +97,8 @@ describe('theme toggle', () => {
     const toggle = page.locator('[data-theme-toggle]');
     await expect.poll(() => toggle.getAttribute('aria-pressed')).toBe('false');
     await toggle.click();
-    expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
+    // The theme changes inside a view transition, a frame after the click.
+    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
     expect(await toggle.getAttribute('aria-pressed')).toBe('true');
     expect(await toggle.getAttribute('aria-label')).toBe('Switch to light theme');
     await page.goto(`${origin}/blog/`);

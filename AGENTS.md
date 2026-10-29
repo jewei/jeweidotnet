@@ -106,6 +106,7 @@ Post images go in `src/assets/content/` and are referenced relatively from Markd
 - The CSP in `public/_headers` and `functions/_middleware.js` must match (a test checks it).
 - Satori (social cards) cannot render `№`; cards use `No.`.
 - Satori 0.56+ adds padding outside `width: 100%`. The card root in `src/lib/og.ts` needs `boxSizing: 'border-box'`, or the right edge and footer fall off the canvas. Tests do not catch this; look at a card in `dist/og/` after a Satori update.
+- `data-reveal` content (home page) stays hidden until it scrolls into view: `theme.js` adds `.js` before paint, and `site.js` reveals it. A browser check of content below the fold must scroll to it or use `reducedMotion: 'reduce'`, as `vp run shots` does.
 - `html` and `body` clip horizontal overflow, so `scrollWidth` never shows it. `scripts/overflow.ts` compares element boxes with the viewport; the browser test and `vp run shots` use it.
 - `public/_routes.json` keeps static files out of the Pages Function. Add a new top-level static file to its `exclude` list. Pages and `.md` copies must stay in the Function (a test checks).
 - Pages applies every matching `_headers` rule and joins a repeated header with a comma. No two rules may set the same header for one URL (a test checks).

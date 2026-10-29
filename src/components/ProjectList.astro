@@ -3,7 +3,11 @@
  * A text index of projects, one row each, in the same grid as the writing
  * ledger: category on the left, name, summary, and stack on the right.
  * The whole row links to the visible story, or the source while it is a draft.
+ * Rows rise into view, and with a mouse a preview of the hovered project's
+ * cover follows the pointer (public/site.js).
  */
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
 import type { Project } from '../lib/projects';
 
 interface Props {
@@ -13,24 +17,42 @@ interface Props {
 const { projects } = Astro.props;
 ---
 
-<ol class="works" role="list">
-  {
-    projects.map(({ data: p, primaryUrl, storyUrl }) => (
-      <li class="work">
-        <p class="work__category">{p.category}</p>
-        <div>
-          <h3 class="work__name">
-            <a href={primaryUrl} data-external={!storyUrl || undefined}>{p.name}</a>
-          </h3>
-          <p class="work__summary">{p.summary}</p>
-          <p class="work__stack">{p.stack.join(' · ')}</p>
-        </div>
-      </li>
-    ))
-  }
-</ol>
+<div class="works-zone" data-previews>
+  <ol class="works" role="list">
+    {
+      projects.map(({ id, data: p, primaryUrl, storyUrl }) => (
+        <li class="work" data-key={id} data-reveal>
+          <p class="work__category">{p.category}</p>
+          <div>
+            <h3 class="work__name">
+              <a href={primaryUrl} data-external={!storyUrl || undefined}>
+                {p.name}
+              </a>
+            </h3>
+            <p class="work__summary">{p.summary}</p>
+            <p class="work__stack">{p.stack.join(' · ')}</p>
+          </div>
+          <Icon name="arrow-right" class="work__arrow" />
+        </li>
+      ))
+    }
+  </ol>
+  <div class="preview" data-preview aria-hidden="true">
+    <div class="preview__card">
+      {
+        projects.map(({ id, data: p }) => (
+          <Image src={p.image} alt="" widths={[288, 576]} sizes="18rem" loading="lazy" decoding="async" data-key={id} />
+        ))
+      }
+    </div>
+  </div>
+</div>
 
 <style>
+  .works-zone {
+    position: relative;
+  }
+
   .works {
     border-top: var(--hairline);
   }
@@ -40,7 +62,18 @@ const { projects } = Astro.props;
     display: grid;
     gap: var(--space-2);
     padding-block: var(--space-5);
-    border-bottom: var(--hairline);
+  }
+
+  /* The rule is a box, not a border, so a reveal can draw it (base.css) */
+  .work::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(var(--drawn, 1));
+    transform-origin: left;
+    transition: transform var(--dur-4) var(--ease-out) calc(var(--delay, 0ms) + 80ms);
   }
 
   .work__category {
@@ -48,6 +81,11 @@ const { projects } = Astro.props;
     font-size: var(--step--2);
     letter-spacing: 0.02em;
     color: var(--fg-3);
+    transition: color var(--dur-2) var(--ease);
+  }
+
+  .work:hover .work__category {
+    color: var(--fg-2);
   }
 
   .work__name {
@@ -101,15 +139,97 @@ const { projects } = Astro.props;
     color: var(--fg-3);
   }
 
+  /* Icon renders the arrow, so scoped selectors need :global() */
+  .work :global(.work__arrow) {
+    display: none;
+  }
+
   @media (min-width: 48rem) {
     .work {
-      grid-template-columns: 9rem minmax(0, 1fr);
+      grid-template-columns: 9rem minmax(0, 1fr) 1.25rem;
       gap: var(--space-6);
       padding-block: var(--space-6);
     }
 
     .work__category {
       padding-top: 0.4em;
+    }
+
+    .work :global(.work__arrow) {
+      display: block;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-top: var(--space-1);
+      color: var(--accent);
+      opacity: 0;
+      transform: translateX(calc(var(--space-2) * -1));
+      transition:
+        opacity var(--dur-2) var(--ease),
+        transform var(--dur-2) var(--ease);
+    }
+
+    .work:hover :global(.work__arrow) {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /*
+   * The preview card: site.js moves it with translate and rotate, and CSS
+   * eases the motion. It only exists for a mouse on a wide screen, so the
+   * images never load on phones or with reduced motion.
+   */
+  .preview {
+    display: none;
+  }
+
+  @media (min-width: 64rem) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .preview {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      width: 18rem;
+      aspect-ratio: 16 / 10;
+      pointer-events: none;
+      transition:
+        translate var(--dur-2) var(--ease-out),
+        rotate var(--dur-3) var(--ease-out);
+    }
+
+    .preview__card {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: var(--radius-2);
+      background: var(--bg-raised);
+      box-shadow: var(--shadow-lift);
+      opacity: 0;
+      transform: scale(0.92);
+      transition:
+        opacity var(--dur-2) var(--ease),
+        transform var(--dur-2) var(--ease);
+    }
+
+    .preview[data-on] .preview__card {
+      opacity: 1;
+      transform: none;
+    }
+
+    .preview img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
+      opacity: 0;
+      transition: opacity var(--dur-2) var(--ease);
+    }
+
+    .preview img[data-on] {
+      opacity: 1;
     }
   }
 </style>

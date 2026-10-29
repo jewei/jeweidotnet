@@ -40,6 +40,8 @@ interface Common {
   markdown?: boolean;
   /** Use the exact title, without the author suffix. */
   rawTitle?: boolean;
+  /** Scroll reveals in the footer. Only the home page uses them. */
+  reveal?: boolean;
 }
 
 /**
@@ -59,6 +61,7 @@ const {
   index = true,
   markdown = true,
   rawTitle = false,
+  reveal = false,
 } = Astro.props;
 
 const path = Astro.url.pathname;
@@ -161,7 +164,7 @@ const speculation = JSON.stringify({
     <main id="main" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <Footer reveal={reveal} />
   </body>
 </html>
 

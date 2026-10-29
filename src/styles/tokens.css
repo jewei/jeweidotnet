@@ -24,6 +24,9 @@
   --accent-wash: oklch(93% 0.045 152);
   --focus: oklch(50% 0.17 152);
   --shadow: 0 1px 2px oklch(19% 0.01 260 / 0.06), 0 8px 24px -12px oklch(19% 0.01 260 / 0.18);
+  /* A print lifted off the page: the home portrait and the project preview */
+  --bg-paper: oklch(100% 0 0);
+  --shadow-lift: 0 1px 2px oklch(19% 0.01 260 / 0.08), 0 24px 48px -20px oklch(19% 0.01 260 / 0.38);
 
   /* Type families (variables come from Astro's font API) */
   --sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
@@ -72,12 +75,17 @@
   --radius-1: 4px;
   --radius-2: 8px;
   --radius-3: 12px;
+  --radius-4: 16px;
   --hairline: 1px solid var(--line);
 
-  /* Motion */
+  /* Motion. The long durations and the out and spring curves are for the home page's entrance. */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --dur-1: 120ms;
   --dur-2: 220ms;
+  --dur-3: 800ms;
+  --dur-4: 1100ms;
 
   /* Print: black on white in every theme (the résumé) */
   --print-bg: oklch(100% 0 0);
@@ -102,6 +110,8 @@
     --accent-wash: oklch(28% 0.05 152);
     --focus: oklch(80% 0.15 152);
     --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -12px oklch(0% 0 0 / 0.6);
+    --bg-paper: oklch(27% 0.008 260);
+    --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.35), 0 24px 48px -20px oklch(0% 0 0 / 0.8);
   }
 }
 
@@ -119,6 +129,8 @@
   --accent-wash: oklch(28% 0.05 152);
   --focus: oklch(80% 0.15 152);
   --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -12px oklch(0% 0 0 / 0.6);
+  --bg-paper: oklch(27% 0.008 260);
+  --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.35), 0 24px 48px -20px oklch(0% 0 0 / 0.8);
   color-scheme: dark;
 }
 
