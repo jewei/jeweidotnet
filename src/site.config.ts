@@ -14,6 +14,8 @@ export const site = {
   locale: 'en_US',
   language: 'en',
   timeZone: 'Asia/Kuala_Lumpur',
+  /** Shown with the local time on the home page. */
+  city: 'Kuala Lumpur',
   /** Default meta description. Keep it between 120 and 160 characters. */
   description:
     'Jewei Mak is a senior software engineer working on backend systems, payments, and developer tools. Notes on architecture, PHP, infrastructure, and AI.',

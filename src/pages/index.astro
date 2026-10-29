@@ -33,18 +33,28 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       primaryImageOfPage: absolute(portrait.src),
     },
   ]}
+  reveal
 >
   <section class="intro wrap" aria-labelledby="intro-title">
+    <div class="intro__paper" aria-hidden="true"></div>
+
     <div class="intro__copy">
-      <p class="label">{site.jobTitle}</p>
+      <p class="label intro__role">
+        {site.jobTitle}
+        <span class="intro__sep" aria-hidden="true">·</span>
+        <span class="intro__place">
+          {site.city}
+          <span data-clock={site.timeZone} hidden><span></span><span class="intro__colon">:</span><span></span></span>
+        </span>
+      </p>
       <h1 id="intro-title">
-        <span>I’m {site.author}.</span>
-        <span>Tastefully opinionated.</span>
+        <span class="intro__line"><span>I’m {site.author}.</span></span>
+        <span class="intro__line intro__line--quiet"><span>Tastefully opinionated.</span></span>
       </h1>
       <div class="intro__text">
         <p>
-          I love designing and building software, whether it’s something serious or just an idea I want to see work. I 
-          care about both the systems behind it and the experience around it. I spend a lot of time building with AI, 
+          I love designing and building software, whether it’s something serious or just an idea I want to see work. I
+          care about both the systems behind it and the experience around it. I spend a lot of time building with AI,
           experimenting with ideas and shipping the ones that turn into something worthwhile.
         </p>
         <p>When I’m not building software, I’m usually reading, taking photos, or trying something new in the kitchen.</p>
@@ -60,24 +70,27 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       </p>
     </div>
 
-    <div class="intro__portrait">
-      <Image
-        src={portrait}
-        alt="Portrait of Jewei Mak."
-        widths={[176, 240, 360, 480]}
-        sizes="(min-width: 64rem) 12rem, 5.5rem"
-        layout="none"
-        format="webp"
-        quality={80}
-        loading="eager"
-        fetchpriority="high"
-      />
+    <div class="intro__sticker" data-sticker>
+      <div class="intro__print">
+        <Image
+          src={portrait}
+          alt="Portrait of Jewei Mak."
+          widths={[208, 432]}
+          sizes="(min-width: 64rem) 13.5rem, 6.5rem"
+          layout="none"
+          format="webp"
+          quality={80}
+          loading="eager"
+          fetchpriority="high"
+          draggable="false"
+        />
+      </div>
     </div>
   </section>
 
   <div class="wrap">
-    <section class="part" aria-labelledby="work-title">
-      <header class="part__head">
+    <section class="part" aria-labelledby="work-title" data-reveal="rule">
+      <header class="part__head" data-reveal>
         <h2 id="work-title">Projects</h2>
         <a class="arrow-link" href="/projects/"><span>All projects</span><Icon name="arrow-right" /></a>
       </header>
@@ -86,47 +99,74 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       </div>
     </section>
 
-    <section class="part" aria-labelledby="latest-title">
-      <header class="part__head">
+    <section class="part" aria-labelledby="latest-title" data-reveal="rule">
+      <header class="part__head" data-reveal>
         <h2 id="latest-title">Writing</h2>
         <a class="arrow-link" href="/blog/"><span>All {posts.length} posts</span><Icon name="arrow-right" /></a>
       </header>
       <div class="part__body">
-        <PostList posts={latest} showTopics={false} />
+        <PostList posts={latest} showTopics={false} reveal arrow />
       </div>
     </section>
   </div>
 </Base>
 
 <style>
+  /* Intro: the copy, and the portrait as a sticker on grid paper */
   .intro {
+    position: relative;
     display: grid;
     gap: var(--space-5);
     padding-block: var(--space-8);
   }
 
   .intro__copy {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  h1 {
-    margin-top: var(--space-3);
-    font-size: var(--step-4);
-    line-height: var(--leading-tight);
-    letter-spacing: var(--tracking-display);
+  .intro__role {
+    font-variant-numeric: tabular-nums;
   }
 
-  /* One sentence per line: the name, then the stance */
-  h1 span {
+  .intro__sep {
+    margin-inline: var(--space-1);
+  }
+
+  /* Keep the city and its time on one line */
+  .intro__place {
+    white-space: nowrap;
+  }
+
+  h1 {
+    margin-top: var(--space-4);
+    font-size: var(--step-5);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+  }
+
+  /* One sentence per line: the name, then the stance. Each line has its own mask. */
+  .intro__line {
     display: block;
+    overflow: hidden;
+    padding-block: 0.1em;
+    margin-block: -0.1em;
+  }
+
+  .intro__line > span {
+    display: block;
+  }
+
+  .intro__line--quiet {
+    color: var(--fg-3);
   }
 
   .intro__text {
     display: grid;
     gap: var(--space-4);
-    margin-top: var(--space-5);
+    margin-top: var(--space-6);
     max-width: var(--measure);
     font-family: var(--serif);
     font-size: var(--step-1);
@@ -142,7 +182,7 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-1) var(--space-2);
-    margin-top: var(--space-6);
+    margin-top: calc(var(--space-6) + var(--space-2));
     font-size: var(--step--1);
     color: var(--fg-2);
   }
@@ -160,73 +200,102 @@ const projects = (await getProjects()).filter((project) => project.data.featured
   }
 
   .intro__dot {
+    position: relative;
+    flex: none;
     width: 7px;
     height: 7px;
+    margin-right: var(--space-1);
     border-radius: 50%;
     background: var(--accent-mark);
     box-shadow: 0 0 0 3px var(--accent-wash);
   }
 
-  /*
-   * Portrait: on hover the photo lifts off a green card, tilts a little,
-   * and comes up to full colour. Mouse only; reduced motion keeps it still.
-   */
-  .intro__portrait {
-    position: relative;
-    order: -1;
-    align-self: start;
-    width: 5.5rem;
-  }
-
-  .intro__portrait::before {
+  /* The pulse ring; it only moves with motion allowed */
+  .intro__dot::after {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: var(--radius-2);
+    border-radius: inherit;
     background: var(--accent-mark);
     opacity: 0;
-    transition: opacity var(--dur-2) var(--ease);
   }
 
-  .intro__portrait img {
-    position: relative;
+  /*
+   * The sticker: a print with a white border, tilted. With a mouse you can
+   * drag it (public/site.js sets translate and --tilt); on release it
+   * springs back to its angle and stays where you dropped it.
+   */
+  .intro__sticker {
+    order: -1;
+    align-self: start;
+    justify-self: start;
+    width: 7.5rem;
+    margin-left: var(--space-2);
+    user-select: none;
+  }
+
+  .intro__print {
+    --settle: var(--dur-3);
+    padding: var(--space-1);
+    border-radius: var(--radius-3);
+    background: var(--bg-paper);
+    box-shadow: var(--shadow-lift);
+    transform: rotate(calc(-6deg + var(--hover, 0) * 4deg + var(--tilt, 0deg))) scale(calc(1 + var(--hover, 0) * 0.03));
+    transition:
+      transform var(--settle) var(--ease-spring),
+      translate var(--settle) var(--ease-spring);
+  }
+
+  .intro__print img {
+    display: block;
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
     border-radius: var(--radius-2);
-    filter: saturate(0.85);
-    transition:
-      transform var(--dur-2) var(--ease),
-      filter var(--dur-2) var(--ease);
+    pointer-events: none;
   }
 
-  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .intro__portrait:hover::before {
-      opacity: 1;
-    }
-
-    .intro__portrait:hover img {
-      transform: translate(calc(var(--space-2) * -1), calc(var(--space-2) * -1)) rotate(-1.5deg);
-      filter: saturate(1);
-    }
+  /* Grid paper behind the sticker, on wide screens only */
+  .intro__paper {
+    display: none;
   }
 
-  /* Same rail as the parts below: portrait in the rail, text in the body */
   @media (min-width: 64rem) {
     .intro {
-      grid-template-columns: var(--rail) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) 16.5rem;
+      align-items: start;
       gap: var(--space-6);
-      padding-block: var(--space-9);
+      padding-block: var(--section);
     }
 
-    .intro__copy {
-      grid-column: 2;
+    /* Beside the sticker, keep "Tastefully opinionated." on one line */
+    h1 {
+      font-size: min(var(--step-5), 6.2vw);
     }
 
-    .intro__portrait {
-      grid-column: 1;
-      grid-row: 1;
-      width: 100%;
+    .intro__sticker {
+      order: 0;
+      justify-self: center;
+      width: 14.5rem;
+      margin: var(--space-4) 0 0;
+    }
+
+    .intro__print {
+      padding: var(--space-2);
+      border-radius: var(--radius-4);
+    }
+
+    .intro__paper {
+      display: block;
+      position: absolute;
+      inset: 0 0 0 auto;
+      width: 56%;
+      pointer-events: none;
+      background-image: radial-gradient(circle, var(--line-strong) 1px, transparent 1.6px);
+      background-size: var(--space-5) var(--space-5);
+      background-position: var(--space-3) var(--space-3);
+      /* The mask only uses alpha; any opaque token works */
+      mask-image: radial-gradient(ellipse 58% 62% at 80% 60%, var(--fg) 0%, transparent 72%);
     }
   }
 
@@ -242,5 +311,210 @@ const projects = (await getProjects()).filter((project) => project.data.featured
 
   .part__body :global(.works) {
     border-top: 0;
+  }
+
+  /*
+   * Entrance, in order: the wordmark types itself, the nav fades in, the
+   * heading lines rise out of their masks, the text follows, and the sticker
+   * lands. Reduced motion skips all of it, and the drag.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.header .wordmark > span) {
+      overflow: hidden;
+      white-space: nowrap;
+      animation: home-type calc(var(--chars) * var(--per)) steps(var(--chars)) var(--start) backwards;
+    }
+
+    :global(.header .wordmark__name) {
+      --chars: 5;
+      --per: 62ms;
+      --start: 120ms;
+    }
+
+    :global(.header .wordmark__method) {
+      --chars: 9;
+      --per: 40ms;
+      --start: 430ms;
+    }
+
+    :global(.header .wordmark__parens) {
+      --chars: 2;
+      --per: 80ms;
+      --start: 790ms;
+    }
+
+    /* The caret stays while the wordmark types, blinks twice, and goes */
+    :global(.header .wordmark::after) {
+      content: '';
+      width: 2px;
+      height: 1.1em;
+      margin-left: 2px;
+      background: var(--accent-mark);
+      opacity: 0;
+      animation:
+        home-caret-hold 1190ms linear,
+        home-caret 1060ms steps(1, end) 1190ms 2;
+    }
+
+    :global(.header__nav li),
+    :global(.header__theme) {
+      animation: home-fade 900ms var(--ease) 260ms backwards;
+    }
+
+    :global(.header__nav li:nth-child(2)) {
+      animation-delay: 310ms;
+    }
+
+    :global(.header__nav li:nth-child(3)) {
+      animation-delay: 360ms;
+    }
+
+    :global(.header__nav li:nth-child(4)) {
+      animation-delay: 410ms;
+    }
+
+    :global(.header__theme) {
+      animation-delay: 460ms;
+    }
+
+    .intro__role {
+      animation: home-rise var(--dur-3) var(--ease) 180ms backwards;
+    }
+
+    .intro__line > span {
+      animation: home-line var(--dur-4) var(--ease-out) 260ms backwards;
+    }
+
+    .intro__line--quiet > span {
+      animation-delay: 350ms;
+    }
+
+    .intro__text p {
+      animation: home-rise var(--dur-3) var(--ease) 520ms backwards;
+    }
+
+    .intro__text p + p {
+      animation-delay: 600ms;
+    }
+
+    .intro__status {
+      animation: home-rise var(--dur-3) var(--ease) 720ms backwards;
+    }
+
+    .intro__dot::after {
+      animation: home-pulse 2600ms cubic-bezier(0, 0.55, 0.45, 1) 1800ms infinite;
+    }
+
+    .intro__colon {
+      animation: home-blink 2000ms steps(1, end) infinite;
+    }
+
+    .intro__sticker {
+      animation: home-rise var(--dur-3) var(--ease) 820ms backwards;
+    }
+
+    .intro__paper {
+      animation: home-fade 900ms var(--ease) 600ms backwards;
+    }
+
+    /* Mouse: the sticker straightens a little on hover and can be dragged */
+    @media (hover: hover) and (pointer: fine) {
+      .intro__sticker {
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .intro__sticker[data-dragging] {
+        cursor: grabbing;
+      }
+
+      .intro__sticker:hover .intro__print {
+        --hover: 1;
+      }
+
+      .intro__sticker[data-dragging] .intro__print {
+        --settle: var(--dur-1);
+      }
+    }
+
+    /* Wide screens: the sticker slaps down onto the paper */
+    @media (min-width: 64rem) {
+      .intro__sticker {
+        animation-name: home-slap;
+        animation-timing-function: var(--ease-spring);
+      }
+    }
+  }
+
+  @keyframes home-type {
+    from {
+      max-width: 0;
+    }
+
+    to {
+      max-width: calc(var(--chars) * 1ch);
+    }
+  }
+
+  @keyframes home-caret-hold {
+    from,
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes home-caret {
+    from {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes home-fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes home-rise {
+    from {
+      opacity: 0;
+      transform: translateY(var(--space-4));
+    }
+  }
+
+  @keyframes home-line {
+    from {
+      transform: translateY(108%);
+    }
+  }
+
+  /* Starts small enough that every frame stays inside a 1024px viewport */
+  @keyframes home-slap {
+    from {
+      opacity: 0;
+      transform: rotate(-10deg) scale(1.1);
+    }
+  }
+
+  @keyframes home-pulse {
+    from {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+
+    to {
+      opacity: 0;
+      transform: scale(3.6);
+    }
+  }
+
+  @keyframes home-blink {
+    50% {
+      opacity: 0.2;
+    }
   }
 </style>
