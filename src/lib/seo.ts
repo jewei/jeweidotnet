@@ -25,7 +25,7 @@ export function personSchema(extra: Json = {}): Json {
     url: absolute('/about/'),
     jobTitle: site.jobTitle,
     email: `mailto:${site.email}`,
-    sameAs: [site.profiles.github, site.profiles.x],
+    sameAs: [site.profiles.github, site.profiles.x, site.profiles.credly],
     knowsAbout: site.knowsAbout,
     ...extra,
   };

@@ -1,4 +1,4 @@
-export const resumePdfUrl = '/content/files/2026/09/jewei-mak-resume-2026.pdf';
+export const resumePdfUrl = '/content/files/2026/10/jewei-mak-resume-2026.pdf';
 
 export const resumeMeta = {
   title: 'Résumé',
@@ -23,6 +23,20 @@ export const education = [
     period: '2005',
     degree: 'Electronics Engineering',
     institution: 'TARC, Malaysia',
+  },
+];
+
+/** Newest first. The badges are on Credly (`site.profiles.credly`). */
+export const certifications = [
+  {
+    year: '2026',
+    name: 'AWS Certified Cloud Practitioner',
+    issuer: 'Amazon Web Services',
+  },
+  {
+    year: '2026',
+    name: 'AWS Certified AI Practitioner',
+    issuer: 'Amazon Web Services',
   },
 ];
 

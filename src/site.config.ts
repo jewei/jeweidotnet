@@ -25,6 +25,7 @@ export const site = {
     github: 'https://github.com/jewei',
     x: 'https://x.com/jewei',
     sponsor: 'https://github.com/sponsors/jewei',
+    credly: 'https://www.credly.com/users/jewei',
   },
   knowsAbout: [
     'Backend architecture',

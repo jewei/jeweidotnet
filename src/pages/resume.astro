@@ -7,7 +7,15 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { ogPath, pages } from '../data/pages';
 import { displayUrl, site } from '../site.config';
-import { coreStrengths, education, experience, resumeMeta, resumePdfUrl, techStack } from '../data/resume';
+import {
+  certifications,
+  coreStrengths,
+  education,
+  experience,
+  resumeMeta,
+  resumePdfUrl,
+  techStack,
+} from '../data/resume';
 import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
 const page = pages.resume;
@@ -116,10 +124,24 @@ const schema = [
           </ul>
         </section>
         <section>
+          <h2 class="resume__h2">Certifications</h2>
+          {
+            certifications.map((entry) => (
+              <div class="entry">
+                <h3>{entry.name}</h3>
+                <p>
+                  {entry.issuer} · {entry.year}
+                </p>
+              </div>
+            ))
+          }
+          <p class="entry__more"><a class="link" href={site.profiles.credly}>Verify on Credly</a></p>
+        </section>
+        <section>
           <h2 class="resume__h2">Education</h2>
           {
             education.map((entry) => (
-              <div class="edu">
+              <div class="entry">
                 <h3>{entry.degree}</h3>
                 <p>
                   {entry.institution} · {entry.period}
@@ -322,8 +344,13 @@ const schema = [
     color: var(--fg-2);
   }
 
-  .edu h3 {
+  .entry h3 {
     font-size: var(--step-0);
+  }
+
+  .entry + .entry,
+  .entry__more {
+    margin-top: var(--space-3);
   }
 
   .resume__contact {
