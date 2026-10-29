@@ -26,6 +26,20 @@ export const education = [
   },
 ];
 
+/** Newest first. The badges are on Credly (`site.profiles.credly`). */
+export const certifications = [
+  {
+    year: '2026',
+    name: 'AWS Certified Cloud Practitioner',
+    issuer: 'Amazon Web Services',
+  },
+  {
+    year: '2026',
+    name: 'AWS Certified AI Practitioner',
+    issuer: 'Amazon Web Services',
+  },
+];
+
 export const techStack = [
   'Laravel',
   'PHP',
