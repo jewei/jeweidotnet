@@ -72,7 +72,13 @@ const browser = await chromium.launch();
 let overflow = 0;
 
 for (const theme of themes) {
-  const context = await browser.newContext({ colorScheme: theme, deviceScaleFactor: 1 });
+  // Reduced motion captures the settled layout: no entrance mid-flight, and
+  // no scroll reveals still hidden below the fold of a full-page capture.
+  const context = await browser.newContext({
+    colorScheme: theme,
+    deviceScaleFactor: 1,
+    reducedMotion: 'reduce',
+  });
   // Block third-party analytics in screenshots.
   await context.route(/umami|cloudflareinsights/, (route) => route.abort());
   const page = await context.newPage();

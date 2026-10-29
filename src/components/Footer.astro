@@ -2,21 +2,28 @@
 import Wordmark from './Wordmark.astro';
 import { footerNav, site } from '../site.config';
 
+interface Props {
+  /** Scroll reveals: the rules draw in and the columns rise (home page). */
+  reveal?: boolean;
+}
+
+const { reveal = false } = Astro.props;
 const year = new Date().getFullYear();
 const isExternal = (href: string) => /^https?:/.test(href);
+const rise = reveal ? '' : undefined;
 ---
 
-<footer class="footer">
+<footer class="footer" data-reveal={reveal ? 'rule' : undefined}>
   <div class="wrap">
     <div class="footer__grid">
-      <div class="footer__brand">
+      <div class="footer__brand" data-reveal={rise}>
         <Wordmark />
         <p>© {site.firstYear}–{year} {site.author}</p>
       </div>
 
       {
         footerNav.map((group) => (
-          <nav class="footer__group" aria-label={group.title}>
+          <nav class="footer__group" aria-label={group.title} data-reveal={rise}>
             <h2 class="label">{group.title}</h2>
             <ul role="list">
               {group.links.map((link) => (
@@ -32,7 +39,7 @@ const isExternal = (href: string) => /^https?:/.test(href);
       }
     </div>
 
-    <p class="footer__colophon">
+    <p class="footer__colophon" data-reveal={rise}>
       Built with Astro on Cloudflare Pages. Set in Geist and Source Serif. Every page is also{' '}
       <a href="/llms.txt">Markdown for agents</a>.
     </p>
@@ -41,8 +48,21 @@ const isExternal = (href: string) => /^https?:/.test(href);
 
 <style>
   .footer {
+    position: relative;
     margin-top: var(--section);
-    border-top: var(--hairline);
+  }
+
+  /* Rules are boxes, not borders, so a reveal can draw them (base.css) */
+  .footer::before,
+  .footer__colophon::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(var(--drawn, 1));
+    transform-origin: left;
+    transition: transform var(--dur-4) var(--ease-out) var(--delay, 0ms);
   }
 
   .footer__grid {
@@ -83,8 +103,8 @@ const isExternal = (href: string) => /^https?:/.test(href);
   }
 
   .footer__colophon {
+    position: relative;
     padding-block: var(--space-4) var(--space-6);
-    border-top: var(--hairline);
     font-size: var(--step--2);
     color: var(--fg-3);
   }
