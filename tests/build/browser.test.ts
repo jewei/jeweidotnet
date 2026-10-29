@@ -107,6 +107,19 @@ describe('theme toggle', () => {
   });
 });
 
+describe('article contents', () => {
+  test('marks the section in view', async () => {
+    const { page, context } = await open('/claude-code-tips/', 1440);
+    const links = page.locator('.toc a');
+    const current = (index: number) => links.nth(index).evaluate((link) => link.matches(':target-current'));
+    const target = (await links.nth(2).getAttribute('href'))?.slice(1) ?? '';
+    await page.evaluate((id) => document.getElementById(id)?.scrollIntoView({ block: 'start' }), target);
+    await expect.poll(() => current(2)).toBe(true);
+    expect(await current(0)).toBe(false);
+    await context.close();
+  });
+});
+
 describe('code blocks', () => {
   test('copy button copies the code and confirms', async () => {
     const { page, context } = await open('/claude-code-tips/');

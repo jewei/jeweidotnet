@@ -492,10 +492,16 @@ const schema = [
       border-top: var(--hairline);
     }
 
+    /*
+     * Scroll markers: the browser marks the link of the section in view
+     * (:target-current), with no JavaScript. Chrome and Edge only for now;
+     * other browsers show the plain list.
+     */
     .toc ol {
       display: grid;
       gap: var(--space-2);
       margin-top: var(--space-3);
+      scroll-target-group: auto;
     }
 
     .toc a {
@@ -509,6 +515,17 @@ const schema = [
 
     .toc a:hover {
       color: var(--fg);
+    }
+
+    /*
+     * The section in view looks bold. A stroke thickens the letters without
+     * changing their width (font-weight would), so a title never re-wraps
+     * and the list never jumps.
+     */
+    .toc a:target-current {
+      color: var(--fg);
+      -webkit-text-stroke: 0.05em currentColor;
+      paint-order: stroke fill;
     }
   }
 

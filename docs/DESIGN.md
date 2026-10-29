@@ -65,7 +65,7 @@ Dark theme: same names, values under `prefers-color-scheme: dark` and `[data-the
 
 - **Home:** intro (role label with the city and its live time, a two-line H1, two serif paragraphs, status line), then Projects and Writing as `.part` sections. At 64rem+ the portrait is a tilted sticker in a right column on a masked dot grid ("grid paper"); below 64rem a small sticker sits above the copy and the grid is hidden.
 - **About:** the same intro grid, then Work, Tools, Writing, Outside work, and Contact as `.part` sections with prose bodies.
-- **Article:** reading column centred; at 64rem+ the facts rail (entry, dates, topics) and contents list sit in the left margin and stick. Below 64rem the facts become a row under the byline. A 2px reading-progress bar uses CSS scroll timelines (no JS). Ends with the author card, older/newer pager, and related posts.
+- **Article:** reading column centred; at 64rem+ the facts rail (entry, dates, topics) and contents list sit in the left margin and stick. The contents list marks the section in view with CSS scroll markers (`:target-current`, no JS; Chrome and Edge, other browsers show the plain list). Below 64rem the facts become a row under the byline. A 2px reading-progress bar uses CSS scroll timelines (no JS). Ends with the author card, older/newer pager, and related posts.
 - **Index pages:** `PageHeader`, topic nav, ledger. The blog groups years with a sticky year label at 64rem+.
 - **Résumé:** header over a 1px `--fg` rule, experience column and a profile/skills rail. Print is A4 black on white with web-only actions hidden.
 
