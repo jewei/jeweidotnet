@@ -305,8 +305,20 @@
    * typeset document. Below 64rem the heading sits above the body.
    */
   .part {
+    position: relative;
     padding-top: var(--space-3);
-    border-top: 1px solid var(--fg);
+  }
+
+  /* The rule is a box, not a border, so a reveal can draw it from the left */
+  .part::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--fg);
+    transform: scaleX(var(--drawn, 1));
+    transform-origin: left;
+    transition: transform var(--dur-4) var(--ease-out) var(--delay, 0ms);
   }
 
   .part + .part {
@@ -352,6 +364,36 @@
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 180ms;
+  }
+
+  /* The theme toggle reveals the new theme in a circle (public/site.js) */
+  :root.theme-change::view-transition-old(root),
+  :root.theme-change::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /*
+   * Scroll reveal, opt-in with data-reveal (home page). public/theme.js adds
+   * .js before first paint; public/site.js sets data-shown when the element
+   * scrolls into view and staggers --delay. "rule" keeps the element and
+   * only draws its rule (a pseudo-element scaled by --drawn).
+   */
+  .js [data-reveal] {
+    transition:
+      opacity var(--dur-3) var(--ease) var(--delay, 0ms),
+      transform var(--dur-3) var(--ease) var(--delay, 0ms);
+  }
+
+  .js [data-reveal]:not([data-shown]) {
+    --drawn: 0;
+    opacity: 0;
+    transform: translateY(var(--space-4));
+  }
+
+  .js [data-reveal='rule']:not([data-shown]) {
+    opacity: 1;
+    transform: none;
   }
 }
 

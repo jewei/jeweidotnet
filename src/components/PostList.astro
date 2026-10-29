@@ -3,6 +3,7 @@
  * The writing ledger: one row per post with number, date, title, summary,
  * and topics. The whole row is a click target; topic links stay separate.
  */
+import Icon from './Icon.astro';
 import { formatDate, postUrl, type Post } from '../lib/posts';
 import { topicName, topicUrl, type TopicKey } from '../data/topics';
 
@@ -12,18 +13,22 @@ interface Props {
   /** Hide this topic from each row (used on the topic's own page). */
   currentTopic?: TopicKey;
   showTopics?: boolean;
+  /** Rows rise into view as you scroll (base.css). */
+  reveal?: boolean;
+  /** On hover, an arrow points at the post and the number turns green. */
+  arrow?: boolean;
 }
 
-const { posts, headingLevel = 3, currentTopic, showTopics = true } = Astro.props;
+const { posts, headingLevel = 3, currentTopic, showTopics = true, reveal = false, arrow = false } = Astro.props;
 const Heading = `h${headingLevel}` as const;
 ---
 
-<ol class="ledger" role="list">
+<ol class:list={['ledger', { 'ledger--arrow': arrow }]} role="list">
   {
     posts.map((post) => {
       const topics = post.data.tags.filter((tag) => tag !== currentTopic);
       return (
-        <li class="ledger__row" data-md-post>
+        <li class="ledger__row" data-md-post data-reveal={reveal ? '' : undefined}>
           <p class="ledger__meta">
             <span class="ledger__no">No. {post.number}</span>
             <time datetime={post.data.pubDate.toISOString()}>{formatDate.short(post.data.pubDate)}</time>
@@ -43,6 +48,7 @@ const Heading = `h${headingLevel}` as const;
               </ul>
             )}
           </div>
+          {arrow && <Icon name="arrow-right" class="ledger__arrow" />}
           {post.data.draft && <span class="ledger__draft label">Draft</span>}
         </li>
       );
@@ -60,7 +66,18 @@ const Heading = `h${headingLevel}` as const;
     display: grid;
     gap: var(--space-2);
     padding-block: var(--space-5);
-    border-bottom: var(--hairline);
+  }
+
+  /* The rule is a box, not a border, so a reveal can draw it (base.css) */
+  .ledger__row::before {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: var(--line);
+    transform: scaleX(var(--drawn, 1));
+    transform-origin: left;
+    transition: transform var(--dur-4) var(--ease-out) calc(var(--delay, 0ms) + 80ms);
   }
 
   .ledger__meta {
@@ -74,6 +91,16 @@ const Heading = `h${headingLevel}` as const;
 
   .ledger__no {
     color: var(--fg-2);
+    transition: color var(--dur-2) var(--ease);
+  }
+
+  .ledger--arrow .ledger__row:hover .ledger__no {
+    color: var(--accent);
+  }
+
+  /* Icon renders the arrow, so scoped selectors need :global() */
+  .ledger__row :global(.ledger__arrow) {
+    display: none;
   }
 
   .ledger__title {
@@ -167,6 +194,28 @@ const Heading = `h${headingLevel}` as const;
       flex-direction: column;
       gap: var(--space-1);
       padding-top: 0.4em;
+    }
+
+    .ledger--arrow .ledger__row {
+      grid-template-columns: 9rem minmax(0, 1fr) 1.25rem;
+    }
+
+    .ledger__row :global(.ledger__arrow) {
+      display: block;
+      width: 1.25rem;
+      height: 1.25rem;
+      margin-top: var(--space-1);
+      color: var(--accent);
+      opacity: 0;
+      transform: translateX(calc(var(--space-2) * -1));
+      transition:
+        opacity var(--dur-2) var(--ease),
+        transform var(--dur-2) var(--ease);
+    }
+
+    .ledger__row:hover :global(.ledger__arrow) {
+      opacity: 1;
+      transform: none;
     }
   }
 </style>
