@@ -25,10 +25,15 @@ const { label, title, lede } = Astro.props;
   /*
    * Page titles are often one word ("Entrepreneurship"). The size follows the
    * plate, so a 16-letter word in the wide face fits on one line at 320px.
+   * The floor (--step-2, in rem) keeps the title above body text when the
+   * page is zoomed. If a word still cannot fit there, it breaks at a
+   * syllable. Only this heading hyphenates: auto hyphenation breaks words
+   * at every line end, not only words that cannot fit.
    */
   h1 {
     max-width: 52rem;
-    font-size: min(var(--step-4), 9.5cqi);
+    font-size: clamp(var(--step-2), 9.5cqi, var(--step-4));
+    hyphens: auto;
   }
 
   .label + h1 {

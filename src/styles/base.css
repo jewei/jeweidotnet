@@ -107,17 +107,6 @@
     line-height: var(--leading-snug);
   }
 
-  /*
-   * A heading word too wide for its line (the wide face at 320px:
-   * "Entrepreneurship") breaks at a syllable with a hyphen, not at any
-   * letter. Body text only breaks a word that cannot fit at all.
-   */
-  h1,
-  h2,
-  h3 {
-    hyphens: auto;
-  }
-
   /* Display headings: the wide face, heavy and tight */
   h1 {
     font-family: var(--display);

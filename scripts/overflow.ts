@@ -47,9 +47,12 @@ export function findOverflow(page: Page): Promise<string[]> {
     const range = document.createRange();
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
+      if (!parent || !node.textContent?.trim()) continue;
       // Unrendered text (display: none, visibility: hidden, a closed <details>) has no lines to check.
-      if (!parent || !node.textContent?.trim() || !parent.checkVisibility({ visibilityProperty: true }))
-        continue;
+      // A display: contents element has no box of its own: ask its nearest ancestor that has one.
+      let boxed: Element | null = parent;
+      while (boxed && getComputedStyle(boxed).display === 'contents') boxed = boxed.parentElement;
+      if (!boxed || !boxed.checkVisibility({ visibilityProperty: true })) continue;
       // body's own overflow-x: clip hides overflow from scrolling; it does not make it acceptable.
       if ((parent !== document.body && clips(parent)) || contained(parent)) continue;
       range.selectNodeContents(node);
