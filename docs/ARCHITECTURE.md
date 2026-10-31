@@ -51,7 +51,9 @@ vp run build
 Two files in `public/` (CSP allows only same-origin scripts):
 
 - `theme.js` (render-blocking, about 300 bytes): applies a stored theme before paint.
-- `site.js` (deferred): theme toggle, code copy, and the `jewei.toString()` console easter egg.
+- `site.js` (deferred): theme toggle, code copy, the home page motion (scroll reveals, the clock, and the portrait's eyes), and the `jewei.toString()` console easter egg.
+
+Pages load both at a content-versioned URL, `/site.js?v=<hash>` (`src/lib/scripts.ts`). The files keep fixed names, and caches can keep an old copy after a deploy: the Cloudflare edge, and browsers through the zone's 4-hour Browser Cache TTL, which overrides the 1-hour `Cache-Control` in `_headers`. Without the version, new HTML can run old JavaScript; the first redesign deploy did, and the home page's eyes did not move. A build test checks the URLs.
 
 Everything else is CSS: the reading progress bar (scroll timeline), view transitions, and hover states.
 
