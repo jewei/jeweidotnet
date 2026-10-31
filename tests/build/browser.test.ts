@@ -571,19 +571,24 @@ describe('post list', () => {
   // their own clicks: the space beside them reaches the row's link.
   test('a click beside the topics opens the post', async () => {
     const { page, context } = await open('/blog/', 1280);
-    const dead = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('.ledger__topics')).flatMap((topics) => {
+    const { probed, dead } = await page.evaluate(() => {
+      let probed = 0;
+      const dead = Array.from(document.querySelectorAll('.ledger__topics')).flatMap((topics) => {
         topics.scrollIntoView({ block: 'center' });
         const strip = topics.getBoundingClientRect();
         const end = Math.max(
           ...Array.from(topics.querySelectorAll('a'), (a) => a.getBoundingClientRect().right),
         );
         if (end + 8 > strip.right - 1) return [];
+        probed++;
         const hit = document.elementFromPoint(end + 8, strip.top + strip.height / 2);
         const title = topics.closest('.ledger__row')?.querySelector('.ledger__title a');
         return hit && hit === title ? [] : [title?.textContent?.trim().slice(0, 24) ?? '?'];
-      }),
-    );
+      });
+      return { probed, dead };
+    });
+    // A row with no space beside its topics is skipped, but the test must probe some
+    expect(probed).toBeGreaterThan(0);
     expect(dead).toEqual([]);
     await context.close();
   });
