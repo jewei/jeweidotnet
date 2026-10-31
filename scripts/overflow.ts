@@ -17,8 +17,13 @@ export function findOverflow(page: Page): Promise<string[]> {
   return page.evaluate(() => {
     const width = document.documentElement.clientWidth;
     const clips = (el: Element) => getComputedStyle(el).overflowX !== 'visible';
+    // html and body clip for the whole page; only containers inside the page own their overflow.
     const contained = (el: Element) => {
-      for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+      for (
+        let node = el.parentElement;
+        node && node !== document.body && node !== document.documentElement;
+        node = node.parentElement
+      ) {
         if (clips(node)) return true;
       }
       return false;
@@ -42,7 +47,11 @@ export function findOverflow(page: Page): Promise<string[]> {
     const range = document.createRange();
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const parent = node.parentElement;
-      if (!parent || !node.textContent?.trim() || clips(parent) || contained(parent)) continue;
+      // Unrendered text (display: none, visibility: hidden, a closed <details>) has no lines to check.
+      if (!parent || !node.textContent?.trim() || !parent.checkVisibility({ visibilityProperty: true }))
+        continue;
+      // body's own overflow-x: clip hides overflow from scrolling; it does not make it acceptable.
+      if ((parent !== document.body && clips(parent)) || contained(parent)) continue;
       range.selectNodeContents(node);
       const lines = Array.from(range.getClientRects()).filter(outside);
       if (!lines.length) continue;

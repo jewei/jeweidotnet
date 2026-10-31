@@ -19,11 +19,16 @@ const { label, title, lede } = Astro.props;
   .page-head {
     margin-top: var(--section);
     padding: var(--space-7) var(--plate-pad) var(--plate-pad);
+    container-type: inline-size;
   }
 
+  /*
+   * Page titles are often one word ("Entrepreneurship"). The size follows the
+   * plate, so a 16-letter word in the wide face fits on one line at 320px.
+   */
   h1 {
     max-width: 52rem;
-    font-size: var(--step-4);
+    font-size: min(var(--step-4), 9.5cqi);
   }
 
   .label + h1 {

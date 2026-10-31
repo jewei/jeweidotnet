@@ -41,15 +41,15 @@ Dark theme: same names, values under `prefers-color-scheme: dark` and `[data-the
 
 ## Type roles
 
-| Role            | Style                                                                                                                 |
-| --------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Display (H1)    | Zalando Sans Expanded 800, `--step-4`, tracking −0.045em, leading 1.04. Home: sized to its column (cqi), leading 1.02 |
-| Plate bar title | Zalando Sans Expanded 700, `--step--3`, uppercase, 0.1em tracking                                                     |
-| Labels and tabs | Zalando Sans Expanded 600–700, `--step--3`, uppercase (`.label`, header tabs, buttons, chips)                         |
-| Titles in lists | Zalando Sans Expanded 700–800, `--step-1` (ledger titles, project names, pager)                                       |
-| Prose           | Source Serif 4, `--step-prose`, leading 1.72. H2 in the display face; H3 and H4 in Geist                              |
-| Lede / UI text  | Geist 400–500, `--step-0` / `--step-1`                                                                                |
-| Metadata        | Geist Mono, `--step--3` / `--step--2` (dates, catalogue numbers, stacks, the bar chip)                                |
+| Role            | Style                                                                                                                                                                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Display (H1)    | Zalando Sans Expanded 800, `--step-4`, tracking −0.045em, leading 1.04. Home: sized to its column (cqi), leading 1.02. Page headers: `min(--step-4, 9.5cqi)`, so one long word fits at 320px. Headings hyphenate (`hyphens: auto`) |
+| Plate bar title | Zalando Sans Expanded 700, `--step--3`, uppercase, 0.1em tracking                                                                                                                                                                  |
+| Labels and tabs | Zalando Sans Expanded 600–700, `--step--3`, uppercase (`.label`, header tabs, buttons, chips)                                                                                                                                      |
+| Titles in lists | Zalando Sans Expanded 700–800, `--step-1` (ledger titles, project names, pager)                                                                                                                                                    |
+| Prose           | Source Serif 4, `--step-prose`, leading 1.72. H2 in the display face; H3 and H4 in Geist                                                                                                                                           |
+| Lede / UI text  | Geist 400–500, `--step-0` / `--step-1`                                                                                                                                                                                             |
+| Metadata        | Geist Mono, `--step--3` / `--step--2` (dates, catalogue numbers, stacks, the bar chip)                                                                                                                                             |
 
 ## Components
 
