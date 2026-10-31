@@ -266,4 +266,36 @@ describe('résumé print', () => {
     expect(pages).toBeLessThanOrEqual(2);
     await context.close();
   });
+
+  // Print is black on white in every theme: no dark-theme grey on paper.
+  test.each(['light', 'dark'] as const)('%s theme: every text prints at 7:1 on white', async (scheme) => {
+    const { page, context } = await open('/resume/', 1280, scheme);
+    await page.emulateMedia({ media: 'print', colorScheme: scheme });
+    const weak = await page.evaluate(() => {
+      const canvas = document.createElement('canvas').getContext('2d');
+      if (!canvas) throw new Error('The browser has no 2D canvas');
+      const lum = (color: string) => {
+        canvas.clearRect(0, 0, 1, 1);
+        canvas.fillStyle = color;
+        canvas.fillRect(0, 0, 1, 1);
+        return Array.from(canvas.getImageData(0, 0, 1, 1).data.slice(0, 3))
+          .map((v) => v / 255)
+          .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+          .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+      };
+      return Array.from(document.querySelectorAll('.resume *'))
+        .filter(
+          (el) =>
+            el.checkVisibility() &&
+            Array.from(el.childNodes).some((n) => n.nodeType === 3 && n.textContent?.trim()),
+        )
+        .map((el) => ({ el, ratio: 1.05 / (lum(getComputedStyle(el).color) + 0.05) }))
+        .filter(({ ratio }) => ratio < 7)
+        .map(
+          ({ el, ratio }) => `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} ${ratio.toFixed(2)}`,
+        );
+    });
+    expect(weak).toEqual([]);
+    await context.close();
+  });
 });

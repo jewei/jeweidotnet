@@ -387,6 +387,21 @@ const schema = [
       display: none !important;
     }
 
+    /*
+     * Paper is black on white in every theme. The colour tokens take their
+     * print values, so a dark theme never prints its light greys. The dark
+     * theme's token rules are more specific than :root, hence !important.
+     */
+    :global(:root) {
+      --fg: var(--print-fg) !important;
+      --fg-2: var(--print-fg-2) !important;
+      --fg-3: var(--print-fg-2) !important;
+      --line: var(--print-line) !important;
+      --line-strong: var(--print-line) !important;
+      --bg-raised: var(--print-bg) !important;
+      --bg-sunken: var(--print-bg) !important;
+    }
+
     :global(html) {
       background: var(--print-bg) !important;
       color: var(--print-fg) !important;
