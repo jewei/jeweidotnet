@@ -63,7 +63,15 @@ const schema = [
   <div class="wrap">
     <PageHeader label={`Topic · ${count}`} title={name} lede={description} />
     <TopicNav topics={topicCounts(posts)} current={topic} total={posts.length} />
-    <h2 class="sr-only">Posts about {name}</h2>
-    <PostList posts={tagged} currentTopic={topic} />
+    <section class="plate topic-posts" aria-labelledby="posts-title">
+      <h2 id="posts-title" class="sr-only">Posts about {name}</h2>
+      <PostList posts={tagged} currentTopic={topic} />
+    </section>
   </div>
 </Base>
+
+<style>
+  .topic-posts {
+    padding: var(--plate-pad);
+  }
+</style>

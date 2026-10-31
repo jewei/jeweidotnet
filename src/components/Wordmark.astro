@@ -1,9 +1,9 @@
 ---
-/** The `jewei.toString()` wordmark. Links home. */
+/** The `jewei.toString()` wordmark. Links home. A slot before the text takes an avatar. */
 ---
 
 <a href="/" class="wordmark" aria-label="jewei.toString(), home">
-  <span class="wordmark__name">jewei</span><span class="wordmark__method">.toString</span><span
+  <slot /><span class="wordmark__name">jewei</span><span class="wordmark__method">.toString</span><span
     class="wordmark__parens">()</span
   >
 </a>
@@ -31,6 +31,7 @@
 
   .wordmark__parens {
     color: var(--accent);
+    font-weight: 600;
   }
 
   .wordmark:hover .wordmark__method {

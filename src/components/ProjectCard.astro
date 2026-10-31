@@ -18,7 +18,7 @@ const p = project.data;
 const Heading = `h${headingLevel}` as const;
 ---
 
-<article class="project" id={project.id}>
+<article class="project plate" id={project.id}>
   <div class="project__media">
     <Image
       src={p.image}
@@ -84,17 +84,19 @@ const Heading = `h${headingLevel}` as const;
 </article>
 
 <style>
+  /* Each project is a plate: the cover print and its spec sheet */
   .project {
-    position: relative;
     display: grid;
     gap: var(--space-5);
     align-content: start;
+    padding: var(--plate-pad);
+    scroll-margin-top: var(--space-6);
   }
 
   .project__media {
     display: block;
     overflow: hidden;
-    border-radius: var(--radius-3);
+    border-radius: var(--radius-2);
     background: var(--bg-sunken);
     outline: 1px solid var(--line);
     outline-offset: -1px;
@@ -119,9 +121,11 @@ const Heading = `h${headingLevel}` as const;
   }
 
   .project__name {
-    font-size: var(--step-2);
-    letter-spacing: var(--tracking-heading);
-    line-height: 1.15;
+    font-family: var(--display);
+    font-size: var(--step-3);
+    font-weight: 800;
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
   }
 
   .project__name a {
@@ -132,7 +136,7 @@ const Heading = `h${headingLevel}` as const;
   .project:hover .project__name a {
     text-decoration: underline;
     text-decoration-color: var(--accent-mark);
-    text-decoration-thickness: 1px;
+    text-decoration-thickness: 2px;
   }
 
   .project__summary {
@@ -157,9 +161,10 @@ const Heading = `h${headingLevel}` as const;
   }
 
   .project__spec dt {
-    font-family: var(--mono);
-    font-size: var(--step--2);
-    letter-spacing: var(--tracking-label);
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--fg-3);
     padding-top: 0.15em;
@@ -175,7 +180,7 @@ const Heading = `h${headingLevel}` as const;
   @media (min-width: 64rem) {
     .project {
       grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: var(--space-8);
+      gap: var(--space-7);
       align-items: center;
     }
   }

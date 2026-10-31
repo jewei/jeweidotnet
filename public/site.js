@@ -4,10 +4,6 @@
   var root = document.documentElement;
   var media = window.matchMedia('(prefers-color-scheme: dark)');
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var mouse = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  var clamp = function (value, limit) {
-    return Math.max(-limit, Math.min(limit, value));
-  };
 
   function currentTheme() {
     return root.dataset.theme || (media.matches ? 'dark' : 'light');
@@ -139,64 +135,41 @@
     setInterval(tick, 15000);
   }
 
-  // Home portrait: a sticker that you can drag. It tilts as it moves.
-  var sticker = document.querySelector('[data-sticker]');
-  if (sticker && mouse && !still) {
-    var print = sticker.firstElementChild;
-    var place = { x: 0, y: 0 };
-    var drag = null;
-    var drop = function () {
-      drag = null;
-      delete sticker.dataset.dragging;
-      print.style.setProperty('--tilt', '0deg');
+  // Home portrait: the eyes follow the pointer. This paints the portrait
+  // into each iris (same file as the <img>, so it comes from the cache), then
+  // sets --x and --y from -1 to 1 toward the pointer. CSS moves the irises.
+  var eyes = document.querySelector('[data-eyes]');
+  var face = eyes && eyes.previousElementSibling;
+  if (face && !still) {
+    var irises = eyes.querySelectorAll('image');
+    var frame = 0;
+    var look = function (x, y) {
+      eyes.style.setProperty('--x', x.toFixed(3));
+      eyes.style.setProperty('--y', y.toFixed(3));
     };
-    sticker.addEventListener('pointerdown', function (event) {
-      sticker.setPointerCapture(event.pointerId);
-      drag = { x: event.clientX - place.x, y: event.clientY - place.y, last: event.clientX };
-      sticker.dataset.dragging = '';
-    });
-    sticker.addEventListener('pointermove', function (event) {
-      if (!drag) return;
-      place = { x: event.clientX - drag.x, y: event.clientY - drag.y };
-      print.style.translate = place.x + 'px ' + place.y + 'px';
-      print.style.setProperty('--tilt', clamp((event.clientX - drag.last) * 0.8, 12) + 'deg');
-      drag.last = event.clientX;
-    });
-    sticker.addEventListener('pointerup', drop);
-    sticker.addEventListener('pointercancel', drop);
-  }
-
-  // Home projects: the hovered project's preview follows the pointer.
-  var zone = document.querySelector('[data-previews]');
-  var preview = zone && zone.querySelector('[data-preview]');
-  if (preview && mouse && !still) {
-    var key = '';
-    var rest = 0;
-    var show = function (next) {
-      if (next === key) return;
-      key = next;
-      preview.toggleAttribute('data-on', key !== '');
-      preview.querySelectorAll('[data-key]').forEach(function (image) {
-        image.toggleAttribute('data-on', image.dataset.key === key);
+    var wake = function () {
+      irises[0].addEventListener('load', function () {
+        eyes.dataset.on = '';
+      });
+      irises.forEach(function (iris) {
+        iris.setAttribute('href', face.currentSrc || face.src);
       });
     };
-    zone.addEventListener('pointermove', function (event) {
-      var box = zone.getBoundingClientRect();
-      var x = event.clientX - box.left;
-      var width = preview.offsetWidth;
-      var height = preview.offsetHeight;
-      var y = Math.max(-16, Math.min(box.height - height + 16, event.clientY - box.top - height * 0.55));
-      var row = event.target instanceof Element && event.target.closest('li[data-key]');
-      preview.style.translate = (x + 32 + width > box.width ? x - 32 - width : x + 32) + 'px ' + y + 'px';
-      preview.style.rotate = clamp(event.movementX * 0.5, 6) + 'deg';
-      clearTimeout(rest);
-      rest = setTimeout(function () {
-        preview.style.rotate = '0deg';
-      }, 120);
-      show(row ? row.dataset.key : '');
+    if (face.complete) wake();
+    else face.addEventListener('load', wake);
+    addEventListener('pointermove', function (event) {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(function () {
+        var box = eyes.getBoundingClientRect();
+        var x = event.clientX - box.left - box.width * 0.51;
+        var y = event.clientY - box.top - box.height * 0.43;
+        var d = Math.hypot(x, y) || 1;
+        var f = d / (d + box.width * 0.5) / d;
+        look(x * f, y * f);
+      });
     });
-    zone.addEventListener('pointerleave', function () {
-      show('');
+    root.addEventListener('pointerleave', function () {
+      look(0, 0);
     });
   }
 

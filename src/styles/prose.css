@@ -1,6 +1,7 @@
 /*
  * Long-form reading styles for Markdown output (posts and prose pages).
- * Apply with class="prose". Headings are sans; body text is serif.
+ * Apply with class="prose". H2 is the wide display face, H3 and H4 are sans;
+ * body text is serif.
  */
 
 .prose {
@@ -25,9 +26,11 @@
 }
 
 .prose h2 {
+  font-family: var(--display);
   font-size: var(--step-2);
-  letter-spacing: var(--tracking-heading);
-  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.2;
   margin-top: 2.4em;
 }
 
@@ -102,6 +105,15 @@
 
 .prose :is(ul, ol) {
   padding-left: 1.4em;
+}
+
+/* Bullets are small signal squares */
+.prose ul {
+  list-style: square;
+}
+
+.prose ul > li::marker {
+  color: var(--accent-mark);
 }
 
 .prose li + li {
@@ -220,7 +232,7 @@
 }
 
 .prose th {
-  background: var(--bg-raised);
+  background: var(--bg-sunken);
   font-weight: 600;
   white-space: nowrap;
 }

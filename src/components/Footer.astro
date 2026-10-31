@@ -3,7 +3,7 @@ import Wordmark from './Wordmark.astro';
 import { footerNav, site } from '../site.config';
 
 interface Props {
-  /** Scroll reveals: the rules draw in and the columns rise (home page). */
+  /** Scroll reveals: the leader draws in and the columns rise (home page). */
   reveal?: boolean;
 }
 
@@ -13,12 +13,15 @@ const isExternal = (href: string) => /^https?:/.test(href);
 const rise = reveal ? '' : undefined;
 ---
 
-<footer class="footer" data-reveal={reveal ? 'rule' : undefined}>
-  <div class="wrap">
+<footer class="footer wrap">
+  <div class="footer__plate plate" data-reveal={reveal ? 'rule' : undefined}>
+    <div class="footer__bar bar" data-no="§">
+      <p class="bar__title">Index</p>
+      <p class="bar__meta">© {site.firstYear}–{year} {site.author}</p>
+    </div>
     <div class="footer__grid">
       <div class="footer__brand" data-reveal={rise}>
         <Wordmark />
-        <p>© {site.firstYear}–{year} {site.author}</p>
       </div>
 
       {
@@ -40,45 +43,26 @@ const rise = reveal ? '' : undefined;
     </div>
 
     <p class="footer__colophon" data-reveal={rise}>
-      Built with Astro on Cloudflare Pages. Set in Geist and Source Serif. Every page is also{' '}
-      <a href="/llms.txt">Markdown for agents</a>.
+      Built with Astro on Cloudflare Pages. Set in Zalando Sans Expanded, Geist, and Source Serif. Every page is
+      also <a href="/llms.txt">Markdown for agents</a>.
     </p>
   </div>
 </footer>
 
 <style>
   .footer {
-    position: relative;
-    margin-top: var(--section);
-  }
-
-  /* Rules are boxes, not borders, so a reveal can draw them (base.css) */
-  .footer::before,
-  .footer__colophon::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 1px;
-    background: var(--line);
-    transform: scaleX(var(--drawn, 1));
-    transform-origin: left;
-    transition: transform var(--dur-4) var(--ease-out) var(--delay, 0ms);
+    margin-block: var(--section) var(--space-3);
   }
 
   .footer__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-6) var(--space-5);
-    padding-block: var(--space-6);
+    padding: var(--plate-pad);
   }
 
   .footer__brand {
     grid-column: 1 / -1;
-  }
-
-  .footer__brand p {
-    font-size: var(--step--2);
-    color: var(--fg-3);
   }
 
   .footer__group ul {
@@ -100,11 +84,12 @@ const rise = reveal ? '' : undefined;
     color: var(--fg);
     text-decoration: underline;
     text-decoration-color: var(--accent-mark);
+    text-decoration-thickness: 2px;
   }
 
   .footer__colophon {
-    position: relative;
-    padding-block: var(--space-4) var(--space-6);
+    padding: var(--space-4) var(--plate-pad) var(--space-5);
+    border-top: var(--hairline);
     font-size: var(--step--2);
     color: var(--fg-3);
   }

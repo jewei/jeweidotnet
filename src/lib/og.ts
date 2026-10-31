@@ -1,7 +1,9 @@
 /**
  * Build-time social cards (1200×630 PNG) for pages and posts that have no
  * custom image. Rendered with Satori (JSX-like tree → SVG) and Sharp (→ PNG).
- * The card design follows docs/DESIGN.md: paper, ink, one green signal.
+ * The card design follows docs/DESIGN.md: a signal-orange plate with ink text,
+ * like the head of an article. Colours are hex copies of --signal and --on-signal
+ * (Satori cannot read CSS custom properties); ink on signal is 7.2:1.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -36,13 +38,8 @@ function loadFonts() {
 }
 
 const color = {
-  bg: '#fbfaf7',
-  fg: '#16181d',
-  fg2: '#3f434b',
-  fg3: '#5b5f67',
-  line: '#e2e0da',
-  accent: '#1f7a45',
-  mark: '#2fa25e',
+  bg: '#fa761b',
+  fg: '#0f0a08',
 };
 
 type Child = string | VNode;
@@ -88,12 +85,12 @@ export async function renderCard(card: Card): Promise<Buffer> {
       h('div', { display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 26 }, [
         h('div', { display: 'flex' }, [
           h('span', { fontWeight: 600 }, 'jewei'),
-          h('span', { color: color.fg3 }, '.toString'),
-          h('span', { color: color.accent }, '()'),
+          h('span', {}, '.toString'),
+          h('span', { fontWeight: 600 }, '()'),
         ]),
         h(
           'div',
-          { display: 'flex', fontSize: 22, letterSpacing: 2, textTransform: 'uppercase', color: color.fg3 },
+          { display: 'flex', fontSize: 22, letterSpacing: 2, textTransform: 'uppercase' },
           card.eyebrow.replace('№', 'No.'),
         ),
       ]),
@@ -119,7 +116,6 @@ export async function renderCard(card: Card): Promise<Buffer> {
                   fontFamily: 'Serif',
                   fontSize: 32,
                   lineHeight: 1.35,
-                  color: color.fg2,
                   maxWidth: 960,
                   maxHeight: 88,
                   overflow: 'hidden',
@@ -136,11 +132,10 @@ export async function renderCard(card: Card): Promise<Buffer> {
           justifyContent: 'space-between',
           alignItems: 'center',
           fontSize: 24,
-          color: color.fg3,
         },
         [
           h('div', { display: 'flex', alignItems: 'center', gap: 16 }, [
-            h('div', { width: 56, height: 8, background: color.mark, borderRadius: 4 }),
+            h('div', { width: 56, height: 8, background: color.fg, borderRadius: 4 }),
             h('span', {}, site.author),
           ]),
           h('span', {}, displayUrl(site.url)),

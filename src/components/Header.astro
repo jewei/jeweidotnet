@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import Wordmark from './Wordmark.astro';
+import portrait from '../assets/jewei.jpg';
 import { primaryNav } from '../site.config';
 
 const path = Astro.url.pathname;
@@ -12,9 +14,11 @@ const { isPost = false } = Astro.props;
 const active = (match: readonly string[]) => match.some((prefix) => path.startsWith(prefix));
 ---
 
-<header class="header">
-  <div class="wrap header__inner">
-    <Wordmark />
+<header class="header wrap">
+  <div class="header__inner plate">
+    <Wordmark>
+      <Image class="header__avatar" src={portrait} alt="" width={56} height={56} format="webp" layout="fixed" />
+    </Wordmark>
     <nav class="header__nav" aria-label="Main">
       <ul role="list">
         {
@@ -32,17 +36,23 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
       </ul>
     </nav>
     <button class="header__theme" type="button" data-theme-toggle aria-pressed="false" aria-label="Switch theme">
-      <Icon name="sun" class="icon-sun" />
-      <Icon name="moon" class="icon-moon" />
+      <span class="header__track">
+        <Icon name="sun" class="icon-sun" />
+        <Icon name="moon" class="icon-moon" />
+      </span>
     </button>
   </div>
 </header>
 
 <style>
   .header {
-    border-bottom: var(--hairline);
+    padding-top: var(--space-3);
   }
 
+  /*
+   * The toolbar: a slim plate. Below 44rem the tabs take a second row and
+   * share its width; from 44rem everything sits on one row.
+   */
   .header__inner {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -50,108 +60,158 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
       'mark theme'
       'nav nav';
     align-items: center;
-    column-gap: var(--space-4);
-    padding-top: var(--space-3);
+    border-radius: var(--radius-2);
+  }
+
+  /* No screws on the toolbar: it is too slim for them */
+  .header__inner::after {
+    display: none;
   }
 
   .header__inner > :global(.wordmark) {
     grid-area: mark;
+    gap: 0;
+    padding-inline: var(--space-2) var(--space-3);
+  }
+
+  .header__inner :global(.header__avatar) {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-right: var(--space-2);
+    border-radius: 50%;
+    border: 1px solid var(--edge);
+    object-fit: cover;
+    background: var(--signal);
   }
 
   .header__nav {
     grid-area: nav;
-    margin-inline: calc(var(--space-2) * -1);
-    overflow-x: auto;
-    scrollbar-width: none;
+    border-top: var(--hairline);
   }
 
+  /* Each tab grows from its label's width, so the wide face never collides at 320px */
   .header__nav ul {
     display: flex;
-    justify-content: space-between;
-    gap: var(--space-1);
   }
 
-  @media (min-width: 44rem) {
-    .header__nav ul {
-      justify-content: flex-end;
-    }
+  .header__nav li {
+    flex: 1 1 auto;
+  }
+
+  .header__nav li + li {
+    border-left: var(--hairline);
   }
 
   .header__nav a {
-    position: relative;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
     min-height: 44px;
-    padding-inline: var(--space-2);
-    font-size: var(--step--1);
-    font-weight: 500;
+    padding-inline: var(--space-1);
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
     color: var(--fg-2);
     text-decoration: none;
     white-space: nowrap;
-    transition: color var(--dur-1) var(--ease);
+    transition:
+      color var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease);
   }
 
   .header__nav a:hover {
     color: var(--fg);
+    background: var(--bg-sunken);
   }
 
+  /* The current tab is lit: signal orange with ink text */
   .header__nav a[aria-current='page'] {
-    color: var(--fg);
+    color: var(--on-signal);
+    background: var(--signal);
   }
 
-  /* The current item is underlined; on hover the line draws in from the left */
-  .header__nav a::after {
-    content: '';
-    position: absolute;
-    inset-inline: var(--space-2);
-    bottom: -1px;
-    height: 2px;
-    background: var(--accent-mark);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--dur-2) var(--ease);
+  .header__nav li:first-child a {
+    border-bottom-left-radius: calc(var(--radius-2) - 1px);
   }
 
-  .header__nav a[aria-current='page']::after,
-  .header__nav a:hover::after {
-    transform: none;
+  .header__nav li:last-child a {
+    border-bottom-right-radius: calc(var(--radius-2) - 1px);
   }
 
+  /* Theme switch: a track with a signal knob. The icon shows the theme you would switch to. */
   .header__theme {
     grid-area: theme;
     display: grid;
     place-items: center;
-    width: 44px;
+    width: 3.75rem;
     height: 44px;
-    /* Puts the 20px icon's edge on the gutter: (44px - 20px) / 2 */
-    margin-right: calc(var(--space-3) * -1);
-    border-radius: 50%;
     color: var(--fg-2);
-    transition:
-      color var(--dur-1) var(--ease),
-      background-color var(--dur-1) var(--ease),
-      transform var(--dur-1) var(--ease);
   }
 
-  .header__theme:hover {
-    color: var(--fg);
-    background: var(--bg-raised);
+  .header__track {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    width: 2.75rem;
+    height: 1.5rem;
+    padding-inline: 0.2rem;
+    border: 1px solid var(--fg);
+    border-radius: 999px;
+    background: var(--bg-sunken);
   }
 
-  .header__theme:active {
-    transform: scale(0.92);
+  /* The knob sits on the current theme's side */
+  .header__track::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0.15rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 1px solid var(--edge);
+    border-radius: 50%;
+    background: var(--signal);
+    translate: 0 -50%;
+    transition: translate var(--dur-2) var(--ease-spring);
+  }
+
+  .header__theme:hover .header__track::before {
+    scale: 1.08;
+  }
+
+  .header__theme:active .header__track::before {
+    scale: 0.92;
   }
 
   .header__theme :global(svg) {
-    grid-area: 1 / 1;
-    width: 20px;
-    height: 20px;
+    grid-row: 1;
+    width: 0.8rem;
+    height: 0.8rem;
     transition:
       opacity var(--dur-2) var(--ease),
       transform var(--dur-2) var(--ease);
   }
 
-  /* Show the icon of the theme you would switch to */
+  .header__theme :global(.icon-sun) {
+    grid-column: 1;
+    justify-self: start;
+    margin-left: 0.1rem;
+  }
+
+  .header__theme :global(.icon-moon) {
+    grid-column: 2;
+    justify-self: end;
+    margin-right: 0.1rem;
+  }
+
+  .header__theme:hover {
+    color: var(--fg);
+  }
+
+  /* Light: knob left, moon on the right */
   .header__theme :global(.icon-moon) {
     opacity: 1;
   }
@@ -159,6 +219,11 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
   .header__theme :global(.icon-sun) {
     opacity: 0;
     transform: rotate(-45deg) scale(0.6);
+  }
+
+  /* Dark: knob right, sun on the left */
+  :global(:root[data-theme='dark']) .header__track::before {
+    translate: 1.25rem -50%;
   }
 
   :global(:root[data-theme='dark'] .icon-moon) {
@@ -172,6 +237,10 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
   }
 
   @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .header__track::before {
+      translate: 1.25rem -50%;
+    }
+
     :global(:root:not([data-theme='light']) .icon-moon) {
       opacity: 0;
       transform: rotate(45deg) scale(0.6);
@@ -185,28 +254,38 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
 
   @media (min-width: 44rem) {
     .header__inner {
-      grid-template-columns: auto 1fr auto;
+      grid-template-columns: auto auto 1fr;
       grid-template-areas: 'mark nav theme';
-      min-height: 4.5rem;
-      padding-top: 0;
     }
 
-    .header__nav a {
-      padding-inline: var(--space-3);
-    }
-
-    .header__nav a::after {
-      inset-inline: var(--space-3);
+    .header__inner > :global(.wordmark) {
+      padding-right: var(--space-4);
     }
 
     .header__nav {
-      justify-self: end;
-      margin-inline: 0;
-      overflow: visible;
+      align-self: stretch;
+      border-top: 0;
+      border-left: var(--hairline);
+      border-right: var(--hairline);
     }
 
-    .header__nav a::after {
-      bottom: calc((4.5rem - 44px) / -2 - 1px);
+    .header__nav ul {
+      height: 100%;
+    }
+
+    .header__nav a {
+      height: 100%;
+      padding-inline: var(--space-4);
+      letter-spacing: var(--tracking-label);
+    }
+
+    .header__nav li:first-child a,
+    .header__nav li:last-child a {
+      border-radius: 0;
+    }
+
+    .header__theme {
+      justify-self: end;
     }
   }
 </style>

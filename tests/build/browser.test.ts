@@ -107,6 +107,23 @@ describe('theme toggle', () => {
   });
 });
 
+describe('home portrait', () => {
+  test('the eyes turn toward the pointer', async () => {
+    const { page, context } = await open('/', 1280);
+    const eyes = page.locator('[data-eyes]');
+    // The irises appear once site.js has painted the portrait into them.
+    await expect.poll(() => eyes.getAttribute('data-on'), { timeout: 5000 }).toBe('');
+    const box = await eyes.boundingBox();
+    if (!box) throw new Error('The eyes have no box');
+    const gaze = () => eyes.evaluate((el) => Number(getComputedStyle(el).getPropertyValue('--x')));
+    await page.mouse.move(0, box.y + box.height * 0.43);
+    await expect.poll(gaze).toBeLessThan(-0.5);
+    await page.mouse.move(1279, box.y + box.height * 0.43);
+    await expect.poll(gaze).toBeGreaterThan(0.5);
+    await context.close();
+  });
+});
+
 describe('article contents', () => {
   test('marks the section in view', async () => {
     const { page, context } = await open('/claude-code-tips/', 1440);
@@ -163,18 +180,25 @@ async function contrastOf(page: Page, selector: string) {
     if (!el) throw new Error(`No element matches ${sel}`);
     const canvas = document.createElement('canvas').getContext('2d');
     if (!canvas) throw new Error('The browser has no 2D canvas');
-    const rgb = (color: string) => {
+    const rgba = (color: string) => {
+      canvas.clearRect(0, 0, 1, 1);
       canvas.fillStyle = color;
       canvas.fillRect(0, 0, 1, 1);
-      return Array.from(canvas.getImageData(0, 0, 1, 1).data.slice(0, 3));
+      return Array.from(canvas.getImageData(0, 0, 1, 1).data);
     };
+    const rgb = (color: string) => rgba(color).slice(0, 3);
+    // Text sits on the nearest opaque background: a plate, a signal plate, or the page.
+    let surface: Element | null = el;
+    while (surface && rgba(getComputedStyle(surface).backgroundColor)[3] < 255)
+      surface = surface.parentElement;
+    const background = getComputedStyle(surface ?? document.documentElement).backgroundColor;
     const lum = ([r, g, b]: number[]) =>
       [r, g, b]
         .map((v) => v / 255)
         .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
         .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
     const fg = lum(rgb(getComputedStyle(el).color));
-    const bg = lum(rgb(getComputedStyle(document.documentElement).backgroundColor));
+    const bg = lum(rgb(background));
     const [hi, lo] = fg > bg ? [fg, bg] : [bg, fg];
     return (hi + 0.05) / (lo + 0.05);
   }, selector);

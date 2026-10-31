@@ -83,6 +83,15 @@ export default defineConfig({
   fonts: [
     {
       provider: fontProviders.google(),
+      name: 'Zalando Sans Expanded',
+      cssVariable: '--font-display',
+      weights: ['500 900'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+    },
+    {
+      provider: fontProviders.google(),
       name: 'Geist',
       cssVariable: '--font-geist',
       weights: ['400 700'],

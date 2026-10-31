@@ -44,8 +44,10 @@ const schema = [
         )
       }
     </PageHeader>
-    <div class="prose body">
-      <slot />
+    <div class="sheet plate">
+      <div class="prose body">
+        <slot />
+      </div>
     </div>
   </div>
 </Base>
@@ -53,6 +55,11 @@ const schema = [
 <style>
   .cta {
     margin-top: var(--space-6);
+  }
+
+  .sheet {
+    margin-top: var(--section);
+    padding: var(--plate-pad);
   }
 
   .body {
