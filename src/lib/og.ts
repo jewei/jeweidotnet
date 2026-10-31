@@ -2,8 +2,10 @@
  * Build-time social cards (1200×630 PNG) for pages and posts that have no
  * custom image. Rendered with Satori (JSX-like tree → SVG) and Sharp (→ PNG).
  * The card design follows docs/DESIGN.md: a signal-orange plate with ink text,
- * like the head of an article. Colours are hex copies of --signal and --on-signal
- * (Satori cannot read CSS custom properties); ink on signal is 7.2:1.
+ * like the head of an article. The eyebrow and title are in the wide display
+ * face (Zalando Sans Expanded); the wordmark and subtitle are in Geist.
+ * Colours are hex copies of --signal and --on-signal (Satori cannot read CSS
+ * custom properties); ink on signal is 7.2:1.
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,9 +30,15 @@ function loadFonts() {
     { name: 'Geist', data: font('geist', 'geist-latin-400-normal.woff'), weight: 400, style: 'normal' },
     { name: 'Geist', data: font('geist', 'geist-latin-600-normal.woff'), weight: 600, style: 'normal' },
     {
-      name: 'Serif',
-      data: font('source-serif-4', 'source-serif-4-latin-400-normal.woff'),
-      weight: 400,
+      name: 'Display',
+      data: font('zalando-sans-expanded', 'zalando-sans-expanded-latin-700-normal.woff'),
+      weight: 700,
+      style: 'normal',
+    },
+    {
+      name: 'Display',
+      data: font('zalando-sans-expanded', 'zalando-sans-expanded-latin-800-normal.woff'),
+      weight: 800,
       style: 'normal',
     },
   ];
@@ -52,11 +60,12 @@ const h = (type: string, style: Record<string, unknown>, children?: Child | Chil
   props: { style, children },
 });
 
+/** The wide face takes about a third more width than Geist, so the steps are smaller. */
 function titleSize(title: string): number {
-  if (title.length <= 28) return 84;
-  if (title.length <= 48) return 72;
-  if (title.length <= 70) return 60;
-  return 52;
+  if (title.length <= 20) return 80;
+  if (title.length <= 36) return 64;
+  if (title.length <= 54) return 54;
+  return 46;
 }
 
 /** Shorten at a word boundary so the subtitle never stops mid-sentence. */
@@ -90,7 +99,14 @@ export async function renderCard(card: Card): Promise<Buffer> {
         ]),
         h(
           'div',
-          { display: 'flex', fontSize: 22, letterSpacing: 2, textTransform: 'uppercase' },
+          {
+            display: 'flex',
+            fontFamily: 'Display',
+            fontSize: 20,
+            fontWeight: 700,
+            letterSpacing: 2.4,
+            textTransform: 'uppercase',
+          },
           card.eyebrow.replace('№', 'No.'),
         ),
       ]),
@@ -99,11 +115,13 @@ export async function renderCard(card: Card): Promise<Buffer> {
           'div',
           {
             display: 'flex',
+            fontFamily: 'Display',
             fontSize: titleSize(card.title),
-            fontWeight: 600,
+            fontWeight: 800,
             lineHeight: 1.04,
-            letterSpacing: -2.4,
-            maxWidth: 1000,
+            // --tracking-display: -0.045em
+            letterSpacing: titleSize(card.title) * -0.045,
+            maxWidth: 1056,
           },
           card.title,
         ),
@@ -113,11 +131,10 @@ export async function renderCard(card: Card): Promise<Buffer> {
                 'div',
                 {
                   display: 'flex',
-                  fontFamily: 'Serif',
-                  fontSize: 32,
-                  lineHeight: 1.35,
+                  fontSize: 30,
+                  lineHeight: 1.4,
                   maxWidth: 960,
-                  maxHeight: 88,
+                  maxHeight: 84,
                   overflow: 'hidden',
                 },
                 clamp(card.subtitle),

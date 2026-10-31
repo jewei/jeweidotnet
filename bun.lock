@@ -9,7 +9,7 @@
         "@astrojs/rss": "^4.0.19",
         "@astrojs/sitemap": "^3.7.4",
         "@fontsource/geist": "^5.3.0",
-        "@fontsource/source-serif-4": "^5.3.1",
+        "@fontsource/zalando-sans-expanded": "^5.3.0",
         "astro": "^7.3.8",
         "rehype-external-links": "^3.0.0",
         "satori": "^0.56.1",
@@ -136,7 +136,7 @@
 
     "@fontsource/geist": ["@fontsource/geist@5.3.0", "", {}, "sha512-u03ftlfVwb05uijq2jGDJ03/HKGqMKaNFk7KOhkpBUex8+BhrAOfMs/XciJ2UUNUX9fEsZbZQld/RWMA2oFU7g=="],
 
-    "@fontsource/source-serif-4": ["@fontsource/source-serif-4@5.3.1", "", {}, "sha512-cWcTCXjYYrgF9A67fThVir1VSc0lPEYmwQ6jA4pPt01s2MSCi/maINUcZoCzaqnU8fyUReDO97eGcBUkHgOeug=="],
+    "@fontsource/zalando-sans-expanded": ["@fontsource/zalando-sans-expanded@5.3.0", "", {}, "sha512-f4KDDYq8Cna/c13PLyLNF0kLPXPChLe0QieVrCPX4T2eEe6ytPyqRKwsiPuAiFFnuOlszf37aNSyW5qrhmWzfw=="],
 
     "@img/colour": ["@img/colour@1.1.0", "", {}, "sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ=="],
 
