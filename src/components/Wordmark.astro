@@ -18,6 +18,11 @@
     letter-spacing: -0.01em;
     text-decoration: none;
     color: var(--fg);
+    /*
+     * Each part is its own flex item, so "(" starts a line. Safari applies the
+     * reset's `hanging-punctuation: first last` and hangs it over the "g".
+     */
+    hanging-punctuation: none;
   }
 
   .wordmark__name {
