@@ -2,6 +2,7 @@
 /**
  * The writing ledger: one row per post with number, date, title, summary,
  * and topics. The whole row is a click target; topic links stay separate.
+ * The page puts the ledger on a plate.
  */
 import Icon from './Icon.astro';
 import { formatDate, postUrl, type Post } from '../lib/posts';
@@ -15,11 +16,11 @@ interface Props {
   showTopics?: boolean;
   /** Rows rise into view as you scroll (base.css). */
   reveal?: boolean;
-  /** On hover, an arrow points at the post and the number turns green. */
+  /** A round arrow key at the end of each row; it lights up on hover. */
   arrow?: boolean;
 }
 
-const { posts, headingLevel = 3, currentTopic, showTopics = true, reveal = false, arrow = false } = Astro.props;
+const { posts, headingLevel = 3, currentTopic, showTopics = true, reveal = false, arrow = true } = Astro.props;
 const Heading = `h${headingLevel}` as const;
 ---
 
@@ -30,7 +31,7 @@ const Heading = `h${headingLevel}` as const;
       return (
         <li class="ledger__row" data-md-post data-reveal={reveal ? '' : undefined}>
           <p class="ledger__meta">
-            <span class="ledger__no">No. {post.number}</span>
+            <span class="ledger__no">No. {post.number}</span>
             <time datetime={post.data.pubDate.toISOString()}>{formatDate.short(post.data.pubDate)}</time>
           </p>
           <div class="ledger__body">
@@ -48,7 +49,11 @@ const Heading = `h${headingLevel}` as const;
               </ul>
             )}
           </div>
-          {arrow && <Icon name="arrow-right" class="ledger__arrow" />}
+          {arrow && (
+            <span class="ledger__key" aria-hidden="true">
+              <Icon name="arrow-right" />
+            </span>
+          )}
           {post.data.draft && <span class="ledger__draft label">Draft</span>}
         </li>
       );
@@ -57,10 +62,6 @@ const Heading = `h${headingLevel}` as const;
 </ol>
 
 <style>
-  .ledger {
-    border-top: var(--hairline);
-  }
-
   .ledger__row {
     position: relative;
     display: grid;
@@ -68,11 +69,19 @@ const Heading = `h${headingLevel}` as const;
     padding-block: var(--space-5);
   }
 
+  .ledger__row:first-child {
+    padding-top: 0;
+  }
+
+  .ledger__row:last-child {
+    padding-bottom: 0;
+  }
+
   /* The rule is a box, not a border, so a reveal can draw it (base.css) */
-  .ledger__row::before {
+  .ledger__row + .ledger__row::before {
     content: '';
     position: absolute;
-    inset: auto 0 0;
+    inset: 0 0 auto;
     height: 1px;
     background: var(--line);
     transform: scaleX(var(--drawn, 1));
@@ -82,36 +91,46 @@ const Heading = `h${headingLevel}` as const;
 
   .ledger__meta {
     display: flex;
-    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
     font-family: var(--mono);
     font-size: var(--step--2);
     color: var(--fg-3);
     letter-spacing: 0.02em;
   }
 
+  /* The catalogue number is an ink tag; it lights up when the row is hovered */
   .ledger__no {
-    color: var(--fg-2);
-    transition: color var(--dur-2) var(--ease);
+    padding: 0.15em 0.5em;
+    border-radius: var(--radius-1);
+    background: var(--fg);
+    color: var(--bg-raised);
+    font-size: var(--step--3);
+    font-weight: 600;
+    text-transform: uppercase;
+    transition:
+      background-color var(--dur-2) var(--ease),
+      color var(--dur-2) var(--ease);
   }
 
-  .ledger--arrow .ledger__row:hover .ledger__no {
-    color: var(--accent);
-  }
-
-  /* Icon renders the arrow, so scoped selectors need :global() */
-  .ledger__row :global(.ledger__arrow) {
-    display: none;
+  .ledger__row:hover .ledger__no {
+    background: var(--signal);
+    color: var(--on-signal);
   }
 
   .ledger__title {
+    font-family: var(--display);
     font-size: var(--step-1);
+    font-weight: 700;
     line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-heading);
   }
 
   .ledger__title a {
     text-decoration: none;
     background-image: linear-gradient(var(--accent-mark), var(--accent-mark));
-    background-size: 0 1px;
+    background-size: 0 2px;
     background-position: 0 100%;
     background-repeat: no-repeat;
     transition: background-size var(--dur-2) var(--ease);
@@ -126,7 +145,7 @@ const Heading = `h${headingLevel}` as const;
 
   .ledger__row:hover .ledger__title a,
   .ledger__title a:focus-visible {
-    background-size: 100% 1px;
+    background-size: 100% 2px;
   }
 
   .ledger__title a:focus-visible {
@@ -176,6 +195,10 @@ const Heading = `h${headingLevel}` as const;
     color: var(--fg);
   }
 
+  .ledger__key {
+    display: none;
+  }
+
   .ledger__draft {
     position: absolute;
     top: var(--space-5);
@@ -183,39 +206,61 @@ const Heading = `h${headingLevel}` as const;
     color: var(--accent);
   }
 
+  .ledger__row:first-child .ledger__draft {
+    top: 0;
+  }
+
   @media (min-width: 48rem) {
     .ledger__row {
-      grid-template-columns: 9rem minmax(0, 1fr);
+      grid-template-columns: 8rem minmax(0, 1fr);
       gap: var(--space-6);
-      padding-block: var(--space-6);
+      padding-block: var(--space-5);
     }
 
     .ledger__meta {
       flex-direction: column;
-      gap: var(--space-1);
-      padding-top: 0.4em;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding-top: 0.15em;
     }
 
     .ledger--arrow .ledger__row {
-      grid-template-columns: 9rem minmax(0, 1fr) 1.25rem;
+      grid-template-columns: 8rem minmax(0, 1fr) 2rem;
     }
 
-    .ledger__row :global(.ledger__arrow) {
-      display: block;
-      width: 1.25rem;
-      height: 1.25rem;
-      margin-top: var(--space-1);
-      color: var(--accent);
-      opacity: 0;
-      transform: translateX(calc(var(--space-2) * -1));
+    /* The arrow key: a round button that lights up and nudges on hover */
+    .ledger__key {
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      color: var(--fg-2);
       transition:
-        opacity var(--dur-2) var(--ease),
-        transform var(--dur-2) var(--ease);
+        background-color var(--dur-2) var(--ease),
+        border-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
     }
 
-    .ledger__row:hover :global(.ledger__arrow) {
-      opacity: 1;
-      transform: none;
+    .ledger__key :global(svg) {
+      width: 0.9rem;
+      height: 0.9rem;
+      transition: transform var(--dur-2) var(--ease);
+    }
+
+    .ledger__row:hover .ledger__key {
+      border-color: var(--edge);
+      background: var(--signal);
+      color: var(--on-signal);
+    }
+
+    .ledger__row:hover .ledger__key :global(svg) {
+      transform: translateX(2px);
+    }
+
+    .ledger--arrow .ledger__draft {
+      right: var(--space-8);
     }
   }
 </style>
