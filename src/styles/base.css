@@ -107,6 +107,17 @@
     line-height: var(--leading-snug);
   }
 
+  /*
+   * A heading word too wide for its line (the wide face at 320px:
+   * "Entrepreneurship") breaks at a syllable with a hyphen, not at any
+   * letter. Body text only breaks a word that cannot fit at all.
+   */
+  h1,
+  h2,
+  h3 {
+    hyphens: auto;
+  }
+
   /* Display headings: the wide face, heavy and tight */
   h1 {
     font-family: var(--display);
@@ -312,28 +323,37 @@
     box-shadow: var(--shadow);
   }
 
+  /*
+   * Each screw is a 10px tile in its corner, not a gradient the size of the
+   * plate: software rasterisers (CI, low-end devices) paint a full-size
+   * gradient pixel by pixel, which cost a tall article ~0.5s of raster.
+   */
   .plate::after,
   .part::after {
-    --at: var(--space-3);
-    --ring: transparent 3px, var(--screw) 3.5px 4.5px, transparent 5px;
+    --at: calc(var(--space-3) - 5px);
+    --ring: radial-gradient(circle, transparent 3px, var(--screw) 3.5px 4.5px, transparent 5px);
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background:
-      radial-gradient(circle at var(--at) var(--at), var(--ring)),
-      radial-gradient(circle at calc(100% - var(--at)) var(--at), var(--ring)),
-      radial-gradient(circle at var(--at) calc(100% - var(--at)), var(--ring)),
-      radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
+    background-image: var(--ring), var(--ring), var(--ring), var(--ring);
+    background-size: 10px 10px;
+    background-repeat: no-repeat;
+    background-position:
+      left var(--at) top var(--at),
+      right var(--at) top var(--at),
+      left var(--at) bottom var(--at),
+      right var(--at) bottom var(--at);
   }
 
   /* A plate with a bar on top keeps only its bottom screws: the bar holds the top */
   .part::after,
   .plate:has(> .bar)::after {
-    background:
-      radial-gradient(circle at var(--at) calc(100% - var(--at)), var(--ring)),
-      radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
+    background-image: var(--ring), var(--ring);
+    background-position:
+      left var(--at) bottom var(--at),
+      right var(--at) bottom var(--at);
   }
 
   /*
