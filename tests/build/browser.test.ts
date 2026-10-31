@@ -1,14 +1,19 @@
 /**
- * Real-browser checks (Playwright Chromium) against the built site:
- * interactions, console errors, and layout overflow. Needs a build.
+ * Real-browser checks against the built site: interactions, console errors,
+ * and layout overflow. Needs a build. Runs in Chromium; `BROWSER=webkit`
+ * runs the same checks in WebKit (Safari's engine), as `vp run test:webkit`
+ * and CI do.
  */
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { chromium, type Browser, type Page } from 'playwright';
+import { chromium, webkit, type Browser, type Page } from 'playwright';
 import { afterAll, beforeAll, describe, expect, test } from 'vite-plus/test';
 import { findOverflow } from '../../scripts/overflow';
 import { dist } from './helpers';
+
+const engine = process.env.BROWSER === 'webkit' ? webkit : chromium;
+const inWebKit = engine === webkit;
 
 let server: http.Server;
 let browser: Browser;
@@ -41,7 +46,7 @@ beforeAll(async () => {
   const address = server.address();
   if (address === null || typeof address === 'string') throw new Error('The test server has no TCP port.');
   origin = `http://localhost:${address.port}`;
-  browser = await chromium.launch();
+  browser = await engine.launch();
 });
 
 afterAll(async () => {
@@ -255,19 +260,70 @@ describe('target sizes', () => {
   });
 });
 
+describe('hanging punctuation', () => {
+  // The reset sets `hanging-punctuation: first last`. Safari (the only engine
+  // with it) hangs a bracket or quote that starts or ends a flex or grid item
+  // outside the item, over its neighbour: the wordmark's "(" once covered the
+  // "g". Such items need `hanging-punctuation: none`. Chromium never hangs, so
+  // only the WebKit run (`vp run test:webkit`) can fail here.
+  test.each(routes)('%s: no punctuation hangs out of a flex or grid item', async (route) => {
+    const { page, context } = await open(route, 320);
+    const hanging: Record<number, string[]> = {};
+    for (const width of [320, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      const found = await page.evaluate(() => {
+        const edge = /^[\p{Ps}\p{Pi}\p{Pf}"']|[\p{Pe}\p{Pi}\p{Pf}"']$/u;
+        const range = document.createRange();
+        const out: string[] = [];
+        for (const el of document.body.querySelectorAll('*')) {
+          const parent = el.parentElement;
+          if (!parent || !/flex|grid/.test(getComputedStyle(parent).display)) continue;
+          if (getComputedStyle(el).display === 'contents' || !el.checkVisibility()) continue;
+          const text = el.textContent?.trim() ?? '';
+          if (!edge.test(text)) continue;
+          const box = el.getBoundingClientRect();
+          range.selectNodeContents(el);
+          const outside = Array.from(range.getClientRects()).some(
+            (line) => line.width > 0 && (line.left < box.left - 1 || line.right > box.right + 1),
+          );
+          if (outside)
+            out.push(
+              `${el.tagName.toLowerCase()}.${el.className.toString().split(' ')[0]} "${text.slice(0, 24)}"`,
+            );
+        }
+        return out;
+      });
+      if (found.length) hanging[width] = found;
+    }
+    expect(hanging).toEqual({});
+    await context.close();
+  });
+});
+
 describe('focus rings', () => {
   // A focus ring drawn outside its element must not be cut off by any
   // ancestor that clips (a code frame with overflow: hidden once did). The
   // clip is the ancestor's padding box.
   test.each(routes)('%s: no focus ring is clipped', async (route) => {
     const { page, context } = await open(route, 1280);
-    const clipped = await page.evaluate(() => {
+    const clipped = await page.evaluate(async () => {
       const out: string[] = [];
       const focusable = Array.from(
         document.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
       ).filter((el) => el.checkVisibility({ visibilityProperty: true }) && !el.closest('.skip'));
+      const clips = (node: Element) => {
+        const s = getComputedStyle(node);
+        return s.overflowX !== 'visible' || s.overflowY !== 'visible';
+      };
       for (const el of focusable) {
         el.focus({ focusVisible: true });
+        // WebKit may scroll a focused element inside a scroller (the sticky
+        // article rail) into view only by the next frame, as a real Tab does.
+        let inScroller = false;
+        for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+          if (clips(node)) inScroller = true;
+        }
+        if (inScroller) await new Promise(requestAnimationFrame);
         const style = getComputedStyle(el);
         if (style.outlineStyle === 'none') continue;
         const grow = parseFloat(style.outlineOffset) + parseFloat(style.outlineWidth);
@@ -530,7 +586,8 @@ describe('home portrait', () => {
 });
 
 describe('article contents', () => {
-  test('marks the section in view', async () => {
+  // WebKit has no :target-current yet: the list shows no tick there.
+  test.skipIf(inWebKit)('marks the section in view', async () => {
     const { page, context } = await open('/claude-code-tips/', 1440);
     const links = page.locator('.toc a');
     const current = (index: number) => links.nth(index).evaluate((link) => link.matches(':target-current'));
@@ -597,7 +654,9 @@ describe('post list', () => {
 describe('code blocks', () => {
   test('copy button copies the code and confirms', async () => {
     const { page, context } = await open('/claude-code-tips/');
-    await context.grantPermissions(['clipboard-read', 'clipboard-write'], { origin });
+    // WebKit lets a click write to the clipboard and knows no clipboard-write permission.
+    const permissions = inWebKit ? ['clipboard-read'] : ['clipboard-read', 'clipboard-write'];
+    await context.grantPermissions(permissions, { origin });
     const button = page.locator('[data-copy]').first();
     await button.click();
     await expect.poll(() => button.locator('[data-copy-label]').textContent()).toBe('Copied');
@@ -610,7 +669,8 @@ describe('code blocks', () => {
 describe('keyboard', () => {
   test('the first Tab reveals the skip link, and it moves focus to main', async () => {
     const { page, context } = await open('/blog/');
-    await page.keyboard.press('Tab');
+    // On macOS, WebKit's Tab skips links (Safari's default); Option-Tab reaches them.
+    await page.keyboard.press(inWebKit && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab');
     const skip = page.locator('a.skip');
     await expect.poll(() => skip.evaluate((el) => el === document.activeElement)).toBe(true);
     const box = await skip.boundingBox();
@@ -730,7 +790,8 @@ describe('code token contrast', () => {
 });
 
 describe('résumé print', () => {
-  test('prints on at most two A4 pages without site chrome', async () => {
+  // Playwright makes PDFs in Chromium only.
+  test.skipIf(inWebKit)('prints on at most two A4 pages without site chrome', async () => {
     const { page, context } = await open('/resume/');
     await page.emulateMedia({ media: 'print' });
     expect(await page.locator('.header').isVisible()).toBe(false);

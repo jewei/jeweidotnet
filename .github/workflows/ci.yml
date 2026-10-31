@@ -36,3 +36,26 @@ jobs:
         with:
           configPath: ./lighthouserc.cjs
           uploadArtifacts: true
+
+  # The browser tests again in WebKit (Safari's engine), beside verify, so the
+  # run takes no longer. Chromium cannot catch Safari-only layout, such as
+  # hanging punctuation.
+  webkit:
+    runs-on: ubuntu-latest
+    env:
+      VP_GIT_HOOKS: '0'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+
+      - uses: voidzero-dev/setup-vp@v1.21.1
+        with:
+          node-version: '24'
+          cache: true
+
+      - run: vp install --frozen-lockfile
+      - run: vp exec playwright install --with-deps webkit
+      - run: vp run test:webkit

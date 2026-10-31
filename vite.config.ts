@@ -37,6 +37,13 @@ export default defineConfig({
         dependsOn: ['build'],
         cache: false,
       },
+      // The browser tests again in WebKit (Safari's engine). CI runs it beside
+      // verify. Locally, install the engine once: `vp exec playwright install webkit`.
+      'test:webkit': {
+        command: 'BROWSER=webkit vp test tests/build/browser.test.ts',
+        dependsOn: ['build'],
+        cache: false,
+      },
       // The full gate. CI and agents run this before a PR.
       verify: {
         command: ['vp run sync', 'vp check', 'vp run typecheck', 'vp test tests/unit', 'vp run test:build'],
