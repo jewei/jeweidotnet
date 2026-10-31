@@ -3,7 +3,8 @@
 (function () {
   var root = document.documentElement;
   var media = window.matchMedia('(prefers-color-scheme: dark)');
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Read live: a visitor can turn on reduced motion while the page is open.
+  var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function currentTheme() {
     return root.dataset.theme || (media.matches ? 'dark' : 'light');
@@ -33,7 +34,7 @@
   // The new theme grows in a circle from the toggle.
   function switchTheme(button) {
     var next = currentTheme() === 'dark' ? 'light' : 'dark';
-    if (still || !document.startViewTransition) return setTheme(next);
+    if (motion.matches || !document.startViewTransition) return setTheme(next);
     var box = button.getBoundingClientRect();
     var x = box.left + box.width / 2;
     var y = box.top + box.height / 2;
@@ -135,42 +136,71 @@
     setInterval(tick, 15000);
   }
 
-  // Home portrait: the eyes follow the pointer. This paints the portrait
-  // into each iris (same file as the <img>, so it comes from the cache), then
-  // sets --x and --y from -1 to 1 toward the pointer. CSS moves the irises.
+  // Home portrait: the eyes follow the pointer and look where you tap. This
+  // paints the portrait into each iris (the <img>'s own file, so it comes from
+  // the cache; again when srcset swaps it), then sets --x and --y from -1 to 1
+  // toward the last pointer position. CSS moves the irises, and hides them
+  // with reduced motion. Off screen, nothing runs.
   var eyes = document.querySelector('[data-eyes]');
   var face = eyes && eyes.previousElementSibling;
-  if (face && !still) {
+  if (face) {
     var irises = eyes.querySelectorAll('image');
     var frame = 0;
-    var look = function (x, y) {
-      eyes.style.setProperty('--x', x.toFixed(3));
-      eyes.style.setProperty('--y', y.toFixed(3));
-    };
-    var wake = function () {
-      irises[0].addEventListener('load', function () {
-        eyes.dataset.on = '';
+    var seen = true;
+    var at = null;
+    var look = function () {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(function () {
+        var x = 0;
+        var y = 0;
+        if (at && !motion.matches) {
+          var box = eyes.getBoundingClientRect();
+          x = at[0] - box.left - box.width * 0.51;
+          y = at[1] - box.top - box.height * 0.43;
+          var f = 1 / (Math.hypot(x, y) + box.width * 0.5);
+          x *= f;
+          y *= f;
+        }
+        eyes.style.setProperty('--x', x.toFixed(3));
+        eyes.style.setProperty('--y', y.toFixed(3));
       });
+    };
+    var paint = function () {
       irises.forEach(function (iris) {
         iris.setAttribute('href', face.currentSrc || face.src);
       });
     };
-    if (face.complete) wake();
-    else face.addEventListener('load', wake);
-    addEventListener('pointermove', function (event) {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(function () {
-        var box = eyes.getBoundingClientRect();
-        var x = event.clientX - box.left - box.width * 0.51;
-        var y = event.clientY - box.top - box.height * 0.43;
-        var d = Math.hypot(x, y) || 1;
-        var f = d / (d + box.width * 0.5) / d;
-        look(x * f, y * f);
-      });
+    irises[0].addEventListener('load', function () {
+      eyes.dataset.on = '';
     });
-    root.addEventListener('pointerleave', function () {
-      look(0, 0);
+    face.addEventListener('load', paint);
+    if (face.complete) paint();
+    new IntersectionObserver(function (entries) {
+      // A late callback can batch out-then-in: the last entry is the state now.
+      seen = entries[entries.length - 1].isIntersecting;
+      if (seen) look();
+    }).observe(eyes);
+    var aim = function (event) {
+      at = [event.clientX, event.clientY];
+      if (seen) look();
+    };
+    addEventListener('pointermove', aim);
+    addEventListener('pointerdown', aim);
+    addEventListener(
+      'scroll',
+      function () {
+        if (seen && at) look();
+      },
+      { passive: true },
+    );
+    // Only a mouse leaving the page resets the gaze. A finger or a pen
+    // "leaves" after every tap, so the eyes keep looking at the tap.
+    root.addEventListener('pointerleave', function (event) {
+      if (event.pointerType !== 'mouse') return;
+      at = null;
+      look();
     });
+    motion.addEventListener('change', look);
   }
 
   // The wordmark is also an API: try jewei.toString() in the console.

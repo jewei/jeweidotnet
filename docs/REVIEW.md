@@ -30,7 +30,7 @@ The screenshot script loads and decodes all images before capture. Full-page scr
 ## Interaction
 
 - [ ] Every interactive element has a 44px target (36px allowed inside dense lists) and a visible focus ring.
-- [ ] Hover effects only on `(hover: hover)`; nothing depends on hover.
+- [ ] Hover effects only on `(hover: hover)`; nothing depends on hover. Pointer-follow effects (the home portrait's eyes) may also follow a tap: that is input, not hover.
 - [ ] Theme toggle: correct icon, label, and `aria-pressed`; persists across pages.
 - [ ] Copy button announces "Copied".
 - [ ] Reduced motion removes movement, including the home portrait's eyes.
@@ -66,6 +66,6 @@ The rebuild went through these rounds. Each finding is now covered by a fix and,
 | 5     | Empty band above the footer                                            | Removed the last-section padding          |
 | 5     | Contact and Privacy filed under "Feeds"                                | Moved to "Site"                           |
 | 5     | Contact lede repeated the first paragraph; no primary action           | New lede and an email button              |
-| 6     | Copy rated the work ("reliable", "Scale-tested") instead of stating it | Plain, specific copy; DESIGN principle 6  |
+| 6     | Copy rated the work ("reliable", "Scale-tested") instead of stating it | Plain, specific copy; DESIGN principle 7  |
 | 6     | Stat strips, display-size headings, and slogans read as marketing      | Removed; H1 at step-4, sections at step-1 |
 | 6     | A list's top hairline sat under a section rule (double line)           | Lists drop their top line under a rule    |

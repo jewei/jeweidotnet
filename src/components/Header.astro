@@ -178,8 +178,10 @@ const active = (match: readonly string[]) => match.some((prefix) => path.startsW
     transition: translate var(--dur-2) var(--ease-spring);
   }
 
-  .header__theme:hover .header__track::before {
-    scale: 1.08;
+  @media (hover: hover) {
+    .header__theme:hover .header__track::before {
+      scale: 1.08;
+    }
   }
 
   .header__theme:active .header__track::before {

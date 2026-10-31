@@ -96,7 +96,6 @@ const eyes = [
               quality={80}
               loading="eager"
               fetchpriority="high"
-              draggable="false"
             />
             <svg class="eyes" data-eyes viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
               <defs>
@@ -147,7 +146,6 @@ const eyes = [
         </div>
         <figcaption class="label intro__role">
           {site.jobTitle}
-          <span class="intro__sep" aria-hidden="true">·</span>
           <span class="intro__place">
             {site.city}
             <span data-clock={site.timeZone} hidden><span></span><span class="intro__colon">:</span><span></span></span>
@@ -159,7 +157,7 @@ const eyes = [
     <section class="part" aria-labelledby="work-title" data-reveal="rule">
       <header class="part__head">
         <h2 id="work-title">Projects</h2>
-        <p class="bar__meta intro__count">{projects.length} of {allProjects.length}</p>
+        <p class="bar__meta intro__count" data-md-skip>{projects.length} of {allProjects.length}</p>
         <a class="arrow-link" href="/projects/"><span>All projects</span><Icon name="arrow-right" /></a>
       </header>
       <div class="part__body part__body--flush">
@@ -246,13 +244,18 @@ const eyes = [
     display: block;
   }
 
-  /* The name sits on a block of signal orange, like a highlighter swipe */
+  /*
+   * The name sits on a block of signal orange, like a highlighter swipe. The
+   * block is as tall as the font (the inline box): the name is ink, and ink
+   * above a shorter band would vanish on the dark plate. The name never
+   * breaks, so it is one box, and the entrance can clip it.
+   */
   .intro__name {
     color: var(--on-signal);
     padding-inline: 0.06em;
     margin-inline: -0.02em;
-    background: linear-gradient(var(--signal), var(--signal)) 0 88% / 100% 62% no-repeat;
-    box-decoration-break: clone;
+    white-space: nowrap;
+    background: linear-gradient(var(--signal), var(--signal)) 0 0 / 100% 100% no-repeat;
   }
 
   .intro__line--quiet {
@@ -309,7 +312,6 @@ const eyes = [
     border: 1px solid var(--edge);
     border-radius: 50%;
     background: var(--bg-sunken);
-    user-select: none;
   }
 
   .portrait__frame img,
@@ -337,6 +339,12 @@ const eyes = [
 
   .eyes[data-on] {
     opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eyes[data-on] {
+      opacity: 0;
+    }
   }
 
   .eyes__iris {
@@ -422,12 +430,12 @@ const eyes = [
     text-align: center;
   }
 
-  .intro__sep {
-    margin-inline: var(--space-1);
-  }
-
-  /* Keep the city and its time on one line */
+  /*
+   * Two lines at every width: the role, then the city and its time. The
+   * column under the print is too narrow for one line with a separator.
+   */
   .intro__place {
+    display: block;
     white-space: nowrap;
   }
 
@@ -497,13 +505,14 @@ const eyes = [
 
   /*
    * Entrance, in order: the wordmark types itself, the nav fades in, the
-   * heading lines rise out of their masks, the text follows, and the
-   * portrait and its sticker land. Reduced motion skips all of it.
+   * heading lines rise out of their masks, the name wipes in on its block,
+   * the text follows, and the portrait and its sticker land. Reduced motion
+   * skips all of it. Nothing here changes layout: the wordmark types by
+   * clipping (its width never changes, so the nav never moves), and the name
+   * and its block wipe in together (no ink name on the dark plate).
    */
   @media (prefers-reduced-motion: no-preference) {
     :global(.header .wordmark > span) {
-      overflow: hidden;
-      white-space: nowrap;
       animation: home-type calc(var(--chars) * var(--per)) steps(var(--chars)) var(--start) backwards;
     }
 
@@ -525,17 +534,15 @@ const eyes = [
       --start: 790ms;
     }
 
-    /* The caret stays while the wordmark types, blinks twice, and goes */
+    /* When the wordmark is typed, a caret blinks twice at its end, and goes. It takes no width. */
     :global(.header .wordmark::after) {
       content: '';
       width: 2px;
       height: 1.1em;
-      margin-left: 2px;
+      margin-inline: 2px -4px;
       background: var(--accent-mark);
       opacity: 0;
-      animation:
-        home-caret-hold 1190ms linear,
-        home-caret 1060ms steps(1, end) 1190ms 2;
+      animation: home-caret 1060ms steps(1, end) 1190ms 2;
     }
 
     :global(.header__nav li),
@@ -568,7 +575,7 @@ const eyes = [
     }
 
     .intro__name {
-      animation: home-swipe var(--dur-3) var(--ease-out) 900ms backwards;
+      animation: home-wipe var(--dur-3) var(--ease-out) 450ms backwards;
     }
 
     .intro__text p {
@@ -612,20 +619,17 @@ const eyes = [
     }
   }
 
+  /*
+   * One step per character (the wordmark is monospaced). Both ends are
+   * inset(): inset() and none do not interpolate.
+   */
   @keyframes home-type {
     from {
-      max-width: 0;
+      clip-path: inset(0 100% 0 0);
     }
 
     to {
-      max-width: calc(var(--chars) * 1ch);
-    }
-  }
-
-  @keyframes home-caret-hold {
-    from,
-    to {
-      opacity: 1;
+      clip-path: inset(0);
     }
   }
 
@@ -658,10 +662,14 @@ const eyes = [
     }
   }
 
-  /* The highlighter swipes in from the left */
-  @keyframes home-swipe {
+  /* The name and its highlighter block wipe in together from the left */
+  @keyframes home-wipe {
     from {
-      background-size: 0% 62%;
+      clip-path: inset(0 100% 0 0);
+    }
+
+    to {
+      clip-path: inset(0);
     }
   }
 

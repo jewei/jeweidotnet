@@ -90,6 +90,8 @@
     display: flex;
     flex-direction: column;
     overflow-x: clip;
+    /* A word that cannot fit (a long ID or URL) breaks instead of running off the page */
+    overflow-wrap: break-word;
   }
 
   main {
@@ -224,8 +226,9 @@
   }
 
   /*
-   * Buttons: ink edge and a hard shadow, like a key on a panel. Pressing it
-   * pushes it into the plate. One primary (signal orange) per view.
+   * Buttons: a 1px edge (the text colour; ink on the primary) and a hard
+   * shadow, like a key on a panel. Pressing it pushes it into the plate.
+   * One primary (signal orange) per view.
    */
   .button {
     display: inline-flex;
@@ -258,16 +261,16 @@
     height: 1.3em;
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .button:hover {
       transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0 var(--edge);
+      box-shadow: var(--shadow-hover);
     }
   }
 
   .button:active {
     transform: translate(3px, 3px);
-    box-shadow: 0 0 0 var(--edge);
+    box-shadow: none;
   }
 
   .button--primary {
@@ -309,31 +312,44 @@
     box-shadow: var(--shadow);
   }
 
+  /*
+   * Each screw is a 10px tile in its corner, not a gradient the size of the
+   * plate: software rasterisers (CI, low-end devices) paint a full-size
+   * gradient pixel by pixel, which cost a tall article ~0.5s of raster.
+   */
   .plate::after,
   .part::after {
-    --at: var(--space-3);
-    --ring: transparent 3px, var(--screw) 3.5px 4.5px, transparent 5px;
+    --at: calc(var(--space-3) - 5px);
+    --ring: radial-gradient(circle, transparent 3px, var(--screw) 3.5px 4.5px, transparent 5px);
     content: '';
     position: absolute;
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    background:
-      radial-gradient(circle at var(--at) var(--at), var(--ring)),
-      radial-gradient(circle at calc(100% - var(--at)) var(--at), var(--ring)),
-      radial-gradient(circle at var(--at) calc(100% - var(--at)), var(--ring)),
-      radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
+    background-image: var(--ring), var(--ring), var(--ring), var(--ring);
+    background-size: 10px 10px;
+    background-repeat: no-repeat;
+    background-position:
+      left var(--at) top var(--at),
+      right var(--at) top var(--at),
+      left var(--at) bottom var(--at),
+      right var(--at) bottom var(--at);
   }
 
   /* A plate with a bar on top keeps only its bottom screws: the bar holds the top */
   .part::after,
   .plate:has(> .bar)::after {
-    background:
-      radial-gradient(circle at var(--at) calc(100% - var(--at)), var(--ring)),
-      radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
+    background-image: var(--ring), var(--ring);
+    background-position:
+      left var(--at) bottom var(--at),
+      right var(--at) bottom var(--at);
   }
 
-  /* The signal plate: orange, with ink text. Index pages and articles open with one. */
+  /*
+   * The signal plate: orange, with ink text. Index pages and articles open
+   * with one. Text, line, and surface tokens all turn to ink or orange here,
+   * so nothing inside keeps a theme colour (a dark surface or grey hairline).
+   */
   .plate--signal {
     --fg: var(--on-signal);
     --fg-2: var(--on-signal);
@@ -344,8 +360,27 @@
     --accent: var(--on-signal);
     --accent-mark: var(--on-signal);
     --screw: var(--on-signal);
+    --bg-raised: var(--signal);
+    --bg-sunken: var(--signal);
+    --hairline: 1px solid var(--line);
     border-color: var(--edge);
     background: var(--signal);
+    color: var(--on-signal);
+  }
+
+  /*
+   * Selected text inverts: orange on ink (7:1), in both themes. WebKit paints
+   * an opaque selection colour translucent (ink becomes brown, 5.4:1); at
+   * 99.9% it keeps the colour as given.
+   */
+  .plate--signal ::selection {
+    background: color-mix(in oklch, var(--on-signal) 99.9%, transparent);
+    color: var(--signal);
+  }
+
+  /* The inverted primary button inverts back when selected */
+  .plate--signal .button--primary::selection {
+    background: color-mix(in oklch, var(--signal) 99.9%, transparent);
     color: var(--on-signal);
   }
 

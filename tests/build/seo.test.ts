@@ -4,9 +4,11 @@
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { z } from 'astro/zod';
 import sharp from 'sharp';
 import { describe, expect, test } from 'vite-plus/test';
 import { dist, exists, indexable, jsonLd, page, read, root } from './helpers';
+import { tokenHex } from '../../src/lib/color';
 
 const meta = (doc: Document, selector: string) => doc.querySelector(selector)?.getAttribute('content') ?? '';
 
@@ -84,6 +86,22 @@ test('every social image exists and reports its real size', async () => {
     expect(info.width, url).toBe(Number(meta(doc, 'meta[property="og:image:width"]')));
     expect(info.height, url).toBe(Number(meta(doc, 'meta[property="og:image:height"]')));
   }
+});
+
+test('social cards and the manifest take their colours from the tokens', async () => {
+  const tokens = fs.readFileSync(path.join(root, 'src/styles/tokens.css'), 'utf8');
+  const { data } = await sharp(path.join(dist, 'og/default.png'))
+    .extract({ left: 0, top: 0, width: 1, height: 1 })
+    .removeAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const corner = `#${Array.from(data, (v) => v.toString(16).padStart(2, '0')).join('')}`;
+  expect(corner).toBe(tokenHex(tokens, 'signal'));
+  const manifest = z
+    .object({ theme_color: z.string(), background_color: z.string() })
+    .parse(JSON.parse(read('site.webmanifest')));
+  expect(manifest.theme_color).toBe(tokenHex(tokens, 'bg'));
+  expect(manifest.background_color).toBe(tokenHex(tokens, 'bg'));
 });
 
 // Cards keep fixed file names, and the edge holds them for a day. A content

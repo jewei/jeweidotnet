@@ -4,8 +4,8 @@
  * The card design follows docs/DESIGN.md: a signal-orange plate with ink text,
  * like the head of an article. The eyebrow and title are in the wide display
  * face (Zalando Sans Expanded); the wordmark and subtitle are in Geist.
- * Colours are hex copies of --signal and --on-signal (Satori cannot read CSS
- * custom properties); ink on signal is 7.2:1.
+ * Colours come from --signal and --on-signal in tokens.css, as hex (Satori
+ * cannot read CSS custom properties); ink on signal is 7.2:1.
  *
  * Pages link a card with `ogImage(key)`: `/og/<key>.png?v=<hash>`. The hash
  * is of the card's pixels, so a changed card gets a new URL. The files keep
@@ -16,7 +16,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import satori from 'satori';
 import sharp from 'sharp';
+import { tokenHex } from './color';
 import { ogPath, pages } from '../data/pages';
+import tokens from '../styles/tokens.css?raw';
 import { topics } from '../data/topics';
 import { displayUrl, site } from '../site.config';
 import { getPosts, postSlug } from './posts';
@@ -62,14 +64,19 @@ export async function cardList(): Promise<{ key: string; card: Card }[]> {
   ];
 }
 
-/** Rendered cards by key: each card renders once per build, for its file and its URL hash. */
+/**
+ * Rendered cards: each card renders once per build, for its file and its URL
+ * hash. The memo key includes the card text, so `astro dev` renders again
+ * after a post's title or description changes.
+ */
 const rendered = new Map<string, Promise<Buffer>>();
 
 export function cardPng(key: string, card: Card): Promise<Buffer> {
-  let png = rendered.get(key);
+  const id = `${key}\n${JSON.stringify(card)}`;
+  let png = rendered.get(id);
   if (!png) {
     png = renderCard(card);
-    rendered.set(key, png);
+    rendered.set(id, png);
   }
   return png;
 }
@@ -107,8 +114,8 @@ function loadFonts() {
 }
 
 const color = {
-  bg: '#fa761b',
-  fg: '#0f0a08',
+  bg: tokenHex(tokens, 'signal'),
+  fg: tokenHex(tokens, 'on-signal'),
 };
 
 type Child = string | VNode;
