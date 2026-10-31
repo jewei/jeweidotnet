@@ -388,7 +388,11 @@ const schema = [
     color: var(--fg-3);
   }
 
+  /* Every value sits in a 36px row, the height of a topic link, so values line up */
   .facts dd {
+    display: grid;
+    align-items: center;
+    min-height: 36px;
     font-family: var(--mono);
     font-size: var(--step--1);
   }

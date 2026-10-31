@@ -56,6 +56,7 @@
   color: var(--fg-3);
   font-weight: 400;
   text-decoration: none;
+  white-space: nowrap;
   opacity: 0;
   transition: opacity var(--dur-1) var(--ease);
 }
@@ -63,9 +64,10 @@
 /*
  * The "#" stays an inline glyph, so the heading wraps as before. Its 36px
  * target is a centred box around it (it only links to its own heading).
- * No inline padding: Chromium can wrap the end padding alone onto a new
- * line, which adds an empty line under the heading and moves this box off
- * the "#".
+ * The absolute box gives Chromium a line break inside the link: with
+ * inline padding or wrapping, the end can drop alone onto a new line, which
+ * adds an empty line under the heading and moves this box off the "#". So
+ * no inline padding, and no wrapping inside the link.
  */
 .prose .anchor::after {
   content: '';
