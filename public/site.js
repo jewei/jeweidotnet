@@ -193,10 +193,10 @@
       },
       { passive: true },
     );
-    // A mouse leaving the page resets the gaze. A finger always "leaves"
-    // after a tap, so the eyes keep looking at the tap.
+    // Only a mouse leaving the page resets the gaze. A finger or a pen
+    // "leaves" after every tap, so the eyes keep looking at the tap.
     root.addEventListener('pointerleave', function (event) {
-      if (event.pointerType === 'touch') return;
+      if (event.pointerType !== 'mouse') return;
       at = null;
       look();
     });

@@ -194,28 +194,47 @@ describe('home portrait', () => {
     await page.mouse.move(0, row);
     await expect.poll(shift).toBeLessThan(-4);
     await page.waitForTimeout(300);
-    await page.evaluate(() => document.documentElement.dispatchEvent(new PointerEvent('pointerleave')));
+    await page.evaluate(() =>
+      document.documentElement.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' })),
+    );
     await expect.poll(shift).toBe(0);
     // A last move and the leave in the same frame: the queued move must not win.
     await page.mouse.move(0, row);
     await expect.poll(shift).toBeLessThan(-4);
     await page.evaluate((y) => {
-      dispatchEvent(new PointerEvent('pointermove', { clientX: 1, clientY: y }));
-      document.documentElement.dispatchEvent(new PointerEvent('pointerleave'));
+      dispatchEvent(new PointerEvent('pointermove', { clientX: 1, clientY: y, pointerType: 'mouse' }));
+      document.documentElement.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'mouse' }));
     }, row);
     await expect.poll(shift).toBe(0);
     await context.close();
   });
 
-  test('a tap turns the eyes, and they keep looking at it', async () => {
+  // A press aims the eyes. Only a mouse can hover, so only a mouse leave resets
+  // them; a finger or a pen "leaves" after every tap and keeps the gaze.
+  test.each([
+    ['touch', 'keeps'],
+    ['pen', 'keeps'],
+    ['mouse', 'resets'],
+  ] as const)('a %s press turns the eyes, and its leave %s the gaze', async (pointerType, after) => {
     const { page, context, row, gaze } = await portrait();
-    await page.evaluate((y) => {
-      dispatchEvent(new PointerEvent('pointerdown', { clientX: 1, clientY: y, pointerType: 'touch' }));
-      document.documentElement.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'touch' }));
-    }, row);
+    await page.evaluate(
+      ([y, type]) => {
+        dispatchEvent(new PointerEvent('pointerdown', { clientX: 1, clientY: y, pointerType: type }));
+      },
+      [row, pointerType] as const,
+    );
     await expect.poll(gaze).toMatch(/^-0\.[5-9]/);
-    await page.waitForTimeout(300);
-    expect(await gaze()).toMatch(/^-0\.[5-9]/);
+    await page.evaluate(
+      (type) =>
+        document.documentElement.dispatchEvent(new PointerEvent('pointerleave', { pointerType: type })),
+      pointerType,
+    );
+    if (after === 'keeps') {
+      await page.waitForTimeout(300);
+      expect(await gaze()).toMatch(/^-0\.[5-9]/);
+    } else {
+      await expect.poll(gaze).toBe('0.000');
+    }
     await context.close();
   });
 
@@ -244,7 +263,9 @@ describe('home portrait', () => {
   });
 
   test('nothing runs while the portrait is off screen', async () => {
-    const { page, context, eyes } = await portrait();
+    const { page, context, eyes, row, shift } = await portrait();
+    await page.mouse.move(0, row);
+    await expect.poll(shift).toBeLessThan(-4);
     await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(300);
     const writes = await eyes.evaluate(async (el) => {
@@ -253,12 +274,44 @@ describe('home portrait', () => {
         attributeFilter: ['style'],
       });
       for (let i = 0; i < 10; i++) {
-        dispatchEvent(new PointerEvent('pointermove', { clientX: i * 10, clientY: 100 }));
+        dispatchEvent(
+          new PointerEvent('pointermove', { clientX: i * 10, clientY: 100, pointerType: 'mouse' }),
+        );
+        dispatchEvent(new Event('scroll'));
         await new Promise(requestAnimationFrame);
       }
       return count;
     });
     expect(writes).toBe(0);
+    await context.close();
+  });
+
+  // A late observer callback can deliver "out" and "in" together. The last
+  // entry is the state now; the first would leave the eyes asleep on screen.
+  test('the eyes wake when the portrait leaves and returns before the observer runs', async () => {
+    const { page, context, row, gaze } = await portrait();
+    // In one frame: scroll away, queue a long task, and scroll back in the
+    // next frame. The long task holds the observer callback until both
+    // entries are in (Chromium delivers "out,in" together every time).
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => {
+            scrollTo(0, document.body.scrollHeight);
+            setTimeout(() => {
+              const end = performance.now() + 150;
+              while (performance.now() < end);
+            }, 0);
+            requestAnimationFrame(() => {
+              scrollTo(0, 0);
+              resolve();
+            });
+          }),
+        ),
+    );
+    await page.waitForTimeout(300);
+    await page.mouse.move(0, row);
+    await expect.poll(gaze).toMatch(/^-0\.[5-9]/);
     await context.close();
   });
 });
