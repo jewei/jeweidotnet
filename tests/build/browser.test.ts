@@ -119,6 +119,39 @@ describe('target sizes', () => {
             !el.closest('.skip, .sr-only') &&
             !inSentence(el),
         );
+        const name = (el: Element) =>
+          `${el.tagName.toLowerCase()}.${el.className.toString().split(' ')[0]} in .${el.parentElement?.className.toString().split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
+
+        // A control's box must not lie over text it does not own (a title, a
+        // label, another link): that text would hand its clicks to the control.
+        // Its own block's plain text, such as the heading of a permalink, is its own.
+        scrollTo(0, 0);
+        const lines: { node: Node; rect: DOMRect }[] = [];
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const range = document.createRange();
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          let boxed = node.parentElement;
+          if (!boxed || !node.textContent?.trim() || boxed.closest('.sr-only, .skip')) continue;
+          while (boxed && getComputedStyle(boxed).display === 'contents') boxed = boxed.parentElement;
+          if (!boxed?.checkVisibility({ visibilityProperty: true })) continue;
+          range.selectNodeContents(node);
+          for (const rect of range.getClientRects())
+            if (rect.width && rect.height) lines.push({ node, rect });
+        }
+        for (const el of controls) {
+          const covered = lines.find(({ node, rect }) => {
+            if (el.contains(node)) return false;
+            const owner = node.parentElement?.closest('a[href], button');
+            if (!owner && el.parentElement?.contains(node)) return false;
+            return Array.from(el.getClientRects()).some(
+              (box) =>
+                Math.min(box.right, rect.right) - Math.max(box.left, rect.left) > 1 &&
+                Math.min(box.bottom, rect.bottom) - Math.max(box.top, rect.top) > 1,
+            );
+          });
+          if (covered) out.push(`${name(el)} lies over "${covered.node.textContent?.trim().slice(0, 24)}"`);
+        }
+
         for (const el of controls) {
           el.scrollIntoView({ block: 'center', inline: 'nearest' });
           // An inline link that wraps has one box per line: measure its largest piece
@@ -145,7 +178,7 @@ describe('target sizes', () => {
             : [0, 0, 0, 0];
           const width = centre ? left + right + 1 : 0;
           const height = centre ? up + down + 1 : 0;
-          const label = `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in .${el.parentElement?.className.split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
+          const label = name(el);
           // 1px of slack for sub-pixel edges
           if (height < 35 || width < 23) out.push(`${label} ${width}x${height}`);
           // The area must be solid: a misplaced ::after can reach along both axes and still miss the corners
@@ -553,7 +586,9 @@ const codeRoutes = fs
   .readdirSync(dist, { recursive: true, encoding: 'utf8' })
   .filter(
     (file) =>
-      file.endsWith('index.html') && fs.readFileSync(path.join(dist, file), 'utf8').includes('astro-code'),
+      // The class, not the name: every page's inlined stylesheet mentions astro-code
+      file.endsWith('index.html') &&
+      fs.readFileSync(path.join(dist, file), 'utf8').includes('class="astro-code'),
   )
   .map((file) => `/${path.dirname(file)}/`.replace('/./', '/'));
 

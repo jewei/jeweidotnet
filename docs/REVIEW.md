@@ -29,7 +29,7 @@ The screenshot script loads and decodes all images before capture. Full-page scr
 
 ## Interaction
 
-- [ ] Every interactive element has a 44px target (36px allowed inside dense lists) and a visible focus ring that no clipping ancestor cuts off. Browser tests check 36 × 24px (links inside a sentence are exempt) and clipped rings.
+- [ ] Every interactive element has a 44px target (36px allowed inside dense lists) and a visible focus ring that no clipping ancestor cuts off. Browser tests measure each target's real hit area by clicks (36 × 24px; links inside a sentence are exempt), check that no control's box lies over text it does not own, and check for clipped rings.
 - [ ] Hover effects only on `(hover: hover)`; nothing depends on hover. Pointer-follow effects (the home portrait's eyes) may also follow a tap: that is input, not hover.
 - [ ] Theme toggle: correct icon, label, and `aria-pressed`; persists across pages.
 - [ ] Copy button announces "Copied".
