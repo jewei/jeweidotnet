@@ -72,6 +72,8 @@ const routes = [
   '/collections/',
   '/claude-code-tips/',
   '/contact/',
+  // A summary with a long ID that cannot break: user_01h455vb4pex5vsknk084sn02q
+  '/introducing-typeid-php/',
 ];
 const widths = [320, 768, 1024, 1440];
 
