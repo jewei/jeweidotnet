@@ -44,6 +44,12 @@ interface Common {
   rawTitle?: boolean;
   /** Scroll reveals in the footer. Only the home page uses them. */
   reveal?: boolean;
+  /**
+   * The page sets serif text (prose, the résumé headline): preload Source
+   * Serif. Other pages never download it; a preload there only competes with
+   * the fonts they use (a browser test checks).
+   */
+  serif?: boolean;
 }
 
 /**
@@ -64,6 +70,7 @@ const {
   markdown = true,
   rawTitle = false,
   reveal = false,
+  serif = false,
 } = Astro.props;
 
 const path = Astro.url.pathname;
@@ -118,7 +125,7 @@ const speculation = JSON.stringify({
 
     <Font cssVariable="--font-display" preload />
     <Font cssVariable="--font-geist" preload />
-    <Font cssVariable="--font-serif" preload={[{ style: 'normal' }]} />
+    <Font cssVariable="--font-serif" preload={serif && [{ style: 'normal' }]} />
     <Font cssVariable="--font-geist-mono" />
 
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
