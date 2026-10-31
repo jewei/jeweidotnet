@@ -83,6 +83,7 @@ const eyes = [
 
       <figure class="intro__figure">
         <div class="portrait">
+          <div class="intro__paper" aria-hidden="true"></div>
           <div class="portrait__disc" aria-hidden="true"></div>
           <div class="portrait__frame">
             <Image
@@ -188,6 +189,37 @@ const eyes = [
     gap: var(--space-6);
     margin-top: var(--section);
     padding: var(--space-6) var(--plate-pad) var(--plate-pad);
+    overflow: clip;
+  }
+
+  /*
+   * Grid paper under the portrait: a dot grid that fades out from the disc.
+   * It is centred on the portrait and sized in portrait percentages, so the
+   * fade ends before the copy at every width. The plate clips it.
+   */
+  .intro__paper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 162%;
+    translate: -50% -50%;
+    pointer-events: none;
+    background-image: radial-gradient(circle, var(--line-strong) 1.1px, transparent 1.7px);
+    background-size: var(--space-5) var(--space-5);
+    background-position: center;
+    /* The mask only uses alpha; any opaque token works */
+    mask-image: radial-gradient(closest-side, var(--fg) 60%, transparent);
+  }
+
+  /* The copy always sits above the paper */
+  .intro__copy {
+    position: relative;
+    z-index: 1;
+  }
+
+  .intro__figure {
+    position: relative;
   }
 
   .intro__copy {
@@ -379,6 +411,10 @@ const eyes = [
 
   /* The caption under the print: role, city, and the live time */
   .intro__role {
+    position: relative;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-1);
+    background: var(--bg-raised);
     font-family: var(--mono);
     font-weight: 500;
     letter-spacing: var(--tracking-label);
@@ -407,6 +443,11 @@ const eyes = [
       justify-self: center;
     }
 
+    .intro__paper {
+      width: 140%;
+      height: 227%;
+    }
+
     .portrait {
       width: 15rem;
     }
@@ -427,6 +468,11 @@ const eyes = [
 
     .portrait {
       width: 19rem;
+    }
+
+    .intro__paper {
+      width: 156%;
+      height: 210%;
     }
 
     .sticker {
@@ -535,6 +581,10 @@ const eyes = [
 
     .intro__actions {
       animation: home-rise var(--dur-3) var(--ease) 700ms backwards;
+    }
+
+    .intro__paper {
+      animation: home-fade 900ms var(--ease) 600ms backwards;
     }
 
     .portrait__disc {
