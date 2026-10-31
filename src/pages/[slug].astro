@@ -307,7 +307,8 @@ const schema = [
   .crumbs a {
     display: inline-flex;
     align-items: center;
-    min-height: 28px;
+    min-height: 36px;
+    min-width: 24px;
     text-decoration: none;
   }
 
@@ -387,7 +388,11 @@ const schema = [
     color: var(--fg-3);
   }
 
+  /* Every value sits in a 36px row, the height of a topic link, so values line up */
   .facts dd {
+    display: grid;
+    align-items: center;
+    min-height: 36px;
     font-family: var(--mono);
     font-size: var(--step--1);
   }
@@ -399,6 +404,10 @@ const schema = [
   }
 
   .facts a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    min-width: 24px;
     color: var(--fg);
     text-decoration-color: var(--line-strong);
   }
@@ -479,12 +488,24 @@ const schema = [
       padding-top: var(--space-9);
     }
 
+    /*
+     * A rail taller than the window scrolls inside itself, so the end of a
+     * long contents list stays reachable. The padding keeps focus rings and
+     * the tick inside the scroll box, and the scroll padding keeps a link
+     * that focus scrolls to clear of its edge (Firefox does not scroll a link
+     * that is partly in view). The negative margins and the smaller top keep
+     * the text where it was.
+     */
     .article__rail {
       align-self: start;
       position: sticky;
-      top: var(--space-6);
-      margin-top: var(--space-8);
-      padding: 0;
+      top: calc(var(--space-6) - var(--space-2));
+      max-height: calc(100dvh - 2 * (var(--space-6) - var(--space-2)));
+      overflow-y: auto;
+      scroll-padding-block: var(--space-2);
+      scrollbar-width: thin;
+      margin: calc(var(--space-8) - var(--space-2)) calc(var(--space-3) * -1) 0;
+      padding: var(--space-2) var(--space-3);
       border: 0;
     }
 
@@ -519,14 +540,18 @@ const schema = [
      */
     .toc ol {
       display: grid;
-      gap: var(--space-2);
       margin-top: var(--space-3);
       scroll-target-group: auto;
     }
 
+    /*
+     * Each entry is padded to a 36px row for one line of text, so the gap
+     * between entries' text is the same whether an entry wraps or not.
+     */
     .toc a {
       position: relative;
       display: block;
+      padding-block: calc((36px - 1lh) / 2);
       font-size: var(--step--1);
       line-height: 1.4;
       color: var(--fg-3);
@@ -552,8 +577,8 @@ const schema = [
     .toc a:target-current::before {
       content: '';
       position: absolute;
-      top: 0.2em;
-      bottom: 0.2em;
+      top: calc((36px - 1lh) / 2 + 0.2em);
+      bottom: calc((36px - 1lh) / 2 + 0.2em);
       left: calc(var(--space-3) * -1);
       width: 3px;
       border-radius: 2px;

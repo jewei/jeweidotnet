@@ -74,6 +74,8 @@ const routes = [
   '/contact/',
   // A summary with a long ID that cannot break: user_01h455vb4pex5vsknk084sn02q
   '/introducing-typeid-php/',
+  // Three topics stacked in the facts rail
+  '/bopop-press-type-go/',
 ];
 const widths = [320, 768, 1024, 1440];
 
@@ -89,6 +91,215 @@ describe('pages render without errors or overflow', () => {
     }
     expect(overflow).toEqual({});
     expect(errors).toEqual([]);
+    await context.close();
+  });
+});
+
+describe('target sizes', () => {
+  // Every control is at least 36px tall and 24px wide (REVIEW.md: 44px, 36px
+  // in dense lists), and nothing else covers it: a click inside it reaches it.
+  // A link inside a sentence is exempt (WCAG 2.5.8 inline). The size is the
+  // real hit area, measured by clicks (elementFromPoint) out from the centre,
+  // so a larger ::after counts only where it actually lands. No hit area may
+  // lie over text the control does not own.
+  test.each(routes)('%s: controls are big enough to hit at 320 and 1280px', async (route) => {
+    const { page, context } = await open(route, 320);
+    const small: Record<number, string[]> = {};
+    for (const width of [320, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      const found = await page.evaluate(() => {
+        const inSentence = (el: Element) => {
+          const block = el.closest('p, li, dd, td, th, figcaption, blockquote');
+          const own = el.textContent?.trim().length ?? 0;
+          return !!block && (block.textContent?.trim().length ?? 0) > own + 2;
+        };
+        const out: string[] = [];
+        const controls = Array.from(document.querySelectorAll<HTMLElement>('a[href], button')).filter(
+          (el) =>
+            el.checkVisibility({ visibilityProperty: true }) &&
+            !el.closest('.skip, .sr-only') &&
+            !inSentence(el),
+        );
+        const name = (el: Element) =>
+          `${el.tagName.toLowerCase()}.${el.className.toString().split(' ')[0]} in .${el.parentElement?.className.toString().split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
+        // A row link whose ::after covers its whole row (inset: 0) covers that row by design
+        const stretched = (el: Element) => {
+          const after = getComputedStyle(el, '::after');
+          return (
+            after.position === 'absolute' &&
+            ['top', 'right', 'bottom', 'left'].every((side) => after.getPropertyValue(side) === '0px')
+          );
+        };
+        // An inline link that wraps has one box per line: measure its largest piece
+        const largest = (el: Element) => {
+          const pieces = Array.from(el.getClientRects()).filter((r) => r.width > 0 && r.height > 0);
+          return pieces.reduce(
+            (big, r) => (r.width * r.height > big.width * big.height ? r : big),
+            pieces[0] ?? el.getBoundingClientRect(),
+          );
+        };
+        // How far each control's hit area reaches past its largest piece: top, right, bottom, left
+        const beyond = new Map<Element, number[]>();
+
+        for (const el of controls) {
+          el.scrollIntoView({ block: 'center', inline: 'nearest' });
+          const box = largest(el);
+          const x = box.left + box.width / 2;
+          const y = box.top + box.height / 2;
+          const hits = (px: number, py: number) => {
+            const hit = document.elementFromPoint(px, py);
+            return !!hit && (hit === el || el.contains(hit));
+          };
+          // How many pixels a click can move from the centre, one way, and still reach the control
+          const reach = (dx: number, dy: number) => {
+            let n = 0;
+            while (n < 40 && hits(x + dx * (n + 1), y + dy * (n + 1))) n++;
+            return n;
+          };
+          const centre = hits(x, y);
+          const [left, right, up, down] = centre
+            ? [reach(-1, 0), reach(1, 0), reach(0, -1), reach(0, 1)]
+            : [0, 0, 0, 0];
+          const width = centre ? left + right + 1 : 0;
+          const height = centre ? up + down + 1 : 0;
+          const label = name(el);
+          // 1px of slack for sub-pixel edges
+          if (height < 35 || width < 23) out.push(`${label} ${width}x${height}`);
+          // The area must be solid: a misplaced ::after can reach along both axes and still miss the corners
+          const steps = [-0.9, -0.45, 0.45, 0.9];
+          const holes = steps.flatMap((fx) =>
+            steps.filter((fy) => !hits(x + fx * (fx < 0 ? left : right), y + fy * (fy < 0 ? up : down))),
+          );
+          if (centre && holes.length) out.push(`${label} ${width}x${height} has holes`);
+          // Hit test five points inside the element's own box
+          for (const [dx, dy] of [
+            [0, 0],
+            [-0.3, -0.3],
+            [0.3, -0.3],
+            [-0.3, 0.3],
+            [0.3, 0.3],
+          ]) {
+            const hit = document.elementFromPoint(x + dx * box.width, y + dy * box.height);
+            if (hit && hit !== el && !el.contains(hit)) {
+              out.push(
+                `${label} covered by ${hit.tagName.toLowerCase()}.${hit.className.toString().split(' ')[0]}`,
+              );
+              break;
+            }
+          }
+          const past = (n: number, half: number) => Math.max(0, n - half);
+          beyond.set(
+            el,
+            stretched(el)
+              ? [0, 0, 0, 0]
+              : [
+                  past(up, box.height / 2),
+                  past(right, box.width / 2),
+                  past(down, box.height / 2),
+                  past(left, box.width / 2),
+                ],
+          );
+        }
+
+        // No hit area may lie over text it does not own (a title, a label,
+        // another link): that text would hand its clicks to the control. It
+        // owns its parent's text, and inline text in it, such as the heading of
+        // a permalink; not text in a sibling block, such as a toolbar's label.
+        scrollTo(0, 0);
+        const lines: { node: Node; rect: DOMRect }[] = [];
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const range = document.createRange();
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          let boxed = node.parentElement;
+          if (!boxed || !node.textContent?.trim() || boxed.closest('.sr-only, .skip')) continue;
+          while (boxed && getComputedStyle(boxed).display === 'contents') boxed = boxed.parentElement;
+          if (!boxed?.checkVisibility({ visibilityProperty: true })) continue;
+          range.selectNodeContents(node);
+          for (const rect of range.getClientRects())
+            if (rect.width && rect.height) lines.push({ node, rect });
+        }
+        const owns = (el: Element, node: Node) => {
+          if (el.contains(node)) return true;
+          if (node.parentElement?.closest('a[href], button')) return false;
+          for (let p = node.parentElement; p; p = p.parentElement) {
+            if (p === el.parentElement) return true;
+            if (p === document.body || getComputedStyle(p).display !== 'inline') return false;
+          }
+          return false;
+        };
+        for (const el of controls) {
+          const box = largest(el);
+          const [top, right, bottom, left] = beyond.get(el) ?? [0, 0, 0, 0];
+          const areas = [
+            ...Array.from(el.getClientRects()),
+            new DOMRect(box.left - left, box.top - top, box.width + left + right, box.height + top + bottom),
+          ];
+          const covered = lines.find(
+            ({ node, rect }) =>
+              !owns(el, node) &&
+              areas.some(
+                (area) =>
+                  Math.min(area.right, rect.right) - Math.max(area.left, rect.left) > 1 &&
+                  Math.min(area.bottom, rect.bottom) - Math.max(area.top, rect.top) > 1,
+              ),
+          );
+          if (covered) out.push(`${name(el)} lies over "${covered.node.textContent?.trim().slice(0, 24)}"`);
+        }
+        scrollTo(0, 0);
+        return out;
+      });
+      if (found.length) small[width] = found;
+    }
+    expect(small).toEqual({});
+    await context.close();
+  });
+});
+
+describe('focus rings', () => {
+  // A focus ring drawn outside its element must not be cut off by any
+  // ancestor that clips (a code frame with overflow: hidden once did). The
+  // clip is the ancestor's padding box.
+  test.each(routes)('%s: no focus ring is clipped', async (route) => {
+    const { page, context } = await open(route, 1280);
+    const clipped = await page.evaluate(() => {
+      const out: string[] = [];
+      const focusable = Array.from(
+        document.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => el.checkVisibility({ visibilityProperty: true }) && !el.closest('.skip'));
+      for (const el of focusable) {
+        el.focus({ focusVisible: true });
+        const style = getComputedStyle(el);
+        if (style.outlineStyle === 'none') continue;
+        const grow = parseFloat(style.outlineOffset) + parseFloat(style.outlineWidth);
+        const box = el.getBoundingClientRect();
+        const ring = {
+          left: box.left - grow,
+          right: box.right + grow,
+          top: box.top - grow,
+          bottom: box.bottom + grow,
+        };
+        for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+          const s = getComputedStyle(node);
+          if (s.overflowX === 'visible' && s.overflowY === 'visible') continue;
+          const outer = node.getBoundingClientRect();
+          const left = outer.left + node.clientLeft;
+          const top = outer.top + node.clientTop;
+          const clip = { left, top, right: left + node.clientWidth, bottom: top + node.clientHeight };
+          const xClips = s.overflowX !== 'visible';
+          const yClips = s.overflowY !== 'visible';
+          if (
+            (xClips && (ring.left < clip.left - 0.5 || ring.right > clip.right + 0.5)) ||
+            (yClips && (ring.top < clip.top - 0.5 || ring.bottom > clip.bottom + 0.5))
+          ) {
+            out.push(
+              `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in ${node.tagName.toLowerCase()}.${node.className.split(' ')[0]}`,
+            );
+          }
+        }
+      }
+      return [...new Set(out)];
+    });
+    expect(clipped).toEqual([]);
     await context.close();
   });
 });
@@ -331,6 +542,58 @@ describe('article contents', () => {
   });
 });
 
+describe('article rail', () => {
+  // A rail taller than the window scrolls inside itself, so its last link
+  // can come into view (it once stayed below the window until the article end).
+  test('in a short window, the last contents link scrolls into view', async () => {
+    const { page, context } = await open('/claude-code-tips/', 1280);
+    await page.setViewportSize({ width: 1280, height: 600 });
+    const last = page.locator('.toc a').last();
+    await last.focus();
+    const placed = await last.evaluate(async (el) => {
+      await new Promise(requestAnimationFrame);
+      const rail = el.closest('.article__rail');
+      if (!rail) throw new Error('The link is not in the rail');
+      const box = el.getBoundingClientRect();
+      const top = rail.getBoundingClientRect().top + rail.clientTop;
+      return {
+        inRail: box.top >= top - 0.5 && box.bottom <= top + rail.clientHeight + 0.5,
+        inWindow: box.top >= 0 && box.bottom <= innerHeight,
+      };
+    });
+    expect(placed).toEqual({ inRail: true, inWindow: true });
+    await context.close();
+  });
+});
+
+describe('post list', () => {
+  // The whole row links to the post (DESIGN.md). Only the topic links take
+  // their own clicks: the space beside them reaches the row's link.
+  test('a click beside the topics opens the post', async () => {
+    const { page, context } = await open('/blog/', 1280);
+    const { probed, dead } = await page.evaluate(() => {
+      let probed = 0;
+      const dead = Array.from(document.querySelectorAll('.ledger__topics')).flatMap((topics) => {
+        topics.scrollIntoView({ block: 'center' });
+        const strip = topics.getBoundingClientRect();
+        const end = Math.max(
+          ...Array.from(topics.querySelectorAll('a'), (a) => a.getBoundingClientRect().right),
+        );
+        if (end + 8 > strip.right - 1) return [];
+        probed++;
+        const hit = document.elementFromPoint(end + 8, strip.top + strip.height / 2);
+        const title = topics.closest('.ledger__row')?.querySelector('.ledger__title a');
+        return hit && hit === title ? [] : [title?.textContent?.trim().slice(0, 24) ?? '?'];
+      });
+      return { probed, dead };
+    });
+    // A row with no space beside its topics is skipped, but the test must probe some
+    expect(probed).toBeGreaterThan(0);
+    expect(dead).toEqual([]);
+    await context.close();
+  });
+});
+
 describe('code blocks', () => {
   test('copy button copies the code and confirms', async () => {
     const { page, context } = await open('/claude-code-tips/');
@@ -407,6 +670,61 @@ describe('contrast (WCAG AAA for text)', () => {
         expect(await contrastOf(page, selector), selector).toBeGreaterThanOrEqual(7);
       }
       await context.close();
+    },
+  );
+});
+
+// Every built page with highlighted code
+const codeRoutes = fs
+  .readdirSync(dist, { recursive: true, encoding: 'utf8' })
+  .filter(
+    (file) =>
+      // The class, not the name: every page's inlined stylesheet mentions astro-code
+      file.endsWith('index.html') &&
+      fs.readFileSync(path.join(dist, file), 'utf8').includes('class="astro-code'),
+  )
+  .map((file) => `/${path.dirname(file)}/`.replace('/./', '/'));
+
+describe('code token contrast', () => {
+  // Shiki's high-contrast themes are close to 7:1 on --bg-sunken; colours
+  // below it are remapped in src/lib/markdown.ts (contrastFixes).
+  test.each(['light', 'dark'] as const)(
+    '%s theme: every code token reaches 7:1 on the code well',
+    async (scheme) => {
+      const weak = new Set<string>();
+      for (const route of codeRoutes) {
+        const { page, context } = await open(route, 1280, scheme);
+        const found = await page.evaluate(() => {
+          const canvas = document.createElement('canvas').getContext('2d');
+          if (!canvas) throw new Error('The browser has no 2D canvas');
+          const lum = (color: string) => {
+            canvas.clearRect(0, 0, 1, 1);
+            canvas.fillStyle = color;
+            canvas.fillRect(0, 0, 1, 1);
+            return Array.from(canvas.getImageData(0, 0, 1, 1).data.slice(0, 3))
+              .map((v) => v / 255)
+              .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+              .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+          };
+          const out: string[] = [];
+          for (const pre of document.querySelectorAll('.astro-code')) {
+            const well = pre.closest('.code') ?? pre;
+            const bg = lum(getComputedStyle(well).backgroundColor);
+            for (const span of pre.querySelectorAll('span')) {
+              if (!span.textContent?.trim() || span.children.length) continue;
+              const color = getComputedStyle(span).color;
+              const fg = lum(color);
+              const [hi, lo] = fg > bg ? [fg, bg] : [bg, fg];
+              const ratio = (hi + 0.05) / (lo + 0.05);
+              if (ratio < 7) out.push(`${color} ${ratio.toFixed(2)}`);
+            }
+          }
+          return out;
+        });
+        for (const f of found) weak.add(f);
+        await context.close();
+      }
+      expect([...weak]).toEqual([]);
     },
   );
 });
