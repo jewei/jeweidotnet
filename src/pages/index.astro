@@ -246,19 +246,16 @@ const eyes = [
 
   /*
    * The name sits on a block of signal orange, like a highlighter swipe. The
-   * block covers the whole glyph box: the name is ink, and ink above a
-   * shorter band would vanish on the dark plate. The name never breaks.
+   * block is as tall as the font (the inline box): the name is ink, and ink
+   * above a shorter band would vanish on the dark plate. The name never
+   * breaks, so it is one box, and the entrance can clip it.
    */
   .intro__name {
-    /* A box of its own, so the entrance can clip it (it never wraps anyway) */
-    display: inline-block;
     color: var(--on-signal);
     padding-inline: 0.06em;
     margin-inline: -0.02em;
     white-space: nowrap;
     background: linear-gradient(var(--signal), var(--signal)) 0 0 / 100% 100% no-repeat;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
   }
 
   .intro__line--quiet {

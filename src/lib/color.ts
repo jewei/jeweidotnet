@@ -4,9 +4,14 @@
  * tokens stay the one source.
  */
 
-/** A token's light-theme value (its first definition in tokens.css), as hex. */
+/**
+ * A token's light-theme value (its first definition in tokens.css), as hex.
+ * Comments are skipped, and the name must match whole: `--signal` is not
+ * `--on-signal` or `--card--signal`.
+ */
 export function tokenHex(css: string, name: string): string {
-  const value = new RegExp(`--${name}:\\s*([^;]+);`).exec(css)?.[1];
+  const source = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  const value = new RegExp(`(?:^|[\\s{;])--${name}\\s*:\\s*([^;]+);`).exec(source)?.[1];
   if (!value) throw new Error(`color.ts: no --${name} in tokens.css`);
   return oklchToHex(value);
 }
