@@ -4,18 +4,18 @@ Everything here is implemented once, in `src/layouts/Base.astro`, `src/lib/seo.t
 
 ## Per-page contract
 
-| Item                 | Rule                                                                                                    | Source                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `<title>`            | `Title · Jewei Mak` when ≤ 65 chars, else the title alone. Home: `site.homeTitle`. Unique.              | `documentTitle()`                                  |
-| Meta description     | 40–200 chars (aim 120–160). Unique.                                                                     | page data, post `description`, topic `description` |
-| Canonical            | Absolute, trailing slash, equals `og:url`. None on 404.                                                 | `Base.astro`                                       |
-| Robots               | `index, follow, max-image-preview:large`; 404 is `noindex`                                              | `Base.astro`                                       |
-| H1                   | Exactly one per page                                                                                    | tests                                              |
-| Open Graph / Twitter | title, description, type, url, image (+width, height, alt), `summary_large_image`                       | `Base.astro`                                       |
-| Social image         | Custom `image` cropped to the largest true 1.91:1 size, or a generated 1200×630 card at `/og/<key>.png` | `src/lib/og.ts`                                    |
-| Articles             | `article:published_time`, `article:modified_time`, `article:author`, `article:tag`                      | `[slug].astro`                                     |
-| Markdown alternate   | `<link rel="alternate" type="text/markdown">` to `<path>/index.md`                                      | `Base.astro`                                       |
-| `rel="me"`           | GitHub and X                                                                                            | `Base.astro`                                       |
+| Item                 | Rule                                                                                                                                         | Source                                             |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `<title>`            | `Title · Jewei Mak` when ≤ 65 chars, else the title alone. Home: `site.homeTitle`. Unique.                                                   | `documentTitle()`                                  |
+| Meta description     | 40–200 chars (aim 120–160). Unique.                                                                                                          | page data, post `description`, topic `description` |
+| Canonical            | Absolute, trailing slash, equals `og:url`. None on 404.                                                                                      | `Base.astro`                                       |
+| Robots               | `index, follow, max-image-preview:large`; 404 is `noindex`                                                                                   | `Base.astro`                                       |
+| H1                   | Exactly one per page                                                                                                                         | tests                                              |
+| Open Graph / Twitter | title, description, type, url, image (+width, height, alt), `summary_large_image`                                                            | `Base.astro`                                       |
+| Social image         | Custom `image` cropped to the largest true 1.91:1 size, or a generated 1200×630 card at `/og/<key>.png?v=<hash>` (hash of the card's pixels) | `src/lib/og.ts`                                    |
+| Articles             | `article:published_time`, `article:modified_time`, `article:author`, `article:tag`                                                           | `[slug].astro`                                     |
+| Markdown alternate   | `<link rel="alternate" type="text/markdown">` to `<path>/index.md`                                                                           | `Base.astro`                                       |
+| `rel="me"`           | GitHub and X                                                                                                                                 | `Base.astro`                                       |
 
 ## Structured data
 

@@ -1,6 +1,7 @@
 /**
  * SEO and sharing contract for every built page. Needs `vp run build`.
  */
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
@@ -83,6 +84,28 @@ test('every social image exists and reports its real size', async () => {
     expect(info.width, url).toBe(Number(meta(doc, 'meta[property="og:image:width"]')));
     expect(info.height, url).toBe(Number(meta(doc, 'meta[property="og:image:height"]')));
   }
+});
+
+// Cards keep fixed file names, and the edge holds them for a day. A content
+// hash in the URL makes every changed card a new URL, so shares get the new one.
+test('generated social cards load at a content-versioned URL', () => {
+  const version = (pathname: string) =>
+    createHash('sha256')
+      .update(fs.readFileSync(path.join(dist, pathname)))
+      .digest('hex')
+      .slice(0, 10);
+  for (const [route, doc] of indexable) {
+    for (const selector of ['meta[property="og:image"]', 'meta[name="twitter:image"]']) {
+      const url = new URL(meta(doc, selector));
+      if (!url.pathname.startsWith('/og/')) continue;
+      expect(url.search, `${route} ${selector}`).toBe(`?v=${version(url.pathname)}`);
+    }
+  }
+  const article = jsonLd(page('/database-primary-key/'))[0]['@graph'].find(
+    (node) => node['@type'] === 'BlogPosting',
+  );
+  const image = new URL(String(article?.image));
+  expect(image.search).toBe(`?v=${version(image.pathname)}`);
 });
 
 test('articles publish BlogPosting and BreadcrumbList data', () => {

@@ -21,6 +21,7 @@ import {
   relatedPosts,
 } from '../lib/posts';
 import { absolute, breadcrumbSchema } from '../lib/seo';
+import { ogImage } from '../lib/og';
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -65,7 +66,7 @@ const schema = [
     articleSection: topicName(primaryTopic),
     author: { '@id': personId },
     publisher: { '@id': personId },
-    image: image ? absolute(image.src) : absolute(ogPath(`post-${postSlug(post)}`)),
+    image: absolute(image ? image.src : await ogImage(`post-${postSlug(post)}`)),
     isPartOf: { '@type': 'Blog', '@id': `${absolute('/blog/')}#blog`, name: `Writing by ${site.author}` },
   },
   breadcrumbSchema([
