@@ -72,7 +72,8 @@
 
 @layer base {
   html {
-    background: var(--bg);
+    background-color: var(--bg);
+    background-image: var(--grain);
     color: var(--fg);
     font-family: var(--sans);
     font-size: 100%;
@@ -102,6 +103,14 @@
     font-weight: 600;
     letter-spacing: var(--tracking-heading);
     line-height: var(--leading-snug);
+  }
+
+  /* Display headings: the wide face, heavy and tight */
+  h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-tight);
   }
 
   a {
@@ -149,27 +158,30 @@
     padding-inline: var(--gutter);
   }
 
-  /* Small uppercase mono label for metadata */
+  /* Small uppercase label in the wide face: section names, metadata keys */
   .label {
-    font-family: var(--mono);
-    font-size: var(--step--2);
-    font-weight: 500;
-    letter-spacing: var(--tracking-label);
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 600;
+    letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
     color: var(--fg-3);
     line-height: 1.4;
   }
 
-  /* Text link with an animated underline */
+  /* Text link: the underline turns signal orange on hover */
   .link {
     color: var(--fg);
     text-decoration-line: underline;
     text-decoration-color: var(--line-strong);
-    transition: text-decoration-color var(--dur-1) var(--ease);
+    transition:
+      text-decoration-color var(--dur-1) var(--ease),
+      text-decoration-thickness var(--dur-1) var(--ease);
   }
 
   .link:hover {
     text-decoration-color: var(--accent-mark);
+    text-decoration-thickness: 2px;
   }
 
   /* Arrow link: "Read more →" */
@@ -211,52 +223,63 @@
     }
   }
 
-  /* Buttons: one primary per view */
+  /*
+   * Buttons: ink edge and a hard shadow, like a key on a panel. Pressing it
+   * pushes it into the plate. One primary (signal orange) per view.
+   */
   .button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5em;
+    gap: 0.6em;
     min-height: 44px;
     padding: 0 var(--space-4);
-    border-radius: var(--radius-2);
-    border: 1px solid var(--line-strong);
-    background: var(--bg);
+    border-radius: var(--radius-1);
+    border: 1px solid var(--fg);
+    background: var(--bg-raised);
     color: var(--fg);
-    font-weight: 500;
-    font-size: var(--step-0);
+    box-shadow: var(--shadow-hard);
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 700;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
     line-height: 1;
     text-decoration: none;
     white-space: nowrap;
     transition:
-      background-color var(--dur-1) var(--ease),
-      border-color var(--dur-1) var(--ease),
-      transform var(--dur-1) var(--ease);
+      transform var(--dur-1) var(--ease),
+      box-shadow var(--dur-1) var(--ease),
+      background-color var(--dur-1) var(--ease);
   }
 
   .button svg {
-    width: 1.05em;
-    height: 1.05em;
+    width: 1.3em;
+    height: 1.3em;
   }
 
-  .button:hover {
-    background: var(--bg-raised);
-    border-color: var(--fg-3);
+  @media (hover: hover) {
+    .button:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--edge);
+    }
   }
 
   .button:active {
-    transform: translateY(1px);
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--edge);
   }
 
   .button--primary {
-    background: var(--fg);
-    border-color: var(--fg);
-    color: var(--bg);
+    border-color: var(--edge);
+    background: var(--signal);
+    color: var(--on-signal);
   }
 
-  .button--primary:hover {
-    background: var(--fg-2);
-    border-color: var(--fg-2);
+  /* On a signal plate the primary button inverts: ink with orange text */
+  .plate--signal .button--primary {
+    background: var(--on-signal);
+    color: var(--signal);
   }
 
   /* Visually hidden, still announced */
@@ -272,86 +295,166 @@
     border: 0;
   }
 
-  /* Section header: title left, optional action right */
-  .section-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0 var(--space-6);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--fg);
-    margin-bottom: var(--space-5);
+  /*
+   * Plate: an off-white panel screwed to the bench. Content sits on plates;
+   * the bench (the page background) stays empty. The ::after draws a screw
+   * head in each corner.
+   */
+  .plate,
+  .part {
+    position: relative;
+    background: var(--bg-raised);
+    border: var(--hairline);
+    border-radius: var(--radius-2);
+    box-shadow: var(--shadow);
   }
 
-  .section-head h2 {
-    font-size: var(--step-1);
-    letter-spacing: var(--tracking-heading);
-    line-height: var(--leading-snug);
+  .plate::after,
+  .part::after {
+    --at: var(--space-3);
+    --ring: transparent 3px, var(--screw) 3.5px 4.5px, transparent 5px;
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at var(--at) var(--at), var(--ring)),
+      radial-gradient(circle at calc(100% - var(--at)) var(--at), var(--ring)),
+      radial-gradient(circle at var(--at) calc(100% - var(--at)), var(--ring)),
+      radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
   }
 
-  .section-head p {
-    color: var(--fg-2);
-    max-width: 38rem;
-    margin-top: var(--space-1);
+  /* A plate with a bar on top keeps only its bottom screws: the bar holds the top */
+  .part::after,
+  .plate:has(> .bar)::after {
+    background:
+      radial-gradient(circle at var(--at) calc(100% - var(--at)), var(--ring)),
+      radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
   }
 
-  .section {
-    padding-block: var(--section) 0;
+  /* The signal plate: orange, with ink text. Index pages and articles open with one. */
+  .plate--signal {
+    --fg: var(--on-signal);
+    --fg-2: var(--on-signal);
+    --fg-3: var(--on-signal);
+    --focus: var(--on-signal);
+    --line: var(--on-signal);
+    --line-strong: var(--on-signal);
+    --accent: var(--on-signal);
+    --accent-mark: var(--on-signal);
+    --screw: var(--on-signal);
+    border-color: var(--edge);
+    background: var(--signal);
+    color: var(--on-signal);
+  }
+
+  .plate--signal::after {
+    opacity: 0.35;
   }
 
   /*
-   * Part: a section whose heading sits in a left rail at 64rem+, like a
-   * typeset document. Below 64rem the heading sits above the body.
+   * Bar: the header strip of a plate. A signal chip with the plate's
+   * number, an uppercase title, a dotted leader, and an optional action.
+   * `.part` numbers itself with a counter; a `.bar` passes `data-no`.
    */
-  .part {
-    position: relative;
-    padding-top: var(--space-3);
+  .bar,
+  .part__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: var(--bar);
+    padding-right: var(--space-3);
+    border-bottom: var(--hairline);
   }
 
-  /* The rule is a box, not a border, so a reveal can draw it from the left */
-  .part::before {
+  .bar::before,
+  .part__head::before {
+    align-self: stretch;
+    display: grid;
+    place-items: center;
+    min-width: var(--bar);
+    padding-inline: var(--space-2);
+    border-top-left-radius: calc(var(--radius-2) - 1px);
+    background: var(--signal);
+    color: var(--on-signal);
+    font-family: var(--mono);
+    font-size: var(--step--3);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .bar::before {
+    content: attr(data-no);
+    content: attr(data-no) / '';
+  }
+
+  .part__head::before {
+    content: counter(part, decimal-leading-zero);
+    content: counter(part, decimal-leading-zero) / '';
+  }
+
+  .bar__title,
+  .part__head h2 {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--space-3);
+    min-width: 0;
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 700;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  /* The dotted leader; a scroll reveal draws it from the left */
+  .bar__title::after,
+  .part__head h2::after {
     content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 1px;
-    background: var(--fg);
+    flex: 1;
+    height: 3px;
+    background: radial-gradient(circle, var(--line-strong) 1px, transparent 1.5px) 0 50% / 6px 3px repeat-x;
     transform: scaleX(var(--drawn, 1));
     transform-origin: left;
     transition: transform var(--dur-4) var(--ease-out) var(--delay, 0ms);
   }
 
-  .part + .part {
-    margin-top: var(--space-8);
+  .bar .arrow-link,
+  .part__head .arrow-link {
+    min-height: var(--bar);
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 700;
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
-  .part__head h2 {
-    font-size: var(--step-1);
-    letter-spacing: var(--tracking-heading);
-    line-height: var(--leading-snug);
+  .bar__meta {
+    font-family: var(--mono);
+    font-size: var(--step--3);
+    color: var(--fg-3);
+    white-space: nowrap;
+  }
+
+  /*
+   * Part: a numbered plate. Its head is a bar; the body sits below it with
+   * the plate's padding. Plates on one page count up: 01, 02, 03.
+   */
+  main {
+    counter-reset: part;
+  }
+
+  .part {
+    counter-increment: part;
+    margin-top: var(--section);
   }
 
   .part__body {
-    margin-top: var(--space-4);
     min-width: 0;
-  }
-
-  @media (min-width: 64rem) {
-    .part {
-      display: grid;
-      grid-template-columns: var(--rail) minmax(0, 1fr);
-      gap: var(--space-6);
-    }
-
-    .part__head {
-      position: sticky;
-      top: var(--space-6);
-      align-self: start;
-    }
-
-    .part__body {
-      margin-top: 0;
-    }
+    padding: var(--plate-pad);
   }
 }
 

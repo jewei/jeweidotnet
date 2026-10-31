@@ -2,55 +2,79 @@
  * Design tokens. The single source for colour, type, space, and motion.
  * docs/DESIGN.md explains each token's role. Components use tokens only.
  *
- * Contrast (checked against --bg in both themes):
- *   --fg ≥ 15:1, --fg-2 ≥ 9:1, --fg-3 ≥ 7:1 (AAA body text), --accent ≥ 7:1.
+ * Contrast (checked against --bg and --bg-raised in both themes):
+ *   --fg ≥ 14:1, --fg-2 ≥ 9:1, --fg-3 ≥ 7:1 (AAA body text), --accent ≥ 7:1,
+ *   --on-signal on --signal ≥ 7:1.
  *   --accent-mark is decorative only (bars, dots, underlines). Never text.
  */
 
 :root {
   color-scheme: light dark;
 
-  /* Light theme */
-  --bg: oklch(98.6% 0.004 95);
-  --bg-raised: oklch(96.4% 0.005 95);
-  --bg-sunken: oklch(95% 0.005 95);
-  --fg: oklch(19% 0.01 260);
-  --fg-2: oklch(36% 0.01 260);
-  --fg-3: oklch(45% 0.01 260);
-  --line: oklch(89.5% 0.005 95);
-  --line-strong: oklch(78% 0.006 95);
-  --accent: oklch(43% 0.115 152);
-  --accent-mark: oklch(62% 0.165 152);
-  --accent-wash: oklch(93% 0.045 152);
-  --focus: oklch(50% 0.17 152);
-  --shadow: 0 1px 2px oklch(19% 0.01 260 / 0.06), 0 8px 24px -12px oklch(19% 0.01 260 / 0.18);
-  /* A print lifted off the page: the home portrait and the project preview */
+  /* Light theme: a concrete workbench with off-white plates on it */
+  --bg: oklch(90.6% 0.005 85);
+  --bg-raised: oklch(96.4% 0.004 85);
+  --bg-sunken: oklch(95% 0.005 85);
+  --fg: oklch(17% 0.005 60);
+  --fg-2: oklch(31% 0.006 60);
+  --fg-3: oklch(39% 0.006 60);
+  --line: oklch(86% 0.005 85);
+  --line-strong: oklch(72% 0.006 85);
+  --accent: oklch(40.5% 0.12 42);
+  --accent-mark: oklch(65.5% 0.2 40);
+  --accent-wash: oklch(87% 0.08 58);
+  --focus: oklch(17% 0.005 60);
+  --shadow:
+    0 1px 0 oklch(100% 0 0 / 0.7) inset, 0 1px 2px oklch(17% 0.005 60 / 0.08),
+    0 12px 32px -18px oklch(17% 0.005 60 / 0.3);
+  /* A print lifted off the plate: the home sticker and the project covers */
   --bg-paper: oklch(100% 0 0);
-  --shadow-lift: 0 1px 2px oklch(19% 0.01 260 / 0.08), 0 24px 48px -20px oklch(19% 0.01 260 / 0.38);
+  --shadow-lift: 0 1px 2px oklch(17% 0.005 60 / 0.1), 0 24px 48px -20px oklch(17% 0.005 60 / 0.4);
+  /* Ink edges: buttons and stickers have a 1px ink border and a hard shadow */
+  --edge: oklch(17% 0.005 60);
+  --shadow-hard: 3px 3px 0 oklch(17% 0.005 60);
+
+  /* The signal: one orange. Fills carry --on-signal text (7:1). */
+  --signal: oklch(71% 0.185 48);
+  --on-signal: oklch(15% 0.01 50);
+
+  /* Plate hardware: the screw heads in each corner */
+  --screw: oklch(78% 0.006 85);
+
+  /* Fine grain on the workbench (an SVG noise tile) */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0 0 0 -0.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  /* The painted portrait's eyes (public/site.js moves the irises). Same in both themes. */
+  --eye-lit: oklch(86% 0.032 50);
+  --eye-mid: oklch(77% 0.042 50);
+  --eye-shade: oklch(55% 0.04 40);
 
   /* Type families (variables come from Astro's font API) */
+  --display: var(--font-display), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', monospace;
   --serif: var(--font-serif), ui-serif, Georgia, serif;
 
   /* Type scale: fluid between 20rem and 80rem viewports */
+  --step--3: 0.6875rem;
   --step--2: 0.75rem;
   --step--1: 0.875rem;
   --step-0: 1rem;
   --step-prose: clamp(1.0625rem, 1.02rem + 0.2vw, 1.1875rem);
-  --step-1: clamp(1.125rem, 1.07rem + 0.3vw, 1.3125rem);
-  --step-2: clamp(1.375rem, 1.25rem + 0.6vw, 1.75rem);
-  --step-3: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);
-  --step-4: clamp(2.125rem, 1.65rem + 2.4vw, 3.5rem);
-  --step-5: clamp(2.5rem, 1.7rem + 4vw, 5rem);
+  --step-1: clamp(1.0625rem, 1.03rem + 0.2vw, 1.1875rem);
+  --step-2: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-3: clamp(1.625rem, 1.4rem + 1.1vw, 2.25rem);
+  --step-4: clamp(2rem, 1.55rem + 2.2vw, 3.25rem);
+  --step-5: clamp(2.25rem, 1.5rem + 3.6vw, 4.5rem);
 
-  --leading-tight: 1.08;
-  --leading-snug: 1.3;
+  --leading-tight: 1.04;
+  --leading-snug: 1.25;
   --leading-body: 1.55;
   --leading-prose: 1.72;
-  --tracking-display: -0.035em;
-  --tracking-heading: -0.02em;
+  --tracking-display: -0.045em;
+  --tracking-heading: -0.025em;
   --tracking-label: 0.06em;
+  --tracking-caps: 0.1em;
 
   /* Space: 4px base */
   --space-1: 0.25rem;
@@ -63,19 +87,23 @@
   --space-8: 4rem;
   --space-9: 6rem;
   --space-10: 8rem;
-  --section: clamp(4rem, 3rem + 4vw, 7rem);
+  --section: clamp(1rem, 0.6rem + 1.5vw, 1.5rem);
+  /* Inner padding of a plate */
+  --plate-pad: clamp(1.25rem, 0.6rem + 3vw, 3rem);
+  /* Height of a plate's header bar */
+  --bar: 2.75rem;
 
   /* Layout */
-  --page: 76rem;
-  --gutter: clamp(1.25rem, 0.6rem + 3vw, 3rem);
+  --page: 64rem;
+  --gutter: clamp(0.75rem, 0.3rem + 2vw, 2rem);
   --measure: 40rem;
-  --rail: 12rem;
+  --rail: 11rem;
 
   /* Shape */
-  --radius-1: 4px;
-  --radius-2: 8px;
-  --radius-3: 12px;
-  --radius-4: 16px;
+  --radius-1: 3px;
+  --radius-2: 6px;
+  --radius-3: 10px;
+  --radius-4: 14px;
   --hairline: 1px solid var(--line);
 
   /* Motion. The long durations and the out and spring curves are for the home page's entrance. */
@@ -97,40 +125,51 @@
 /* Dark theme: system preference unless the visitor chose light */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: oklch(16% 0.008 260);
-    --bg-raised: oklch(19.5% 0.009 260);
-    --bg-sunken: oklch(13.5% 0.008 260);
-    --fg: oklch(94% 0.006 95);
-    --fg-2: oklch(82% 0.006 95);
-    --fg-3: oklch(73% 0.006 95);
-    --line: oklch(28% 0.008 260);
-    --line-strong: oklch(40% 0.008 260);
-    --accent: oklch(81% 0.13 152);
-    --accent-mark: oklch(74% 0.16 152);
-    --accent-wash: oklch(28% 0.05 152);
-    --focus: oklch(80% 0.15 152);
-    --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -12px oklch(0% 0 0 / 0.6);
-    --bg-paper: oklch(27% 0.008 260);
+    --bg: oklch(15.5% 0.004 60);
+    --bg-raised: oklch(20.5% 0.005 60);
+    --bg-sunken: oklch(14% 0.005 60);
+    --fg: oklch(95% 0.004 85);
+    --fg-2: oklch(84% 0.004 85);
+    --fg-3: oklch(76% 0.004 85);
+    --line: oklch(29% 0.005 60);
+    --line-strong: oklch(42% 0.005 60);
+    --accent: oklch(78% 0.135 56);
+    --accent-mark: oklch(69% 0.195 42);
+    --accent-wash: oklch(34% 0.08 50);
+    --focus: oklch(95% 0.004 85);
+    --shadow:
+      0 1px 0 oklch(100% 0 0 / 0.05) inset, 0 1px 2px oklch(0% 0 0 / 0.4),
+      0 12px 32px -18px oklch(0% 0 0 / 0.8);
+    --bg-paper: oklch(27% 0.006 60);
     --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.35), 0 24px 48px -20px oklch(0% 0 0 / 0.8);
+    --edge: oklch(0% 0 0);
+    --shadow-hard: 3px 3px 0 oklch(0% 0 0);
+    --screw: oklch(33% 0.005 60);
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.3 0 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 }
 
 :root[data-theme='dark'] {
-  --bg: oklch(16% 0.008 260);
-  --bg-raised: oklch(19.5% 0.009 260);
-  --bg-sunken: oklch(13.5% 0.008 260);
-  --fg: oklch(94% 0.006 95);
-  --fg-2: oklch(82% 0.006 95);
-  --fg-3: oklch(73% 0.006 95);
-  --line: oklch(28% 0.008 260);
-  --line-strong: oklch(40% 0.008 260);
-  --accent: oklch(81% 0.13 152);
-  --accent-mark: oklch(74% 0.16 152);
-  --accent-wash: oklch(28% 0.05 152);
-  --focus: oklch(80% 0.15 152);
-  --shadow: 0 1px 2px oklch(0% 0 0 / 0.3), 0 8px 24px -12px oklch(0% 0 0 / 0.6);
-  --bg-paper: oklch(27% 0.008 260);
+  --bg: oklch(15.5% 0.004 60);
+  --bg-raised: oklch(20.5% 0.005 60);
+  --bg-sunken: oklch(14% 0.005 60);
+  --fg: oklch(95% 0.004 85);
+  --fg-2: oklch(84% 0.004 85);
+  --fg-3: oklch(76% 0.004 85);
+  --line: oklch(29% 0.005 60);
+  --line-strong: oklch(42% 0.005 60);
+  --accent: oklch(78% 0.135 56);
+  --accent-mark: oklch(69% 0.195 42);
+  --accent-wash: oklch(34% 0.08 50);
+  --focus: oklch(95% 0.004 85);
+  --shadow:
+    0 1px 0 oklch(100% 0 0 / 0.05) inset, 0 1px 2px oklch(0% 0 0 / 0.4), 0 12px 32px -18px oklch(0% 0 0 / 0.8);
+  --bg-paper: oklch(27% 0.006 60);
   --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.35), 0 24px 48px -20px oklch(0% 0 0 / 0.8);
+  --edge: oklch(0% 0 0);
+  --shadow-hard: 3px 3px 0 oklch(0% 0 0);
+  --screw: oklch(33% 0.005 60);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.3 0 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   color-scheme: dark;
 }
 
