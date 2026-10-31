@@ -88,8 +88,6 @@ test('every social image exists and reports its real size', async () => {
   }
 });
 
-// Cards keep fixed file names, and the edge holds them for a day. A content
-// hash in the URL makes every changed card a new URL, so shares get the new one.
 test('social cards and the manifest take their colours from the tokens', async () => {
   const tokens = fs.readFileSync(path.join(root, 'src/styles/tokens.css'), 'utf8');
   const { data } = await sharp(path.join(dist, 'og/default.png'))
@@ -106,6 +104,8 @@ test('social cards and the manifest take their colours from the tokens', async (
   expect(manifest.background_color).toBe(tokenHex(tokens, 'bg'));
 });
 
+// Cards keep fixed file names, and the edge holds them for a day. A content
+// hash in the URL makes every changed card a new URL, so shares get the new one.
 test('generated social cards load at a content-versioned URL', () => {
   const version = (pathname: string) =>
     createHash('sha256')
