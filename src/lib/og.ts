@@ -62,14 +62,19 @@ export async function cardList(): Promise<{ key: string; card: Card }[]> {
   ];
 }
 
-/** Rendered cards by key: each card renders once per build, for its file and its URL hash. */
+/**
+ * Rendered cards: each card renders once per build, for its file and its URL
+ * hash. The memo key includes the card text, so `astro dev` renders again
+ * after a post's title or description changes.
+ */
 const rendered = new Map<string, Promise<Buffer>>();
 
 export function cardPng(key: string, card: Card): Promise<Buffer> {
-  let png = rendered.get(key);
+  const id = `${key}\n${JSON.stringify(card)}`;
+  let png = rendered.get(id);
   if (!png) {
     png = renderCard(card);
-    rendered.set(key, png);
+    rendered.set(id, png);
   }
   return png;
 }
