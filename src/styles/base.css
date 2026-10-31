@@ -456,6 +456,15 @@
     transition: transform var(--dur-4) var(--ease-out) var(--delay, 0ms);
   }
 
+  /*
+   * A section title never shrinks below its words. When the row is full,
+   * the link beside it wraps instead (the title once ran under the link).
+   */
+  .part__head h2 {
+    flex: 1 1 auto;
+    min-width: auto;
+  }
+
   .bar .arrow-link,
   .part__head .arrow-link {
     min-height: var(--bar);
@@ -464,7 +473,12 @@
     font-weight: 700;
     letter-spacing: var(--tracking-caps);
     text-transform: uppercase;
-    white-space: nowrap;
+  }
+
+  /* A wrapped label keeps to the arrow */
+  .bar .arrow-link > span,
+  .part__head .arrow-link > span {
+    text-align: end;
   }
 
   .bar__meta {
