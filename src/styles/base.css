@@ -224,8 +224,9 @@
   }
 
   /*
-   * Buttons: ink edge and a hard shadow, like a key on a panel. Pressing it
-   * pushes it into the plate. One primary (signal orange) per view.
+   * Buttons: a 1px edge (the text colour; ink on the primary) and a hard
+   * shadow, like a key on a panel. Pressing it pushes it into the plate.
+   * One primary (signal orange) per view.
    */
   .button {
     display: inline-flex;

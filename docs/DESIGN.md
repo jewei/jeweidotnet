@@ -18,38 +18,38 @@ Read this before you change any visual code. Change this file first when the sys
 
 All in `src/styles/tokens.css`. Components use tokens only: no raw colours, font stacks, or spacing in `px` or `rem`. Exceptions: `em` offsets that scale with the text (prose rhythm, list indents, icon gaps), small drawing geometry (screw rings, dots, the theme knob), and `mm`/`pt` sizes inside `@media print`.
 
-| Group    | Tokens                                                                                           | Notes                                                                                                      |
-| -------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
-| Surface  | `--bg`, `--bg-raised`, `--bg-sunken`                                                             | Bench, plates, code wells and switch tracks                                                                |
-| Grain    | `--grain`                                                                                        | SVG noise tile on the bench; dark specks in light, light specks in dark                                    |
-| Text     | `--fg` (14:1), `--fg-2` (9:1), `--fg-3` (7:1)                                                    | Primary, secondary, metadata; checked on the bench and on plates                                           |
-| Lines    | `--line`, `--line-strong`, `--screw`                                                             | Hairlines, outlines and leaders, screw heads                                                               |
-| Signal   | `--signal`, `--on-signal` (7:1 on `--signal`)                                                    | Orange fills and the ink on them                                                                           |
-| Accent   | `--accent` (orange text, 7:1), `--accent-mark` (decorative only), `--accent-wash` (selection)    | `--accent-mark` is for underlines, dots, and bullets. Never text.                                          |
-| Edges    | `--edge`, `--shadow-hard`, `--shadow-press`, `--shadow-hover`, `--shadow`                        | Ink edge and hard shadows for pressables (resting, pressed, hovered); a soft shadow for plates             |
-| Focus    | `--focus`                                                                                        | 2px outline, 3px offset. Ink in light, paper in dark; ink on the signal                                    |
-| Type     | `--display` Zalando Sans Expanded, `--sans` Geist, `--serif` Source Serif 4, `--mono` Geist Mono | Self-hosted through Astro's font API                                                                       |
-| Scale    | `--step--3` … `--step-5`, `--step-prose`                                                         | Fluid with `clamp()`                                                                                       |
-| Space    | `--space-1` (4px) … `--space-10` (128px), `--section`, `--plate-pad`, `--bar`                    | `--section` is the gap between plates; `--bar` is 44px                                                     |
-| Layout   | `--page` 64rem, `--gutter`, `--measure` 40rem, `--rail` 11rem                                    |                                                                                                            |
-| Shape    | `--radius-1` 3px … `--radius-4` 14px                                                             | Plates use `--radius-2`; pills (999px) only for the theme switch                                           |
-| Motion   | `--ease`, `--dur-1` 120ms, `--dur-2` 220ms; `--ease-out`, `--ease-spring`, `--dur-3`, `--dur-4`  | The second set is for the home entrance, scroll reveals, and springy controls (the theme knob, cover zoom) |
-| Portrait | `--eye-lit`, `--eye-mid`, `--eye-shade`                                                          | The painted sclera under the moving irises. Same in both themes                                            |
-| Print    | `--print-bg`, `--print-fg`, `--print-fg-2`, `--print-line`                                       | Résumé print: black on white in every theme                                                                |
+| Group    | Tokens                                                                                           | Notes                                                                                                                         |
+| -------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Surface  | `--bg`, `--bg-raised`, `--bg-sunken`                                                             | Bench, plates, code wells and switch tracks                                                                                   |
+| Grain    | `--grain`                                                                                        | SVG noise tile on the bench; dark specks in light, light specks in dark                                                       |
+| Text     | `--fg` (14:1), `--fg-2` (9:1), `--fg-3` (7:1)                                                    | Primary, secondary, metadata; checked on the bench and on plates                                                              |
+| Lines    | `--line`, `--line-strong`, `--screw`                                                             | Hairlines, outlines and leaders, screw heads                                                                                  |
+| Signal   | `--signal`, `--on-signal` (7:1 on `--signal`)                                                    | Orange fills and the ink on them                                                                                              |
+| Accent   | `--accent` (orange text, 7:1), `--accent-mark` (decorative only), `--accent-wash` (selection)    | `--accent-mark` is for underlines, dots, and bullets. Never text.                                                             |
+| Edges    | `--edge`, `--shadow-hard`, `--shadow-press`, `--shadow-hover`, `--shadow`                        | The ink edge (primary buttons, stickers, the lit chip) and hard shadows (resting, pressed, hovered); a soft shadow for plates |
+| Focus    | `--focus`                                                                                        | 2px outline, 3px offset. Ink in light, paper in dark; ink on the signal                                                       |
+| Type     | `--display` Zalando Sans Expanded, `--sans` Geist, `--serif` Source Serif 4, `--mono` Geist Mono | Self-hosted through Astro's font API                                                                                          |
+| Scale    | `--step--3` … `--step-5`, `--step-prose`                                                         | Fluid with `clamp()`                                                                                                          |
+| Space    | `--space-1` (4px) … `--space-10` (128px), `--section`, `--plate-pad`, `--bar`                    | `--section` is the gap between plates; `--bar` is 44px                                                                        |
+| Layout   | `--page` 64rem, `--gutter`, `--measure` 40rem, `--rail` 11rem                                    |                                                                                                                               |
+| Shape    | `--radius-1` 3px … `--radius-4` 14px                                                             | Plates use `--radius-2`; pills (999px) only for the theme switch                                                              |
+| Motion   | `--ease`, `--dur-1` 120ms, `--dur-2` 220ms; `--ease-out`, `--ease-spring`, `--dur-3`, `--dur-4`  | The second set is for the home entrance, scroll reveals, and springy controls (the theme knob, cover zoom)                    |
+| Portrait | `--eye-lit`, `--eye-mid`, `--eye-shade`                                                          | The painted sclera under the moving irises. Same in both themes                                                               |
+| Print    | `--print-bg`, `--print-fg`, `--print-fg-2`, `--print-line`                                       | Résumé print: black on white in every theme                                                                                   |
 
 Dark theme: same names, values under `prefers-color-scheme: dark` and `[data-theme='dark']`. The toggle stores an explicit choice; with no choice, the system decides. The signal and its ink are the same in both themes.
 
 ## Type roles
 
-| Role            | Style                                                                                                   |
-| --------------- | ------------------------------------------------------------------------------------------------------- |
-| Display (H1)    | Zalando Sans Expanded 800, `--step-4`, tracking −0.045em, leading 1.04. Home: sized to its column (cqi) |
-| Plate bar title | Zalando Sans Expanded 700, `--step--3`, uppercase, 0.1em tracking                                       |
-| Labels and tabs | Zalando Sans Expanded 600–700, `--step--3`, uppercase (`.label`, header tabs, buttons, chips)           |
-| Titles in lists | Zalando Sans Expanded 700–800, `--step-1` (ledger titles, project names, pager)                         |
-| Prose           | Source Serif 4, `--step-prose`, leading 1.72. H2 in the display face; H3 and H4 in Geist                |
-| Lede / UI text  | Geist 400–500, `--step-0` / `--step-1`                                                                  |
-| Metadata        | Geist Mono, `--step--3` / `--step--2` (dates, catalogue numbers, stacks, the bar chip)                  |
+| Role            | Style                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Display (H1)    | Zalando Sans Expanded 800, `--step-4`, tracking −0.045em, leading 1.04. Home: sized to its column (cqi), leading 1.02 |
+| Plate bar title | Zalando Sans Expanded 700, `--step--3`, uppercase, 0.1em tracking                                                     |
+| Labels and tabs | Zalando Sans Expanded 600–700, `--step--3`, uppercase (`.label`, header tabs, buttons, chips)                         |
+| Titles in lists | Zalando Sans Expanded 700–800, `--step-1` (ledger titles, project names, pager)                                       |
+| Prose           | Source Serif 4, `--step-prose`, leading 1.72. H2 in the display face; H3 and H4 in Geist                              |
+| Lede / UI text  | Geist 400–500, `--step-0` / `--step-1`                                                                                |
+| Metadata        | Geist Mono, `--step--3` / `--step--2` (dates, catalogue numbers, stacks, the bar chip)                                |
 
 ## Components
 
@@ -65,15 +65,15 @@ Dark theme: same names, values under `prefers-color-scheme: dark` and `[data-the
 | `PostList` (ledger)            | home, blog, topics, 404                       | Row = ink `No.` tag and date, title in the display face, summary, topics, and a round arrow key. The whole row is the link target; topics stay separately clickable.                                                         |
 | `ProjectCard`                  | projects                                      | One plate per project: 16:10 cover, label meta, display name, summary, spec list, and links.                                                                                                                                 |
 | `TopicNav`                     | blog, topics                                  | Square chips with counts; the current topic is lit like a pressed key.                                                                                                                                                       |
-| `.button` / `.button--primary` | anywhere                                      | Ink edge, hard shadow, uppercase display label, 44px minimum height. At most one primary (signal) per view.                                                                                                                  |
+| `.button` / `.button--primary` | anywhere                                      | A 1px edge (`--fg`; ink `--edge` on the primary), hard shadow, uppercase display label, 44px minimum height. At most one primary (signal) per view.                                                                          |
 | `.arrow-link`                  | secondary actions                             | Underlined text with an arrow that moves 3px on hover. External links use the ↗ icon and `data-external`. In a bar it is uppercase.                                                                                          |
 | Code frame                     | prose                                         | Label bar (language or filename) with a Copy button that says "Copied". Tokens from GitHub high-contrast themes; light comments remapped for 7:1.                                                                            |
 
 ## Layouts
 
-- **Home:** the intro plate (H1 with the name on a signal block that covers the whole glyph box and never breaks, two paragraphs, Email and Résumé buttons), and beside it the portrait: a round print on a signal disc, with the status as a tilted sticker and a two-line caption (the role; the city and its live time). Under the print is grid paper: a dot grid centred on the portrait, sized in portrait percentages so its fade ends before the copy at every width, and clipped by the plate. The caption has a plate-coloured backing, so no dot crosses a letter. Below 40rem the portrait sits above the copy and the sticker moves to the shoulder. Then Projects and Writing as numbered plates.
+- **Home:** the intro plate (H1 with the name on a signal block as tall as the font, which never breaks, two paragraphs, Email and Résumé buttons), and beside it the portrait: a round print on a signal disc, with the status as a tilted sticker and a two-line caption (the role; the city and its live time). Under the print is grid paper: a dot grid centred on the portrait, sized in portrait percentages so its fade ends before the copy at every width, and clipped by the plate. The caption has a plate-coloured backing, so no dot crosses a letter. Below 40rem the portrait sits above the copy and the sticker moves to the shoulder. Then Projects and Writing as numbered plates.
 - **About:** a signal plate with the tilted portrait and the lede, then Work, Tools, Writing, Outside work, and Contact as numbered plates with prose bodies.
-- **Article:** one plate. Its head is a signal band (crumbs, title, dek, byline). Below it, at 64rem+, the facts rail (entry, dates, topics) and the contents list stick in a left column beside the 40rem reading column; below 64rem the facts become a row under the head. The contents list marks the section in view with CSS scroll markers (`:target-current`, no JS; Chrome and Edge) and a signal tick. A 3px signal reading-progress bar uses CSS scroll timelines. The author card is an ink-edged sticker. "Keep reading" (pager and related posts) is a numbered plate after the article.
+- **Article:** one plate. Its head is a signal band (crumbs, title, dek, byline). Below it, at 64rem+, the facts rail (entry, dates, topics) and the contents list stick in a left column beside the 40rem reading column; below 64rem the facts become a row under the head. The contents list marks the section in view with CSS scroll markers (`:target-current`, no JS; Chrome and Edge) and a signal tick. A 3px signal reading-progress bar uses CSS scroll timelines. The author card is a sticker with a `--fg` edge. "Keep reading" (pager and related posts) is a numbered plate after the article.
 - **Index pages:** a signal `PageHeader`, then topic chips, then the ledger on plates. The blog has one numbered plate per year.
 - **Prose pages:** a signal `PageHeader`, then the body on a plate.
 - **Résumé:** a sheet on a plate: header over a 1px `--fg` rule, experience column and a profile/skills rail. Print drops the plate and the chrome: A4, black on white.

@@ -28,8 +28,10 @@
     0 1px 0 oklch(100% 0 0 / 0.7) inset, 0 1px 2px oklch(17% 0.005 60 / 0.08),
     0 12px 32px -18px oklch(17% 0.005 60 / 0.3);
   /*
-   * Ink edges: buttons, stickers, and the current topic chip have a 1px ink
-   * border and a hard shadow. A pressed key sits lower, a hovered one higher.
+   * Hard edges: primary buttons, stickers, and the current topic chip have a
+   * 1px ink border (--edge); plain buttons and the author card use --fg, so
+   * they show in dark theme. All have a hard shadow: a pressed key sits
+   * lower, a hovered one higher.
    */
   --edge: oklch(17% 0.005 60);
   --shadow-hard: 3px 3px 0 var(--edge);
