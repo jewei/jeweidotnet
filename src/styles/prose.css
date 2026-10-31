@@ -53,7 +53,6 @@
 .prose .anchor {
   position: relative;
   margin-left: 0.35em;
-  padding-inline: 0.15em;
   color: var(--fg-3);
   font-weight: 400;
   text-decoration: none;
@@ -64,6 +63,9 @@
 /*
  * The "#" stays an inline glyph, so the heading wraps as before. Its 36px
  * target is a centred box around it (it only links to its own heading).
+ * No inline padding: Chromium can wrap the end padding alone onto a new
+ * line, which adds an empty line under the heading and moves this box off
+ * the "#".
  */
 .prose .anchor::after {
   content: '';

@@ -98,8 +98,9 @@ describe('pages render without errors or overflow', () => {
 describe('target sizes', () => {
   // Every control is at least 36px tall and 24px wide (REVIEW.md: 44px, 36px
   // in dense lists), and nothing else covers it: a click inside it reaches it.
-  // A link inside a sentence is exempt (WCAG 2.5.8 inline). The hit area is
-  // the element's box, or a larger absolutely positioned ::after.
+  // A link inside a sentence is exempt (WCAG 2.5.8 inline). The size is the
+  // real hit area, measured by clicks (elementFromPoint) out from the centre,
+  // so a larger ::after counts only where it actually lands.
   test.each(routes)('%s: controls are big enough to hit at 320 and 1280px', async (route) => {
     const { page, context } = await open(route, 320);
     const small: Record<number, string[]> = {};
@@ -126,16 +127,34 @@ describe('target sizes', () => {
             (big, r) => (r.width * r.height > big.width * big.height ? r : big),
             pieces[0] ?? el.getBoundingClientRect(),
           );
-          const after = getComputedStyle(el, '::after');
-          const pseudo =
-            after.position === 'absolute' && after.content !== 'none' && after.content !== 'normal';
-          const width = Math.max(box.width, pseudo ? parseFloat(after.width) : 0);
-          const height = Math.max(box.height, pseudo ? parseFloat(after.height) : 0);
-          const label = `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in .${el.parentElement?.className.split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
-          if (height < 36 || width < 24) out.push(`${label} ${Math.round(width)}x${Math.round(height)}`);
-          // Hit test five points inside the element's own box
           const x = box.left + box.width / 2;
           const y = box.top + box.height / 2;
+          const hits = (px: number, py: number) => {
+            const hit = document.elementFromPoint(px, py);
+            return !!hit && (hit === el || el.contains(hit));
+          };
+          // How many pixels a click can move from the centre, one way, and still reach the control
+          const reach = (dx: number, dy: number) => {
+            let n = 0;
+            while (n < 40 && hits(x + dx * (n + 1), y + dy * (n + 1))) n++;
+            return n;
+          };
+          const centre = hits(x, y);
+          const [left, right, up, down] = centre
+            ? [reach(-1, 0), reach(1, 0), reach(0, -1), reach(0, 1)]
+            : [0, 0, 0, 0];
+          const width = centre ? left + right + 1 : 0;
+          const height = centre ? up + down + 1 : 0;
+          const label = `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in .${el.parentElement?.className.split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
+          // 1px of slack for sub-pixel edges
+          if (height < 35 || width < 23) out.push(`${label} ${width}x${height}`);
+          // The area must be solid: a misplaced ::after can reach along both axes and still miss the corners
+          const steps = [-0.9, -0.45, 0.45, 0.9];
+          const holes = steps.flatMap((fx) =>
+            steps.filter((fy) => !hits(x + fx * (fx < 0 ? left : right), y + fy * (fy < 0 ? up : down))),
+          );
+          if (centre && holes.length) out.push(`${label} ${width}x${height} has holes`);
+          // Hit test five points inside the element's own box
           for (const [dx, dy] of [
             [0, 0],
             [-0.3, -0.3],
