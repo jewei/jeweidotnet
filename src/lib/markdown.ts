@@ -139,9 +139,11 @@ const contrastFixes: Record<string, string> = {
 function fixTokenContrast(node: Element): void {
   const { style } = node.properties;
   if (typeof style === 'string') {
-    let next = style;
-    for (const [from, to] of Object.entries(contrastFixes)) next = next.split(from).join(to);
-    node.properties.style = next;
+    // Shiki may write hex in either case; the keys are upper case.
+    node.properties.style = style.replace(
+      /--shiki-light:#[0-9a-f]{6}/gi,
+      (match) => contrastFixes[`--shiki-light:#${match.slice(-6).toUpperCase()}`] ?? match,
+    );
   }
   for (const child of node.children) if (child.type === 'element') fixTokenContrast(child);
 }

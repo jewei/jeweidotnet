@@ -74,6 +74,8 @@ const routes = [
   '/contact/',
   // A summary with a long ID that cannot break: user_01h455vb4pex5vsknk084sn02q
   '/introducing-typeid-php/',
+  // Three topics stacked in the facts rail
+  '/bopop-press-type-go/',
 ];
 const widths = [320, 768, 1024, 1440];
 
@@ -95,7 +97,9 @@ describe('pages render without errors or overflow', () => {
 
 describe('target sizes', () => {
   // Every control is at least 36px tall and 24px wide (REVIEW.md: 44px, 36px
-  // in dense lists). A link inside a sentence is exempt (WCAG 2.5.8 inline).
+  // in dense lists), and nothing else covers it: a click inside it reaches it.
+  // A link inside a sentence is exempt (WCAG 2.5.8 inline). The hit area is
+  // the element's box, or a larger absolutely positioned ::after.
   test.each(routes)('%s: controls are big enough to hit at 320 and 1280px', async (route) => {
     const { page, context } = await open(route, 320);
     const small: Record<number, string[]> = {};
@@ -107,15 +111,49 @@ describe('target sizes', () => {
           const own = el.textContent?.trim().length ?? 0;
           return !!block && (block.textContent?.trim().length ?? 0) > own + 2;
         };
-        return Array.from(document.querySelectorAll<HTMLElement>('a[href], button'))
-          .filter((el) => el.checkVisibility({ visibilityProperty: true }) && !el.closest('.skip, .sr-only'))
-          .filter((el) => !inSentence(el))
-          .map((el) => ({ el, box: el.getBoundingClientRect() }))
-          .filter(({ box }) => box.height < 36 || box.width < 24)
-          .map(
-            ({ el, box }) =>
-              `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in .${el.parentElement?.className.split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}" ${Math.round(box.width)}x${Math.round(box.height)}`,
+        const out: string[] = [];
+        const controls = Array.from(document.querySelectorAll<HTMLElement>('a[href], button')).filter(
+          (el) =>
+            el.checkVisibility({ visibilityProperty: true }) &&
+            !el.closest('.skip, .sr-only') &&
+            !inSentence(el),
+        );
+        for (const el of controls) {
+          el.scrollIntoView({ block: 'center', inline: 'nearest' });
+          // An inline link that wraps has one box per line: measure its largest piece
+          const pieces = Array.from(el.getClientRects()).filter((r) => r.width > 0 && r.height > 0);
+          const box = pieces.reduce(
+            (big, r) => (r.width * r.height > big.width * big.height ? r : big),
+            pieces[0] ?? el.getBoundingClientRect(),
           );
+          const after = getComputedStyle(el, '::after');
+          const pseudo =
+            after.position === 'absolute' && after.content !== 'none' && after.content !== 'normal';
+          const width = Math.max(box.width, pseudo ? parseFloat(after.width) : 0);
+          const height = Math.max(box.height, pseudo ? parseFloat(after.height) : 0);
+          const label = `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in .${el.parentElement?.className.split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
+          if (height < 36 || width < 24) out.push(`${label} ${Math.round(width)}x${Math.round(height)}`);
+          // Hit test five points inside the element's own box
+          const x = box.left + box.width / 2;
+          const y = box.top + box.height / 2;
+          for (const [dx, dy] of [
+            [0, 0],
+            [-0.3, -0.3],
+            [0.3, -0.3],
+            [-0.3, 0.3],
+            [0.3, 0.3],
+          ]) {
+            const hit = document.elementFromPoint(x + dx * box.width, y + dy * box.height);
+            if (hit && hit !== el && !el.contains(hit)) {
+              out.push(
+                `${label} covered by ${hit.tagName.toLowerCase()}.${hit.className.toString().split(' ')[0]}`,
+              );
+              break;
+            }
+          }
+        }
+        scrollTo(0, 0);
+        return out;
       });
       if (found.length) small[width] = found;
     }
@@ -125,8 +163,9 @@ describe('target sizes', () => {
 });
 
 describe('focus rings', () => {
-  // A focus ring drawn outside its element must not be cut off by an
-  // ancestor that clips (a code frame with overflow: hidden once did).
+  // A focus ring drawn outside its element must not be cut off by any
+  // ancestor that clips (a code frame with overflow: hidden once did). The
+  // clip is the ancestor's padding box.
   test.each(routes)('%s: no focus ring is clipped', async (route) => {
     const { page, context } = await open(route, 1280);
     const clipped = await page.evaluate(() => {
@@ -149,18 +188,20 @@ describe('focus rings', () => {
         for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
           const s = getComputedStyle(node);
           if (s.overflowX === 'visible' && s.overflowY === 'visible') continue;
-          const clip = node.getBoundingClientRect();
+          const outer = node.getBoundingClientRect();
+          const left = outer.left + node.clientLeft;
+          const top = outer.top + node.clientTop;
+          const clip = { left, top, right: left + node.clientWidth, bottom: top + node.clientHeight };
+          const xClips = s.overflowX !== 'visible';
+          const yClips = s.overflowY !== 'visible';
           if (
-            ring.left < clip.left - 0.5 ||
-            ring.right > clip.right + 0.5 ||
-            ring.top < clip.top - 0.5 ||
-            ring.bottom > clip.bottom + 0.5
+            (xClips && (ring.left < clip.left - 0.5 || ring.right > clip.right + 0.5)) ||
+            (yClips && (ring.top < clip.top - 0.5 || ring.bottom > clip.bottom + 0.5))
           ) {
             out.push(
               `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in ${node.tagName.toLowerCase()}.${node.className.split(' ')[0]}`,
             );
           }
-          break;
         }
       }
       return [...new Set(out)];
@@ -488,6 +529,15 @@ describe('contrast (WCAG AAA for text)', () => {
   );
 });
 
+// Every built page with highlighted code
+const codeRoutes = fs
+  .readdirSync(dist, { recursive: true, encoding: 'utf8' })
+  .filter(
+    (file) =>
+      file.endsWith('index.html') && fs.readFileSync(path.join(dist, file), 'utf8').includes('astro-code'),
+  )
+  .map((file) => `/${path.dirname(file)}/`.replace('/./', '/'));
+
 describe('code token contrast', () => {
   // Shiki's high-contrast themes are close to 7:1 on --bg-sunken; colours
   // below it are remapped in src/lib/markdown.ts (contrastFixes).
@@ -495,7 +545,7 @@ describe('code token contrast', () => {
     '%s theme: every code token reaches 7:1 on the code well',
     async (scheme) => {
       const weak = new Set<string>();
-      for (const route of ['/claude-code-tips/', '/database-primary-key/', '/introducing-typeid-php/']) {
+      for (const route of codeRoutes) {
         const { page, context } = await open(route, 1280, scheme);
         const found = await page.evaluate(() => {
           const canvas = document.createElement('canvas').getContext('2d');

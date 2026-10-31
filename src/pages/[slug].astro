@@ -351,12 +351,7 @@ const schema = [
     line-height: 1.4;
   }
 
-  /* 36px targets in a line of small text: the negative margins keep the line height */
   .byline a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-    margin-block: calc(var(--space-2) * -1);
     font-weight: 600;
     text-decoration: none;
   }
@@ -409,7 +404,6 @@ const schema = [
     align-items: center;
     min-height: 36px;
     min-width: 24px;
-    margin-block: calc(var(--space-2) * -1);
     color: var(--fg);
     text-decoration-color: var(--line-strong);
   }
@@ -534,12 +528,14 @@ const schema = [
       scroll-target-group: auto;
     }
 
-    /* Each entry is a 36px target; the rows touch, so the list keeps its rhythm */
+    /*
+     * Each entry is padded to a 36px row for one line of text, so the gap
+     * between entries' text is the same whether an entry wraps or not.
+     */
     .toc a {
       position: relative;
-      display: flex;
-      align-items: center;
-      min-height: 36px;
+      display: block;
+      padding-block: calc((36px - 1lh) / 2);
       font-size: var(--step--1);
       line-height: 1.4;
       color: var(--fg-3);
@@ -565,8 +561,8 @@ const schema = [
     .toc a:target-current::before {
       content: '';
       position: absolute;
-      top: var(--space-2);
-      bottom: var(--space-2);
+      top: calc((36px - 1lh) / 2 + 0.2em);
+      bottom: calc((36px - 1lh) / 2 + 0.2em);
       left: calc(var(--space-3) * -1);
       width: 3px;
       border-radius: 2px;
