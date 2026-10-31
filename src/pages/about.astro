@@ -52,7 +52,7 @@ const schema = [
 
 <Base title={page.title} description={page.description} image={ogPath('about')} type="profile" schema={schema}>
   <div class="wrap">
-    <header class="intro">
+    <header class="intro plate plate--signal">
       <div class="intro__copy">
         <h1>About</h1>
         <p class="intro__lede">
@@ -172,25 +172,23 @@ const schema = [
 </Base>
 
 <style>
+  /* The intro is a signal plate: portrait print and the lede */
   .intro {
     display: grid;
     gap: var(--space-5);
-    padding-block: var(--space-8);
+    margin-top: var(--section);
+    padding: var(--space-7) var(--plate-pad) var(--plate-pad);
   }
 
   h1 {
     font-size: var(--step-4);
-    line-height: var(--leading-tight);
-    letter-spacing: var(--tracking-display);
   }
 
   .intro__lede {
     margin-top: var(--space-4);
-    max-width: var(--measure);
-    font-family: var(--serif);
+    max-width: 36rem;
     font-size: var(--step-1);
     line-height: 1.5;
-    color: var(--fg-2);
   }
 
   .intro__portrait {
@@ -198,15 +196,18 @@ const schema = [
     width: 5.5rem;
     aspect-ratio: 4 / 5;
     object-fit: cover;
+    border: 1px solid var(--edge);
     border-radius: var(--radius-2);
+    box-shadow: var(--shadow-hard);
+    rotate: -3deg;
   }
 
-  /* Portrait in the rail, text in the body, as on the home page */
+  /* Portrait on the left, text beside it */
   @media (min-width: 64rem) {
     .intro {
       grid-template-columns: var(--rail) minmax(0, 1fr);
-      gap: var(--space-6);
-      padding-block: var(--space-9);
+      gap: var(--space-8);
+      padding-block: var(--space-8);
     }
 
     .intro__copy {
@@ -221,7 +222,7 @@ const schema = [
     }
   }
 
-  .part__body {
+  .part__body > * {
     max-width: var(--measure);
   }
 
