@@ -7,8 +7,9 @@ The screenshot script loads and decodes all images before capture. Full-page scr
 ## Layout
 
 - [ ] No horizontal overflow at 320px (the script and browser tests report it).
-- [ ] Reading column is centred and 40rem or less; nothing intrudes into it.
-- [ ] Vertical rhythm uses `--space-*` and `--section`; no doubled gaps (section padding + margin).
+- [ ] Reading column is 40rem or less and sits beside the rail inside the article plate; nothing intrudes into it.
+- [ ] Vertical rhythm uses `--space-*` and `--section`; plates stack with one `--section` gap, never doubled.
+- [ ] Content sits on plates, not on the bench. Bars and screws do not collide.
 - [ ] Rails, sticky elements, and grids collapse cleanly below 64rem.
 - [ ] Wrapped controls (buttons, pills, nav) still look intentional at 320 and 375.
 
@@ -22,7 +23,7 @@ The screenshot script loads and decodes all images before capture. Full-page scr
 
 ## Colour and contrast
 
-- [ ] Text reaches 7:1 in both themes (browser test). Decorative green (`--accent-mark`) is never text.
+- [ ] Text reaches 7:1 on its own surface in both themes (browser test). Text on signal orange is `--on-signal`. Decorative orange (`--accent-mark`) is never text.
 - [ ] Code tokens are readable on `--bg-sunken` (check comments).
 - [ ] Bright screenshots are dimmed in dark mode.
 
@@ -32,7 +33,7 @@ The screenshot script loads and decodes all images before capture. Full-page scr
 - [ ] Hover effects only on `(hover: hover)`; nothing depends on hover.
 - [ ] Theme toggle: correct icon, label, and `aria-pressed`; persists across pages.
 - [ ] Copy button announces "Copied".
-- [ ] Reduced motion removes movement.
+- [ ] Reduced motion removes movement, including the home portrait's eyes.
 
 ## Content and SEO
 
