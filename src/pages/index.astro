@@ -14,7 +14,30 @@ import { absolute } from '../lib/seo';
 const page = pages.home;
 const posts = await getPosts();
 const latest = posts.slice(0, 6);
-const projects = (await getProjects()).filter((project) => project.data.featured).slice(0, 4);
+const allProjects = await getProjects();
+const projects = allProjects.filter((project) => project.data.featured).slice(0, 4);
+
+/*
+ * The painted eyes, in the portrait's own pixels (1254 × 1254). Each eye is
+ * the opening of the lids and the iris circle inside it. public/site.js
+ * paints the portrait into each iris and moves it toward the pointer.
+ */
+const eyes = [
+  {
+    id: 'l',
+    opening:
+      'M490 553 L502 544.5 L515 537.5 L530 533.5 L545 534.5 L557.5 539.5 L565 546 L571 555 L568 557.5 L557.5 562 L545 565.5 L532.5 567 L520 565.5 L507.5 562 L497.5 557.5 Z',
+    box: { x: 488, y: 530, width: 86, height: 40 },
+    iris: { cx: 535.2, cy: 547, r: 20.6 },
+  },
+  {
+    id: 'r',
+    opening:
+      'M703.5 549 L706 541 L715 528 L726 519.5 L740 514.5 L752.5 514 L767.5 517.5 L780 521 L790 524.5 L794 526.5 L787.5 532 L777.5 538 L765 544.5 L750 549.5 L737.5 549.5 L721 547 L709 549 Z',
+    box: { x: 701, y: 511, width: 96, height: 41 },
+    iris: { cx: 746.4, cy: 529, r: 20.6 },
+  },
+];
 ---
 
 <Base
@@ -35,72 +58,116 @@ const projects = (await getProjects()).filter((project) => project.data.featured
   ]}
   reveal
 >
-  <section class="intro wrap" aria-labelledby="intro-title">
-    <div class="intro__paper" aria-hidden="true"></div>
-
-    <div class="intro__copy">
-      <p class="label intro__role">
-        {site.jobTitle}
-        <span class="intro__sep" aria-hidden="true">·</span>
-        <span class="intro__place">
-          {site.city}
-          <span data-clock={site.timeZone} hidden><span></span><span class="intro__colon">:</span><span></span></span>
-        </span>
-      </p>
-      <h1 id="intro-title">
-        <span class="intro__line"><span>I’m {site.author}.</span></span>
-        <span class="intro__line intro__line--quiet"><span>Tastefully opinionated.</span></span>
-      </h1>
-      <div class="intro__text">
-        <p>
-          I love designing and building software, whether it’s something serious or just an idea I want to see work. I
-          care about both the systems behind it and the experience around it. I spend a lot of time building with AI,
-          experimenting with ideas and shipping the ones that turn into something worthwhile.
-        </p>
-        <p>When I’m not building software, I’m usually reading, taking photos, or trying something new in the kitchen.</p>
-      </div>
-      <p class="intro__status">
-        <span class="intro__dot" aria-hidden="true"></span>
-        <span>Open to senior roles and consulting.</span>
-        <span class="intro__links">
-          <a class="link" href="/resume/">Résumé</a>
-          <span aria-hidden="true">·</span>
-          <a class="link" href={`mailto:${site.email}`}>Email</a>
-        </span>
-      </p>
-    </div>
-
-    <div class="intro__sticker" data-sticker>
-      <div class="intro__print">
-        <Image
-          src={portrait}
-          alt="Portrait of Jewei Mak."
-          widths={[208, 432]}
-          sizes="(min-width: 64rem) 13.5rem, 6.5rem"
-          layout="none"
-          format="webp"
-          quality={80}
-          loading="eager"
-          fetchpriority="high"
-          draggable="false"
-        />
-      </div>
-    </div>
-  </section>
-
   <div class="wrap">
+    <section class="intro plate" aria-labelledby="intro-title">
+      <div class="intro__copy">
+        <h1 id="intro-title">
+          <span class="intro__line"><span>I’m <span class="intro__name">{site.author}</span>.</span></span>
+          <span class="intro__line intro__line--quiet"><span>Tastefully opinionated.</span></span>
+        </h1>
+        <div class="intro__text">
+          <p>
+            I love designing and building software, whether it’s something serious or just an idea I want to see work.
+            I care about both the systems behind it and the experience around it. I spend a lot of time building with
+            AI, experimenting with ideas and shipping the ones that turn into something worthwhile.
+          </p>
+          <p>
+            When I’m not building software, I’m usually reading, taking photos, or trying something new in the kitchen.
+          </p>
+        </div>
+        <p class="intro__actions">
+          <a class="button button--primary" href={`mailto:${site.email}`}>Email <Icon name="arrow-right" /></a>
+          <a class="button" href="/resume/">Résumé</a>
+        </p>
+      </div>
+
+      <figure class="intro__figure">
+        <div class="portrait">
+          <div class="portrait__disc" aria-hidden="true"></div>
+          <div class="portrait__frame">
+            <Image
+              src={portrait}
+              alt="Portrait of Jewei Mak."
+              widths={[320, 480, 640]}
+              sizes="(min-width: 64rem) 20rem, (min-width: 40rem) 16rem, 13rem"
+              layout="none"
+              format="webp"
+              quality={80}
+              loading="eager"
+              fetchpriority="high"
+              draggable="false"
+            />
+            <svg class="eyes" data-eyes viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="eye-white" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" class="eyes__shade"></stop>
+                  <stop offset="0.45" class="eyes__mid"></stop>
+                  <stop offset="1" class="eyes__lit"></stop>
+                </linearGradient>
+                <radialGradient id="eye-corners" cx="0.5" cy="0.6" r="0.6">
+                  <stop offset="0.45" class="eyes__clear"></stop>
+                  <stop offset="1" class="eyes__shade"></stop>
+                </radialGradient>
+                <linearGradient id="eye-lid" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" class="eyes__shade eyes__lid"></stop>
+                  <stop offset="0.6" class="eyes__clear"></stop>
+                </linearGradient>
+                {
+                  eyes.map((eye) => (
+                    <>
+                      <clipPath id={`eye-${eye.id}`}>
+                        <path d={eye.opening} />
+                      </clipPath>
+                      <clipPath id={`iris-${eye.id}`}>
+                        <circle cx={eye.iris.cx} cy={eye.iris.cy} r={eye.iris.r} />
+                      </clipPath>
+                    </>
+                  ))
+                }
+              </defs>
+              {
+                eyes.map((eye) => (
+                  <g clip-path={`url(#eye-${eye.id})`}>
+                    <rect {...eye.box} fill="url(#eye-white)" />
+                    <rect {...eye.box} fill="url(#eye-corners)" />
+                    <g class="eyes__iris">
+                      <image width="1254" height="1254" clip-path={`url(#iris-${eye.id})`} />
+                    </g>
+                    <rect {...eye.box} fill="url(#eye-lid)" />
+                  </g>
+                ))
+              }
+            </svg>
+          </div>
+          <p class="sticker">
+            <span class="sticker__dot" aria-hidden="true"></span>
+            <span>Open to senior roles and consulting.</span>
+          </p>
+        </div>
+        <figcaption class="label intro__role">
+          {site.jobTitle}
+          <span class="intro__sep" aria-hidden="true">·</span>
+          <span class="intro__place">
+            {site.city}
+            <span data-clock={site.timeZone} hidden><span></span><span class="intro__colon">:</span><span></span></span>
+          </span>
+        </figcaption>
+      </figure>
+    </section>
+
     <section class="part" aria-labelledby="work-title" data-reveal="rule">
-      <header class="part__head" data-reveal>
+      <header class="part__head">
         <h2 id="work-title">Projects</h2>
+        <p class="bar__meta intro__count">{projects.length} of {allProjects.length}</p>
         <a class="arrow-link" href="/projects/"><span>All projects</span><Icon name="arrow-right" /></a>
       </header>
-      <div class="part__body">
+      <div class="part__body part__body--flush">
         <ProjectList projects={projects} />
       </div>
     </section>
 
     <section class="part" aria-labelledby="latest-title" data-reveal="rule">
-      <header class="part__head" data-reveal>
+      <header class="part__head">
         <h2 id="latest-title">Writing</h2>
         <a class="arrow-link" href="/blog/"><span>All {posts.length} posts</span><Icon name="arrow-right" /></a>
       </header>
@@ -112,39 +179,27 @@ const projects = (await getProjects()).filter((project) => project.data.featured
 </Base>
 
 <style>
-  /* Intro: the copy, and the portrait as a sticker on grid paper */
+  /*
+   * Intro: a plate with the copy, and the portrait as a round print on a
+   * signal disc. The status is a sticker slapped on the print.
+   */
   .intro {
-    position: relative;
     display: grid;
-    gap: var(--space-5);
-    padding-block: var(--space-8);
+    gap: var(--space-6);
+    margin-top: var(--section);
+    padding: var(--space-6) var(--plate-pad) var(--plate-pad);
   }
 
   .intro__copy {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .intro__role {
-    font-variant-numeric: tabular-nums;
-  }
-
-  .intro__sep {
-    margin-inline: var(--space-1);
-  }
-
-  /* Keep the city and its time on one line */
-  .intro__place {
-    white-space: nowrap;
+    container-type: inline-size;
   }
 
   h1 {
-    margin-top: var(--space-4);
-    font-size: var(--step-5);
+    font-size: clamp(2.25rem, 11.5cqi, 4.25rem);
     line-height: 1.02;
-    letter-spacing: -0.04em;
   }
 
   /* One sentence per line: the name, then the stance. Each line has its own mask. */
@@ -159,6 +214,15 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     display: block;
   }
 
+  /* The name sits on a block of signal orange, like a highlighter swipe */
+  .intro__name {
+    color: var(--on-signal);
+    padding-inline: 0.06em;
+    margin-inline: -0.02em;
+    background: linear-gradient(var(--signal), var(--signal)) 0 88% / 100% 62% no-repeat;
+    box-decoration-break: clone;
+  }
+
   .intro__line--quiet {
     color: var(--fg-3);
   }
@@ -167,8 +231,7 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     display: grid;
     gap: var(--space-4);
     margin-top: var(--space-6);
-    max-width: var(--measure);
-    font-family: var(--serif);
+    max-width: 34rem;
     font-size: var(--step-1);
     line-height: 1.6;
   }
@@ -177,41 +240,135 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     color: var(--fg-2);
   }
 
-  .intro__status {
+  .intro__actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-1) var(--space-2);
-    margin-top: calc(var(--space-6) + var(--space-2));
-    font-size: var(--step--1);
-    color: var(--fg-2);
+    gap: var(--space-3);
+    margin-top: var(--space-6);
   }
 
-  .intro__links {
-    display: inline-flex;
-    align-items: center;
+  /* The portrait column */
+  .intro__figure {
+    order: -1;
+    justify-self: start;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+  }
+
+  .portrait {
+    position: relative;
+    width: 13rem;
+    aspect-ratio: 1;
+  }
+
+  .portrait__disc {
+    position: absolute;
+    inset: -4% -4% 4% 4%;
+    border-radius: 50%;
+    border: 1px solid var(--edge);
+    background: var(--signal);
+  }
+
+  .portrait__frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border: 1px solid var(--edge);
+    border-radius: 50%;
+    background: var(--bg-sunken);
+    user-select: none;
+  }
+
+  .portrait__frame img,
+  .eyes {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .portrait__frame img {
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  /*
+   * The eyes: hidden until public/site.js has painted the portrait into
+   * each iris. --x and --y run from -1 to 1 toward the pointer; the iris
+   * moves up to 9 portrait pixels sideways and 3.5 up or down.
+   */
+  .eyes {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .eyes[data-on] {
+    opacity: 1;
+  }
+
+  .eyes__iris {
+    transform: translate(calc(var(--x, 0) * 9px), calc(var(--y, 0) * 3.5px));
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+
+  .eyes__lit {
+    stop-color: var(--eye-lit);
+  }
+
+  .eyes__mid {
+    stop-color: var(--eye-mid);
+  }
+
+  .eyes__shade {
+    stop-color: var(--eye-shade);
+    stop-opacity: 0.55;
+  }
+
+  .eyes__lid {
+    stop-opacity: 0.95;
+  }
+
+  .eyes__clear {
+    stop-color: var(--eye-shade);
+    stop-opacity: 0;
+  }
+
+  /* The status sticker, slapped on the print */
+  .sticker {
+    position: absolute;
+    bottom: 4%;
+    right: -14%;
+    display: flex;
+    align-items: flex-start;
     gap: var(--space-2);
+    max-width: 10.5rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--edge);
+    border-radius: var(--radius-1);
+    background: var(--bg-raised);
+    box-shadow: var(--shadow-hard);
+    font-family: var(--display);
+    font-size: var(--step--3);
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    rotate: 5deg;
   }
 
-  .intro__links a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 36px;
-  }
-
-  .intro__dot {
+  .sticker__dot {
     position: relative;
     flex: none;
     width: 7px;
     height: 7px;
-    margin-right: var(--space-1);
+    margin-top: 0.3em;
     border-radius: 50%;
     background: var(--accent-mark);
     box-shadow: 0 0 0 3px var(--accent-wash);
   }
 
   /* The pulse ring; it only moves with motion allowed */
-  .intro__dot::after {
+  .sticker__dot::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -220,103 +377,82 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     opacity: 0;
   }
 
-  /*
-   * The sticker: a print with a white border, tilted. With a mouse you can
-   * drag it (public/site.js sets translate and --tilt); on release it
-   * springs back to its angle and stays where you dropped it.
-   */
-  .intro__sticker {
-    order: -1;
-    align-self: start;
-    justify-self: start;
-    width: 7.5rem;
-    margin-left: var(--space-2);
-    user-select: none;
+  /* The caption under the print: role, city, and the live time */
+  .intro__role {
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    font-variant-numeric: tabular-nums;
+    text-align: center;
   }
 
-  .intro__print {
-    --settle: var(--dur-3);
-    padding: var(--space-1);
-    border-radius: var(--radius-3);
-    background: var(--bg-paper);
-    box-shadow: var(--shadow-lift);
-    transform: rotate(calc(-6deg + var(--hover, 0) * 4deg + var(--tilt, 0deg))) scale(calc(1 + var(--hover, 0) * 0.03));
-    transition:
-      transform var(--settle) var(--ease-spring),
-      translate var(--settle) var(--ease-spring);
+  .intro__sep {
+    margin-inline: var(--space-1);
   }
 
-  .intro__print img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: var(--radius-2);
-    pointer-events: none;
+  /* Keep the city and its time on one line */
+  .intro__place {
+    white-space: nowrap;
   }
 
-  /* Grid paper behind the sticker, on wide screens only */
-  .intro__paper {
-    display: none;
+  @media (min-width: 40rem) {
+    .intro {
+      grid-template-columns: minmax(0, 1fr) 17rem;
+      align-items: center;
+      padding-top: var(--plate-pad);
+    }
+
+    .intro__figure {
+      order: 0;
+      justify-self: center;
+    }
+
+    .portrait {
+      width: 15rem;
+    }
+
+    .sticker {
+      top: 2%;
+      bottom: auto;
+      right: -16%;
+    }
   }
 
   @media (min-width: 64rem) {
     .intro {
-      grid-template-columns: minmax(0, 1fr) 16.5rem;
-      align-items: start;
-      gap: var(--space-6);
-      padding-block: var(--section);
+      grid-template-columns: minmax(0, 1fr) 22rem;
+      gap: var(--space-8);
+      padding-block: var(--space-9);
     }
 
-    /* Beside the sticker, keep "Tastefully opinionated." on one line */
-    h1 {
-      font-size: min(var(--step-5), 6.2vw);
+    .portrait {
+      width: 19rem;
     }
 
-    .intro__sticker {
-      order: 0;
-      justify-self: center;
-      width: 14.5rem;
-      margin: var(--space-4) 0 0;
-    }
-
-    .intro__print {
-      padding: var(--space-2);
-      border-radius: var(--radius-4);
-    }
-
-    .intro__paper {
-      display: block;
-      position: absolute;
-      inset: 0 0 0 auto;
-      width: 56%;
-      pointer-events: none;
-      background-image: radial-gradient(circle, var(--line-strong) 1px, transparent 1.6px);
-      background-size: var(--space-5) var(--space-5);
-      background-position: var(--space-3) var(--space-3);
-      /* The mask only uses alpha; any opaque token works */
-      mask-image: radial-gradient(ellipse 58% 62% at 80% 60%, var(--fg) 0%, transparent 72%);
+    .sticker {
+      top: 0;
+      right: -6%;
+      max-width: 12rem;
+      font-size: var(--step--2);
     }
   }
 
-  /* The part rule already separates the list from the heading */
-  .part__body :global(.ledger) {
-    border-top: 0;
+  /* The project grid runs to the plate's edges */
+  .part__body--flush {
+    padding: 0;
   }
 
-  .part__body :global(.ledger__row:first-child),
-  .part__body :global(.work:first-child) {
-    padding-top: var(--space-2);
-  }
-
-  .part__body :global(.works) {
-    border-top: 0;
+  /* Below 30rem the bar keeps the title and the action; the count goes */
+  @media (max-width: 30rem) {
+    .intro__count {
+      display: none;
+    }
   }
 
   /*
    * Entrance, in order: the wordmark types itself, the nav fades in, the
-   * heading lines rise out of their masks, the text follows, and the sticker
-   * lands. Reduced motion skips all of it, and the drag.
+   * heading lines rise out of their masks, the text follows, and the
+   * portrait and its sticker land. Reduced motion skips all of it.
    */
   @media (prefers-reduced-motion: no-preference) {
     :global(.header .wordmark > span) {
@@ -377,16 +513,16 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       animation-delay: 460ms;
     }
 
-    .intro__role {
-      animation: home-rise var(--dur-3) var(--ease) 180ms backwards;
-    }
-
     .intro__line > span {
       animation: home-line var(--dur-4) var(--ease-out) 260ms backwards;
     }
 
     .intro__line--quiet > span {
       animation-delay: 350ms;
+    }
+
+    .intro__name {
+      animation: home-swipe var(--dur-3) var(--ease-out) 900ms backwards;
     }
 
     .intro__text p {
@@ -397,52 +533,32 @@ const projects = (await getProjects()).filter((project) => project.data.featured
       animation-delay: 600ms;
     }
 
-    .intro__status {
-      animation: home-rise var(--dur-3) var(--ease) 720ms backwards;
+    .intro__actions {
+      animation: home-rise var(--dur-3) var(--ease) 700ms backwards;
     }
 
-    .intro__dot::after {
-      animation: home-pulse 2600ms cubic-bezier(0, 0.55, 0.45, 1) 1800ms infinite;
+    .portrait__disc {
+      animation: home-grow var(--dur-3) var(--ease-spring) 380ms backwards;
+    }
+
+    .portrait__frame {
+      animation: home-rise var(--dur-3) var(--ease) 480ms backwards;
+    }
+
+    .intro__role {
+      animation: home-fade 900ms var(--ease) 760ms backwards;
+    }
+
+    .sticker {
+      animation: home-slap var(--dur-3) var(--ease-spring) 1000ms backwards;
+    }
+
+    .sticker__dot::after {
+      animation: home-pulse 2600ms cubic-bezier(0, 0.55, 0.45, 1) 1900ms infinite;
     }
 
     .intro__colon {
       animation: home-blink 2000ms steps(1, end) infinite;
-    }
-
-    .intro__sticker {
-      animation: home-rise var(--dur-3) var(--ease) 820ms backwards;
-    }
-
-    .intro__paper {
-      animation: home-fade 900ms var(--ease) 600ms backwards;
-    }
-
-    /* Mouse: the sticker straightens a little on hover and can be dragged */
-    @media (hover: hover) and (pointer: fine) {
-      .intro__sticker {
-        cursor: grab;
-        touch-action: none;
-      }
-
-      .intro__sticker[data-dragging] {
-        cursor: grabbing;
-      }
-
-      .intro__sticker:hover .intro__print {
-        --hover: 1;
-      }
-
-      .intro__sticker[data-dragging] .intro__print {
-        --settle: var(--dur-1);
-      }
-    }
-
-    /* Wide screens: the sticker slaps down onto the paper */
-    @media (min-width: 64rem) {
-      .intro__sticker {
-        animation-name: home-slap;
-        animation-timing-function: var(--ease-spring);
-      }
     }
   }
 
@@ -492,11 +608,25 @@ const projects = (await getProjects()).filter((project) => project.data.featured
     }
   }
 
-  /* Starts small enough that every frame stays inside a 1024px viewport */
+  /* The highlighter swipes in from the left */
+  @keyframes home-swipe {
+    from {
+      background-size: 0% 62%;
+    }
+  }
+
+  @keyframes home-grow {
+    from {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+
+  /* Starts small enough that every frame stays inside the viewport */
   @keyframes home-slap {
     from {
       opacity: 0;
-      transform: rotate(-10deg) scale(1.1);
+      transform: scale(1.25) rotate(-6deg);
     }
   }
 
