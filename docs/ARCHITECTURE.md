@@ -50,7 +50,7 @@ vp run build
 
 Two files in `public/` (CSP allows only same-origin scripts):
 
-- `theme.js` (render-blocking, about 300 bytes): applies a stored theme before paint.
+- `theme.js` (render-blocking, about 400 bytes): applies a stored theme before paint.
 - `site.js` (deferred): theme toggle, code copy, the home page motion (scroll reveals, the clock, and the portrait's eyes), and the `jewei.toString()` console easter egg.
 
 Pages load both at a content-versioned URL, `/site.js?v=<hash>` (`src/lib/scripts.ts`). The files keep fixed names, and caches can keep an old copy after a deploy: the Cloudflare edge, and browsers through the zone's 4-hour Browser Cache TTL, which overrides the 1-hour `Cache-Control` in `_headers`. Without the version, new HTML can run old JavaScript; the first redesign deploy did, and the home page's eyes did not move. A build test checks the URLs.
@@ -59,14 +59,15 @@ Everything else is CSS: the reading progress bar (scroll timeline), view transit
 
 ## Tests
 
-| Suite                           | Needs build | Covers                                                                                                                                                                                                                                               |
-| ------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tests/unit/content.test.ts`    | no          | slugs, topics, no body H1, image files and alt text, project links, metadata lengths                                                                                                                                                                 |
-| `tests/unit/middleware.test.ts` | no          | negotiation, q-values, 406, Markdown 404, direct .md, 304 and redirect pass-through, renamed URLs, security headers                                                                                                                                  |
-| `tests/unit/markdown.test.ts`   | no          | HTML to Markdown rules: figure captions, blank lines in fenced code, H1 first                                                                                                                                                                        |
-| `tests/build/seo.test.ts`       | yes         | titles, descriptions, canonicals, OG/Twitter, social image sizes, JSON-LD, sitemap, legacy URLs, RSS, robots                                                                                                                                         |
-| `tests/build/quality.test.ts`   | yes         | lang, skip link, landmarks, ARIA names, alt and dimensions, prose image sizes, unique ids, heading order, links, anchors, no inline scripts, Markdown copies, llms.txt, `_headers` overlap, `_routes.json`, CSP parity, JS budget, catalogue numbers |
-| `tests/build/browser.test.ts`   | yes         | Playwright: overflow by element bounds at 320, 768, 1024, 1440px, console errors, theme toggle, code copy, skip link, focus ring, AAA contrast                                                                                                       |
+| Suite                           | Needs build | Covers                                                                                                                                                                                                                                                                                          |
+| ------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tests/unit/content.test.ts`    | no          | slugs, topics, no body H1, image files and alt text, project links, metadata lengths                                                                                                                                                                                                            |
+| `tests/unit/middleware.test.ts` | no          | negotiation, q-values, 406, Markdown 404, direct .md, 304 and redirect pass-through, renamed URLs, security headers                                                                                                                                                                             |
+| `tests/unit/markdown.test.ts`   | no          | HTML to Markdown rules: figure captions, blank lines in fenced code, H1 first                                                                                                                                                                                                                   |
+| `tests/unit/color.test.ts`      | no          | OKLCH to hex for the web app manifest                                                                                                                                                                                                                                                           |
+| `tests/build/seo.test.ts`       | yes         | titles, descriptions, canonicals, OG/Twitter, social image sizes, content-versioned social card URLs, JSON-LD, sitemap, legacy URLs, RSS, robots                                                                                                                                                |
+| `tests/build/quality.test.ts`   | yes         | lang, skip link, landmarks, ARIA names, alt and dimensions, prose image sizes, unique ids, heading order, links, anchors, no inline scripts, content-versioned script URLs, Markdown copies, llms.txt, `_headers` overlap, `_routes.json`, CSP parity, JS budget, catalogue numbers             |
+| `tests/build/browser.test.ts`   | yes         | Playwright: overflow by element bounds at 320, 768, 1024, 1440px, console errors, theme toggle, article contents, code copy, skip link, focus ring, AAA contrast on the text's own surface, the home portrait's eyes (follow, reset on leave, reduced motion), font preloads used, résumé print |
 
 ## Deployment
 

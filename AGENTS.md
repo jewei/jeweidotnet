@@ -44,7 +44,7 @@ src/
   data/pages.ts         title, description, card text for fixed pages
   data/topics.ts        topic registry (post tags must be keys here)
   data/resume.ts        résumé content
-  lib/                  posts, projects, seo (JSON-LD), og (cards), markdown (rehype)
+  lib/                  posts, projects, seo (JSON-LD), og (cards), markdown (rehype), scripts (versioned script URLs), color (OKLCH to hex)
   layouts/Base.astro    <head>, SEO tags, header, footer — every page
   layouts/Prose.astro   Markdown pages (contact, privacy)
   components/           Header, Footer, PostList, ProjectList, ProjectCard, PageHeader, TopicNav, Icon, Wordmark
