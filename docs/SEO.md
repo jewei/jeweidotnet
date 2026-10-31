@@ -46,7 +46,7 @@ The Cloudflare middleware serves the Markdown copy for `Accept: text/markdown` o
 
 ## Performance budget
 
-Static HTML with inlined CSS, three self-hosted variable fonts (two preloaded), WebP images with `srcset`, no framework JS, under 8 KB of site JS, and Speculation Rules prefetch on hover. Target: Lighthouse 95+ in every category on mobile. Last measured: 99 / 100 / 100 / 100 on seven routes, CLS 0.
+Static HTML with inlined CSS, four self-hosted variable fonts (the display face and Geist preloaded on every page; Source Serif preloaded only on pages with serif text, through `Base`'s `serif` prop), WebP images with `srcset`, no framework JS, under 8 KB of site JS, and Speculation Rules prefetch on hover. Target: Lighthouse 95+ in every category on mobile. Measured after the workbench redesign (CI, median of three, mobile): performance 0.97–1.00 on seven routes, accessibility, best practices, and SEO 1.00, CLS 0.01 or less, TBT 0. The home page's LCP element is the first intro paragraph, which the entrance animation reveals at 520 ms.
 
 ## When you add a page
 

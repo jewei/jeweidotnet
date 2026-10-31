@@ -91,6 +91,43 @@ describe('pages render without errors or overflow', () => {
   });
 });
 
+describe('font preloads', () => {
+  // A preload is a high-priority download. One the page never renders with
+  // only competes with the fonts it does use (Source Serif once cost 40 KB on
+  // pages without serif text).
+  test.each(routes)('%s uses every font it preloads', async (route) => {
+    const { page, context } = await open(route);
+    await page.evaluate(() => document.fonts.ready);
+    const unused = await page.evaluate(() => {
+      const family = (value: string) => value.replace(/["']/g, '').trim();
+      const faces: { family: string; src: string }[] = [];
+      for (const sheet of Array.from(document.styleSheets)) {
+        for (const rule of Array.from(sheet.cssRules)) {
+          if (rule instanceof CSSFontFaceRule) {
+            faces.push({
+              family: family(rule.style.getPropertyValue('font-family')),
+              src: rule.style.getPropertyValue('src'),
+            });
+          }
+        }
+      }
+      const used = new Set(
+        Array.from(document.fonts)
+          .filter((face) => face.status === 'loaded')
+          .map((face) => family(face.family)),
+      );
+      return Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="preload"][as="font"]'))
+        .map((link) => new URL(link.href).pathname)
+        .filter((href) => {
+          const face = faces.find((candidate) => candidate.src.includes(href));
+          return !face || !used.has(face.family);
+        });
+    });
+    expect(unused).toEqual([]);
+    await context.close();
+  });
+});
+
 describe('theme toggle', () => {
   test('switches theme, updates its label, and persists across pages', async () => {
     const { page, context } = await open('/', 1280, 'light');
