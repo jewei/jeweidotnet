@@ -50,9 +50,16 @@
 }
 
 /* Permalink "#" after headings */
+/* A 36px target; the negative margins keep it from growing the heading's line */
 .prose .anchor {
-  margin-left: 0.35em;
-  padding-inline: 0.15em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  margin-block: -0.5em;
+  vertical-align: middle;
+  margin-left: 0.2em;
   color: var(--fg-3);
   font-weight: 400;
   text-decoration: none;
@@ -308,8 +315,13 @@
   font-size: inherit;
 }
 
-.prose pre:focus-visible {
-  outline-offset: -2px;
+/*
+ * The code frame clips (overflow: hidden, for its rounded corners), so focus
+ * rings inside it are drawn inset, clear of the frame's edge and corners.
+ */
+.prose pre:focus-visible,
+.code__copy:focus-visible {
+  outline-offset: -4px;
 }
 
 /* Shiki dual themes (Astro adds class astro-code) (defaultColor: false) */

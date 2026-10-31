@@ -93,6 +93,83 @@ describe('pages render without errors or overflow', () => {
   });
 });
 
+describe('target sizes', () => {
+  // Every control is at least 36px tall and 24px wide (REVIEW.md: 44px, 36px
+  // in dense lists). A link inside a sentence is exempt (WCAG 2.5.8 inline).
+  test.each(routes)('%s: controls are big enough to hit at 320 and 1280px', async (route) => {
+    const { page, context } = await open(route, 320);
+    const small: Record<number, string[]> = {};
+    for (const width of [320, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      const found = await page.evaluate(() => {
+        const inSentence = (el: Element) => {
+          const block = el.closest('p, li, dd, td, th, figcaption, blockquote');
+          const own = el.textContent?.trim().length ?? 0;
+          return !!block && (block.textContent?.trim().length ?? 0) > own + 2;
+        };
+        return Array.from(document.querySelectorAll<HTMLElement>('a[href], button'))
+          .filter((el) => el.checkVisibility({ visibilityProperty: true }) && !el.closest('.skip, .sr-only'))
+          .filter((el) => !inSentence(el))
+          .map((el) => ({ el, box: el.getBoundingClientRect() }))
+          .filter(({ box }) => box.height < 36 || box.width < 24)
+          .map(
+            ({ el, box }) =>
+              `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in .${el.parentElement?.className.split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}" ${Math.round(box.width)}x${Math.round(box.height)}`,
+          );
+      });
+      if (found.length) small[width] = found;
+    }
+    expect(small).toEqual({});
+    await context.close();
+  });
+});
+
+describe('focus rings', () => {
+  // A focus ring drawn outside its element must not be cut off by an
+  // ancestor that clips (a code frame with overflow: hidden once did).
+  test.each(routes)('%s: no focus ring is clipped', async (route) => {
+    const { page, context } = await open(route, 1280);
+    const clipped = await page.evaluate(() => {
+      const out: string[] = [];
+      const focusable = Array.from(
+        document.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
+      ).filter((el) => el.checkVisibility({ visibilityProperty: true }) && !el.closest('.skip'));
+      for (const el of focusable) {
+        el.focus({ focusVisible: true });
+        const style = getComputedStyle(el);
+        if (style.outlineStyle === 'none') continue;
+        const grow = parseFloat(style.outlineOffset) + parseFloat(style.outlineWidth);
+        const box = el.getBoundingClientRect();
+        const ring = {
+          left: box.left - grow,
+          right: box.right + grow,
+          top: box.top - grow,
+          bottom: box.bottom + grow,
+        };
+        for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+          const s = getComputedStyle(node);
+          if (s.overflowX === 'visible' && s.overflowY === 'visible') continue;
+          const clip = node.getBoundingClientRect();
+          if (
+            ring.left < clip.left - 0.5 ||
+            ring.right > clip.right + 0.5 ||
+            ring.top < clip.top - 0.5 ||
+            ring.bottom > clip.bottom + 0.5
+          ) {
+            out.push(
+              `${el.tagName.toLowerCase()}.${el.className.split(' ')[0]} in ${node.tagName.toLowerCase()}.${node.className.split(' ')[0]}`,
+            );
+          }
+          break;
+        }
+      }
+      return [...new Set(out)];
+    });
+    expect(clipped).toEqual([]);
+    await context.close();
+  });
+});
+
 describe('font preloads', () => {
   // A preload is a high-priority download. One the page never renders with
   // only competes with the fonts it does use (Source Serif once cost 40 KB on
@@ -407,6 +484,50 @@ describe('contrast (WCAG AAA for text)', () => {
         expect(await contrastOf(page, selector), selector).toBeGreaterThanOrEqual(7);
       }
       await context.close();
+    },
+  );
+});
+
+describe('code token contrast', () => {
+  // Shiki's high-contrast themes are close to 7:1 on --bg-sunken; colours
+  // below it are remapped in src/lib/markdown.ts (contrastFixes).
+  test.each(['light', 'dark'] as const)(
+    '%s theme: every code token reaches 7:1 on the code well',
+    async (scheme) => {
+      const weak = new Set<string>();
+      for (const route of ['/claude-code-tips/', '/database-primary-key/', '/introducing-typeid-php/']) {
+        const { page, context } = await open(route, 1280, scheme);
+        const found = await page.evaluate(() => {
+          const canvas = document.createElement('canvas').getContext('2d');
+          if (!canvas) throw new Error('The browser has no 2D canvas');
+          const lum = (color: string) => {
+            canvas.clearRect(0, 0, 1, 1);
+            canvas.fillStyle = color;
+            canvas.fillRect(0, 0, 1, 1);
+            return Array.from(canvas.getImageData(0, 0, 1, 1).data.slice(0, 3))
+              .map((v) => v / 255)
+              .map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4))
+              .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+          };
+          const out: string[] = [];
+          for (const pre of document.querySelectorAll('.astro-code')) {
+            const well = pre.closest('.code') ?? pre;
+            const bg = lum(getComputedStyle(well).backgroundColor);
+            for (const span of pre.querySelectorAll('span')) {
+              if (!span.textContent?.trim() || span.children.length) continue;
+              const color = getComputedStyle(span).color;
+              const fg = lum(color);
+              const [hi, lo] = fg > bg ? [fg, bg] : [bg, fg];
+              const ratio = (hi + 0.05) / (lo + 0.05);
+              if (ratio < 7) out.push(`${color} ${ratio.toFixed(2)}`);
+            }
+          }
+          return out;
+        });
+        for (const f of found) weak.add(f);
+        await context.close();
+      }
+      expect([...weak]).toEqual([]);
     },
   );
 });

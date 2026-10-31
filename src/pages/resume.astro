@@ -264,6 +264,17 @@ const schema = [
     text-decoration-color: var(--line-strong);
   }
 
+  /* On screen, a 36px target that keeps the line height (print keeps the plain link) */
+  @media screen {
+    .role__company a,
+    .entry__more a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      margin-block: calc(var(--space-2) * -1);
+    }
+  }
+
   .role__period {
     grid-row: 1;
     grid-column: 2;

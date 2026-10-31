@@ -131,7 +131,9 @@ export function rehypeTables() {
  * darker values of the same hue. Applied to Shiki's inline style variables.
  */
 const contrastFixes: Record<string, string> = {
-  '--shiki-light:#66707B': '--shiki-light:#4B535D',
+  '--shiki-light:#66707B': '--shiki-light:#464E58', // comments
+  '--shiki-light:#A0111F': '--shiki-light:#9B101E', // keywords
+  '--shiki-light:#622CBC': '--shiki-light:#5E2AB5', // functions
 };
 
 function fixTokenContrast(node: Element): void {
