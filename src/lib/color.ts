@@ -1,7 +1,17 @@
 /**
- * OKLCH, as written in tokens.css, to an sRGB hex colour. For the places that
- * take a fixed colour instead of the token: the web app manifest.
+ * Colours for the places that cannot use a CSS custom property: the web app
+ * manifest and the social cards (Satori). Both read tokens.css, so the
+ * tokens stay the one source.
  */
+
+/** A token's light-theme value (its first definition in tokens.css), as hex. */
+export function tokenHex(css: string, name: string): string {
+  const value = new RegExp(`--${name}:\\s*([^;]+);`).exec(css)?.[1];
+  if (!value) throw new Error(`color.ts: no --${name} in tokens.css`);
+  return oklchToHex(value);
+}
+
+/** OKLCH, as written in tokens.css, to an sRGB hex colour. */
 export function oklchToHex(value: string): string {
   const match = /oklch\(\s*([\d.]+)%\s+([\d.]+)\s+([\d.]+)/.exec(value);
   if (!match) throw new Error(`color.ts: not an oklch() colour: ${value}`);
