@@ -306,13 +306,24 @@ describe('focus rings', () => {
   // clip is the ancestor's padding box.
   test.each(routes)('%s: no focus ring is clipped', async (route) => {
     const { page, context } = await open(route, 1280);
-    const clipped = await page.evaluate(() => {
+    const clipped = await page.evaluate(async () => {
       const out: string[] = [];
       const focusable = Array.from(
         document.querySelectorAll<HTMLElement>('a[href], button, [tabindex]:not([tabindex="-1"])'),
       ).filter((el) => el.checkVisibility({ visibilityProperty: true }) && !el.closest('.skip'));
+      const clips = (node: Element) => {
+        const s = getComputedStyle(node);
+        return s.overflowX !== 'visible' || s.overflowY !== 'visible';
+      };
       for (const el of focusable) {
         el.focus({ focusVisible: true });
+        // WebKit may scroll a focused element inside a scroller (the sticky
+        // article rail) into view only by the next frame, as a real Tab does.
+        let inScroller = false;
+        for (let node = el.parentElement; node && node !== document.body; node = node.parentElement) {
+          if (clips(node)) inScroller = true;
+        }
+        if (inScroller) await new Promise(requestAnimationFrame);
         const style = getComputedStyle(el);
         if (style.outlineStyle === 'none') continue;
         const grow = parseFloat(style.outlineOffset) + parseFloat(style.outlineWidth);
