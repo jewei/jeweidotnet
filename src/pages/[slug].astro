@@ -492,8 +492,9 @@ const schema = [
      * A rail taller than the window scrolls inside itself, so the end of a
      * long contents list stays reachable. The padding keeps focus rings and
      * the tick inside the scroll box, and the scroll padding keeps a link
-     * that focus scrolls to clear of its edge. The negative margins and the
-     * smaller top keep the text where it was.
+     * that focus scrolls to clear of its edge (Firefox does not scroll a link
+     * that is partly in view). The negative margins and the smaller top keep
+     * the text where it was.
      */
     .article__rail {
       align-self: start;

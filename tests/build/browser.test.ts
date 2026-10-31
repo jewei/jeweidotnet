@@ -100,7 +100,8 @@ describe('target sizes', () => {
   // in dense lists), and nothing else covers it: a click inside it reaches it.
   // A link inside a sentence is exempt (WCAG 2.5.8 inline). The size is the
   // real hit area, measured by clicks (elementFromPoint) out from the centre,
-  // so a larger ::after counts only where it actually lands.
+  // so a larger ::after counts only where it actually lands. No hit area may
+  // lie over text the control does not own.
   test.each(routes)('%s: controls are big enough to hit at 320 and 1280px', async (route) => {
     const { page, context } = await open(route, 320);
     const small: Record<number, string[]> = {};
@@ -121,45 +122,28 @@ describe('target sizes', () => {
         );
         const name = (el: Element) =>
           `${el.tagName.toLowerCase()}.${el.className.toString().split(' ')[0]} in .${el.parentElement?.className.toString().split(' ')[0]} "${el.textContent?.trim().slice(0, 24)}"`;
-
-        // A control's box must not lie over text it does not own (a title, a
-        // label, another link): that text would hand its clicks to the control.
-        // Its own block's plain text, such as the heading of a permalink, is its own.
-        scrollTo(0, 0);
-        const lines: { node: Node; rect: DOMRect }[] = [];
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-        const range = document.createRange();
-        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-          let boxed = node.parentElement;
-          if (!boxed || !node.textContent?.trim() || boxed.closest('.sr-only, .skip')) continue;
-          while (boxed && getComputedStyle(boxed).display === 'contents') boxed = boxed.parentElement;
-          if (!boxed?.checkVisibility({ visibilityProperty: true })) continue;
-          range.selectNodeContents(node);
-          for (const rect of range.getClientRects())
-            if (rect.width && rect.height) lines.push({ node, rect });
-        }
-        for (const el of controls) {
-          const covered = lines.find(({ node, rect }) => {
-            if (el.contains(node)) return false;
-            const owner = node.parentElement?.closest('a[href], button');
-            if (!owner && el.parentElement?.contains(node)) return false;
-            return Array.from(el.getClientRects()).some(
-              (box) =>
-                Math.min(box.right, rect.right) - Math.max(box.left, rect.left) > 1 &&
-                Math.min(box.bottom, rect.bottom) - Math.max(box.top, rect.top) > 1,
-            );
-          });
-          if (covered) out.push(`${name(el)} lies over "${covered.node.textContent?.trim().slice(0, 24)}"`);
-        }
-
-        for (const el of controls) {
-          el.scrollIntoView({ block: 'center', inline: 'nearest' });
-          // An inline link that wraps has one box per line: measure its largest piece
+        // A row link whose ::after covers its whole row (inset: 0) covers that row by design
+        const stretched = (el: Element) => {
+          const after = getComputedStyle(el, '::after');
+          return (
+            after.position === 'absolute' &&
+            ['top', 'right', 'bottom', 'left'].every((side) => after.getPropertyValue(side) === '0px')
+          );
+        };
+        // An inline link that wraps has one box per line: measure its largest piece
+        const largest = (el: Element) => {
           const pieces = Array.from(el.getClientRects()).filter((r) => r.width > 0 && r.height > 0);
-          const box = pieces.reduce(
+          return pieces.reduce(
             (big, r) => (r.width * r.height > big.width * big.height ? r : big),
             pieces[0] ?? el.getBoundingClientRect(),
           );
+        };
+        // How far each control's hit area reaches past its largest piece: top, right, bottom, left
+        const beyond = new Map<Element, number[]>();
+
+        for (const el of controls) {
+          el.scrollIntoView({ block: 'center', inline: 'nearest' });
+          const box = largest(el);
           const x = box.left + box.width / 2;
           const y = box.top + box.height / 2;
           const hits = (px: number, py: number) => {
@@ -203,6 +187,63 @@ describe('target sizes', () => {
               break;
             }
           }
+          const past = (n: number, half: number) => Math.max(0, n - half);
+          beyond.set(
+            el,
+            stretched(el)
+              ? [0, 0, 0, 0]
+              : [
+                  past(up, box.height / 2),
+                  past(right, box.width / 2),
+                  past(down, box.height / 2),
+                  past(left, box.width / 2),
+                ],
+          );
+        }
+
+        // No hit area may lie over text it does not own (a title, a label,
+        // another link): that text would hand its clicks to the control. It
+        // owns its parent's text, and inline text in it, such as the heading of
+        // a permalink; not text in a sibling block, such as a toolbar's label.
+        scrollTo(0, 0);
+        const lines: { node: Node; rect: DOMRect }[] = [];
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const range = document.createRange();
+        for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+          let boxed = node.parentElement;
+          if (!boxed || !node.textContent?.trim() || boxed.closest('.sr-only, .skip')) continue;
+          while (boxed && getComputedStyle(boxed).display === 'contents') boxed = boxed.parentElement;
+          if (!boxed?.checkVisibility({ visibilityProperty: true })) continue;
+          range.selectNodeContents(node);
+          for (const rect of range.getClientRects())
+            if (rect.width && rect.height) lines.push({ node, rect });
+        }
+        const owns = (el: Element, node: Node) => {
+          if (el.contains(node)) return true;
+          if (node.parentElement?.closest('a[href], button')) return false;
+          for (let p = node.parentElement; p; p = p.parentElement) {
+            if (p === el.parentElement) return true;
+            if (p === document.body || getComputedStyle(p).display !== 'inline') return false;
+          }
+          return false;
+        };
+        for (const el of controls) {
+          const box = largest(el);
+          const [top, right, bottom, left] = beyond.get(el) ?? [0, 0, 0, 0];
+          const areas = [
+            ...Array.from(el.getClientRects()),
+            new DOMRect(box.left - left, box.top - top, box.width + left + right, box.height + top + bottom),
+          ];
+          const covered = lines.find(
+            ({ node, rect }) =>
+              !owns(el, node) &&
+              areas.some(
+                (area) =>
+                  Math.min(area.right, rect.right) - Math.max(area.left, rect.left) > 1 &&
+                  Math.min(area.bottom, rect.bottom) - Math.max(area.top, rect.top) > 1,
+              ),
+          );
+          if (covered) out.push(`${name(el)} lies over "${covered.node.textContent?.trim().slice(0, 24)}"`);
         }
         scrollTo(0, 0);
         return out;
@@ -497,6 +538,53 @@ describe('article contents', () => {
     await page.evaluate((id) => document.getElementById(id)?.scrollIntoView({ block: 'start' }), target);
     await expect.poll(() => current(2)).toBe(true);
     expect(await current(0)).toBe(false);
+    await context.close();
+  });
+});
+
+describe('article rail', () => {
+  // A rail taller than the window scrolls inside itself, so its last link
+  // can come into view (it once stayed below the window until the article end).
+  test('in a short window, the last contents link scrolls into view', async () => {
+    const { page, context } = await open('/claude-code-tips/', 1280);
+    await page.setViewportSize({ width: 1280, height: 600 });
+    const last = page.locator('.toc a').last();
+    await last.focus();
+    const placed = await last.evaluate(async (el) => {
+      await new Promise(requestAnimationFrame);
+      const rail = el.closest('.article__rail');
+      if (!rail) throw new Error('The link is not in the rail');
+      const box = el.getBoundingClientRect();
+      const top = rail.getBoundingClientRect().top + rail.clientTop;
+      return {
+        inRail: box.top >= top - 0.5 && box.bottom <= top + rail.clientHeight + 0.5,
+        inWindow: box.top >= 0 && box.bottom <= innerHeight,
+      };
+    });
+    expect(placed).toEqual({ inRail: true, inWindow: true });
+    await context.close();
+  });
+});
+
+describe('post list', () => {
+  // The whole row links to the post (DESIGN.md). Only the topic links take
+  // their own clicks: the space beside them reaches the row's link.
+  test('a click beside the topics opens the post', async () => {
+    const { page, context } = await open('/blog/', 1280);
+    const dead = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('.ledger__topics')).flatMap((topics) => {
+        topics.scrollIntoView({ block: 'center' });
+        const strip = topics.getBoundingClientRect();
+        const end = Math.max(
+          ...Array.from(topics.querySelectorAll('a'), (a) => a.getBoundingClientRect().right),
+        );
+        if (end + 8 > strip.right - 1) return [];
+        const hit = document.elementFromPoint(end + 8, strip.top + strip.height / 2);
+        const title = topics.closest('.ledger__row')?.querySelector('.ledger__title a');
+        return hit && hit === title ? [] : [title?.textContent?.trim().slice(0, 24) ?? '?'];
+      }),
+    );
+    expect(dead).toEqual([]);
     await context.close();
   });
 });
