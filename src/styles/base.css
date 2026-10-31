@@ -356,10 +356,20 @@
     color: var(--on-signal);
   }
 
-  /* Selected text inverts: orange on ink (7:1), in both themes */
+  /*
+   * Selected text inverts: orange on ink (7:1), in both themes. WebKit paints
+   * an opaque selection colour translucent (ink becomes brown, 5.4:1); at
+   * 99.9% it keeps the colour as given.
+   */
   .plate--signal ::selection {
-    background: var(--on-signal);
+    background: color-mix(in oklch, var(--on-signal) 99.9%, transparent);
     color: var(--signal);
+  }
+
+  /* The inverted primary button inverts back when selected */
+  .plate--signal .button--primary::selection {
+    background: color-mix(in oklch, var(--signal) 99.9%, transparent);
+    color: var(--on-signal);
   }
 
   .plate--signal::after {
