@@ -146,9 +146,16 @@ describe('theme toggle', () => {
 
 describe('home portrait', () => {
   /** The home page with the irises painted in, and helpers that read what is on screen. */
-  async function portrait(reducedMotion: 'reduce' | 'no-preference' = 'no-preference') {
-    const { page, context } = await open('/', 1280);
-    await page.emulateMedia({ reducedMotion });
+  async function portrait(options: { width?: number; scale?: number } = {}) {
+    const context = await browser.newContext({
+      viewport: { width: options.width ?? 1280, height: 900 },
+      deviceScaleFactor: options.scale ?? 1,
+    });
+    await context.route(/umami|cloudflareinsights/, (route) =>
+      route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }),
+    );
+    const page = await context.newPage();
+    await page.goto(`${origin}/`, { waitUntil: 'networkidle' });
     const eyes = page.locator('[data-eyes]');
     // The irises appear once site.js has painted the portrait into them.
     await expect.poll(() => eyes.getAttribute('data-on'), { timeout: 5000 }).toBe('');
@@ -161,14 +168,19 @@ describe('home portrait', () => {
         .locator('.eyes__iris')
         .first()
         .evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).e);
-    return { page, context, eyes, row, shift };
+    const gaze = () => eyes.evaluate((el) => getComputedStyle(el).getPropertyValue('--x'));
+    const sources = () =>
+      page.evaluate(() => [
+        document.querySelector('[data-eyes] image')?.getAttribute('href'),
+        document.querySelector<HTMLImageElement>('.portrait__frame img')?.currentSrc,
+      ]);
+    return { page, context, eyes, row, shift, gaze, sources };
   }
 
   test('the eyes turn toward the pointer, drawn from the portrait itself', async () => {
-    const { page, context, eyes, row, shift } = await portrait();
-    expect(await eyes.locator('image').first().getAttribute('href')).toBe(
-      await page.locator('.portrait__frame img').evaluate((img: HTMLImageElement) => img.currentSrc),
-    );
+    const { page, context, row, shift, sources } = await portrait();
+    const [href, current] = await sources();
+    expect(href).toBe(current);
     await page.mouse.move(0, row);
     await expect.poll(shift).toBeLessThan(-4);
     await page.mouse.move(1279, row);
@@ -178,9 +190,15 @@ describe('home portrait', () => {
 
   test('the eyes look ahead again when the pointer leaves the page', async () => {
     const { page, context, row, shift } = await portrait();
+    // A plain leave, frames after the last move.
     await page.mouse.move(0, row);
     await expect.poll(shift).toBeLessThan(-4);
+    await page.waitForTimeout(300);
+    await page.evaluate(() => document.documentElement.dispatchEvent(new PointerEvent('pointerleave')));
+    await expect.poll(shift).toBe(0);
     // A last move and the leave in the same frame: the queued move must not win.
+    await page.mouse.move(0, row);
+    await expect.poll(shift).toBeLessThan(-4);
     await page.evaluate((y) => {
       dispatchEvent(new PointerEvent('pointermove', { clientX: 1, clientY: y }));
       document.documentElement.dispatchEvent(new PointerEvent('pointerleave'));
@@ -189,13 +207,58 @@ describe('home portrait', () => {
     await context.close();
   });
 
-  test('reduced motion, even switched on mid-visit, hides the irises and stops them', async () => {
-    const { page, context, eyes, row } = await portrait();
+  test('a tap turns the eyes, and they keep looking at it', async () => {
+    const { page, context, row, gaze } = await portrait();
+    await page.evaluate((y) => {
+      dispatchEvent(new PointerEvent('pointerdown', { clientX: 1, clientY: y, pointerType: 'touch' }));
+      document.documentElement.dispatchEvent(new PointerEvent('pointerleave', { pointerType: 'touch' }));
+    }, row);
+    await expect.poll(gaze).toMatch(/^-0\.[5-9]/);
+    await page.waitForTimeout(300);
+    expect(await gaze()).toMatch(/^-0\.[5-9]/);
+    await context.close();
+  });
+
+  test('reduced motion, switched on mid-visit, hides and stops the eyes; off, they follow again', async () => {
+    const { page, context, eyes, row, shift, gaze } = await portrait();
+    await page.mouse.move(0, row);
+    await expect.poll(shift).toBeLessThan(-4);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await expect.poll(() => eyes.evaluate((el) => getComputedStyle(el).opacity)).toBe('0');
-    await page.mouse.move(0, row);
+    await expect.poll(gaze).toBe('0.000');
+    await page.mouse.move(1, row);
     await page.waitForTimeout(200);
-    expect(await eyes.evaluate((el) => getComputedStyle(el).getPropertyValue('--x'))).not.toMatch(/^-/);
+    expect(await gaze()).toBe('0.000');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await expect.poll(shift).toBeLessThan(-4);
+    await context.close();
+  });
+
+  test('the irises follow a srcset swap', async () => {
+    const { page, context, sources } = await portrait({ width: 375, scale: 2 });
+    const [, before] = await sources();
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await expect.poll(async () => (await sources())[1]).not.toBe(before);
+    await expect.poll(async () => new Set(await sources()).size).toBe(1);
+    await context.close();
+  });
+
+  test('nothing runs while the portrait is off screen', async () => {
+    const { page, context, eyes } = await portrait();
+    await page.evaluate(() => scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(300);
+    const writes = await eyes.evaluate(async (el) => {
+      let count = 0;
+      new MutationObserver((records) => (count += records.length)).observe(el, {
+        attributeFilter: ['style'],
+      });
+      for (let i = 0; i < 10; i++) {
+        dispatchEvent(new PointerEvent('pointermove', { clientX: i * 10, clientY: 100 }));
+        await new Promise(requestAnimationFrame);
+      }
+      return count;
+    });
+    expect(writes).toBe(0);
     await context.close();
   });
 });

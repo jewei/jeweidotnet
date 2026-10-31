@@ -136,11 +136,11 @@
     setInterval(tick, 15000);
   }
 
-  // Home portrait: the eyes follow the pointer (and a tap). This paints the
-  // portrait into each iris (the <img>'s own file, so it comes from the cache;
-  // again when srcset swaps it), then sets --x and --y from -1 to 1 toward the
-  // last pointer position. CSS moves the irises, and hides them with reduced
-  // motion. Off screen, nothing runs.
+  // Home portrait: the eyes follow the pointer and look where you tap. This
+  // paints the portrait into each iris (the <img>'s own file, so it comes from
+  // the cache; again when srcset swaps it), then sets --x and --y from -1 to 1
+  // toward the last pointer position. CSS moves the irises, and hides them
+  // with reduced motion. Off screen, nothing runs.
   var eyes = document.querySelector('[data-eyes]');
   var face = eyes && eyes.previousElementSibling;
   if (face) {
@@ -176,13 +176,16 @@
     face.addEventListener('load', paint);
     if (face.complete) paint();
     new IntersectionObserver(function (entries) {
-      seen = entries[0].isIntersecting;
+      // A late callback can batch out-then-in: the last entry is the state now.
+      seen = entries[entries.length - 1].isIntersecting;
       if (seen) look();
     }).observe(eyes);
-    addEventListener('pointermove', function (event) {
+    var aim = function (event) {
       at = [event.clientX, event.clientY];
       if (seen) look();
-    });
+    };
+    addEventListener('pointermove', aim);
+    addEventListener('pointerdown', aim);
     addEventListener(
       'scroll',
       function () {
@@ -190,7 +193,10 @@
       },
       { passive: true },
     );
-    root.addEventListener('pointerleave', function () {
+    // A mouse leaving the page resets the gaze. A finger always "leaves"
+    // after a tap, so the eyes keep looking at the tap.
+    root.addEventListener('pointerleave', function (event) {
+      if (event.pointerType === 'touch') return;
       at = null;
       look();
     });
