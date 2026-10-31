@@ -1,6 +1,7 @@
 /**
  * Accessibility, links, agent output, and security headers. Needs a build.
  */
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, test } from 'vite-plus/test';
@@ -208,6 +209,22 @@ describe('security headers', () => {
     expect(fromHeaders).toBe(fromMiddleware);
     expect(fromHeaders).toContain("'inline-speculation-rules'");
   });
+});
+
+// The scripts keep fixed file names, and caches (the edge, and browsers via the
+// zone's 4-hour TTL) can hold an old copy after a deploy. A content hash in the
+// URL makes every changed script a new URL, so new HTML never runs old JS.
+test('pages load the scripts at a content-versioned URL', () => {
+  for (const file of ['site.js', 'theme.js']) {
+    const hash = createHash('sha256')
+      .update(fs.readFileSync(path.join(dist, file)))
+      .digest('hex')
+      .slice(0, 10);
+    for (const [route, doc] of htmlPages) {
+      const sources = Array.from(doc.querySelectorAll(`script[src^="/${file}"]`), (s) => attr(s, 'src'));
+      expect(sources, route).toEqual([`/${file}?v=${hash}`]);
+    }
+  }
 });
 
 test('client JavaScript stays under 8 KB', () => {
