@@ -11,6 +11,7 @@ import Footer from '../components/Footer.astro';
 import { site } from '../site.config';
 import { absolute, documentTitle, graph, personSchema, websiteSchema } from '../lib/seo';
 import { scripts } from '../lib/scripts';
+import { ogImage } from '../lib/og';
 import '../styles/tokens.css';
 import tokens from '../styles/tokens.css?raw';
 import '../styles/base.css';
@@ -72,7 +73,9 @@ const markdownPath = path === '/' ? '/index.md' : `${path.replace(/\/$/, '')}/in
 
 let social: { url: string; width: number; height: number };
 if (typeof image === 'string') {
-  social = { url: absolute(image), width: 1200, height: 630 };
+  // A generated card (/og/<key>.png) gets its content-versioned URL.
+  const card = image.match(/^\/og\/(.+)\.png$/)?.[1];
+  social = { url: absolute(card ? await ogImage(card) : image), width: 1200, height: 630 };
 } else {
   // Largest 1.91:1 crop the source allows; never upscale (dimensions must be true).
   const ratio = 1200 / 630;

@@ -6,12 +6,20 @@
  * face (Zalando Sans Expanded); the wordmark and subtitle are in Geist.
  * Colours are hex copies of --signal and --on-signal (Satori cannot read CSS
  * custom properties); ink on signal is 7.2:1.
+ *
+ * Pages link a card with `ogImage(key)`: `/og/<key>.png?v=<hash>`. The hash
+ * is of the card's pixels, so a changed card gets a new URL. The files keep
+ * fixed names, and the edge holds them for a day.
  */
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import satori from 'satori';
 import sharp from 'sharp';
+import { ogPath, pages } from '../data/pages';
+import { topics } from '../data/topics';
 import { displayUrl, site } from '../site.config';
+import { getPosts, postSlug } from './posts';
 
 export interface Card {
   /** Small label at the top, for example "No. 012 · Writing". Satori cannot draw "№". */
@@ -19,6 +27,59 @@ export interface Card {
   title: string;
   /** One or two lines under the title. */
   subtitle?: string;
+}
+
+/**
+ * Every generated card by key: `default`, the page keys from
+ * src/data/pages.ts, `topic-<topic>`, and `post-<slug>` for posts without
+ * a custom `image`.
+ */
+export async function cardList(): Promise<{ key: string; card: Card }[]> {
+  const posts = await getPosts();
+  return [
+    {
+      key: 'default',
+      card: { eyebrow: displayUrl(site.url), title: site.author, subtitle: pages.home.card },
+    },
+    ...Object.entries(pages).map(([key, page]) => ({
+      key,
+      card: { eyebrow: page.eyebrow, title: page.title, subtitle: page.card },
+    })),
+    ...Object.entries(topics).map(([key, topic]) => ({
+      key: `topic-${key}`,
+      card: { eyebrow: 'Topic', title: topic.name, subtitle: topic.description },
+    })),
+    ...posts
+      .filter((post) => !post.data.image)
+      .map((post) => ({
+        key: `post-${postSlug(post)}`,
+        card: {
+          eyebrow: `No. ${post.number} · Writing`,
+          title: post.data.title,
+          subtitle: post.data.description,
+        },
+      })),
+  ];
+}
+
+/** Rendered cards by key: each card renders once per build, for its file and its URL hash. */
+const rendered = new Map<string, Promise<Buffer>>();
+
+export function cardPng(key: string, card: Card): Promise<Buffer> {
+  let png = rendered.get(key);
+  if (!png) {
+    png = renderCard(card);
+    rendered.set(key, png);
+  }
+  return png;
+}
+
+/** `/og/<key>.png?v=<hash>`. Throws for a key that has no generated card. */
+export async function ogImage(key: string): Promise<string> {
+  const entry = (await cardList()).find((candidate) => candidate.key === key);
+  if (!entry) throw new Error(`og.ts: no generated social card for "${key}"`);
+  const png = await cardPng(key, entry.card);
+  return `${ogPath(key)}?v=${createHash('sha256').update(png).digest('hex').slice(0, 10)}`;
 }
 
 const fontDir = (pkg: string) => path.resolve('node_modules', '@fontsource', pkg, 'files');

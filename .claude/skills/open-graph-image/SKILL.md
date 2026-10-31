@@ -12,7 +12,7 @@ Read `docs/SEO.md` and `docs/DESIGN.md` first.
 
 ## Default: generated cards (no work needed)
 
-Every page, topic, and post without `image` gets a card at `/og/<key>.png`, rendered at build time by `src/lib/og.ts` (Satori + Sharp): signal-orange background with ink text, `jewei.toString()` wordmark, eyebrow (`No. 012 · Writing`) and title in Zalando Sans Expanded (700 and 800, from `@fontsource/zalando-sans-expanded`), description in Geist, ink bar, `jewei.net`. The wide face needs smaller title steps than Geist; `titleSize()` in `og.ts` sets them.
+Every page, topic, and post without `image` gets a card at `/og/<key>.png`, rendered at build time by `src/lib/og.ts` (Satori + Sharp): signal-orange background with ink text, `jewei.toString()` wordmark, eyebrow (`No. 012 · Writing`) and title in Zalando Sans Expanded (700 and 800, from `@fontsource/zalando-sans-expanded`), description in Geist, ink bar, `jewei.net`. The wide face needs smaller title steps than Geist; `titleSize()` in `og.ts` sets them. Pages link a card as `/og/<key>.png?v=<hash>` (`ogImage()`; `Base.astro` adds the hash to any `/og/` path), so a changed card is a new URL and edge caches never serve the old one.
 
 - Change the design for all cards in `src/lib/og.ts`. Keep it in line with `docs/DESIGN.md`.
 - Check a card: `vp run build`, then open `dist/og/post-<slug>.png`.
