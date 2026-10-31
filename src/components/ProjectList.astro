@@ -20,14 +20,14 @@ const { projects } = Astro.props;
   {
     projects.map(({ data: p, primaryUrl, storyUrl }) => (
       <li class="work" data-reveal>
-        <p class="work__meta">
+        <p class="work__meta" data-md-skip>
           <span>{p.category}</span>
           <span>{p.status}</span>
         </p>
         <div class="work__cover">
           <Image
             src={p.image}
-            alt=""
+            alt={p.imageAlt}
             widths={[400, 800]}
             sizes="(min-width: 64rem) 29rem, (min-width: 40rem) 46vw, 92vw"
             loading="lazy"
@@ -102,7 +102,7 @@ const { projects } = Astro.props;
     transition: transform var(--dur-3) var(--ease-out);
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .work:hover .work__cover img {
       transform: scale(1.03);
     }
@@ -180,14 +180,16 @@ const { projects } = Astro.props;
     transition: transform var(--dur-2) var(--ease);
   }
 
-  .work:hover .work__key {
-    border-color: var(--edge);
-    background: var(--signal);
-    color: var(--on-signal);
-  }
+  @media (hover: hover) {
+    .work:hover .work__key {
+      border-color: var(--edge);
+      background: var(--signal);
+      color: var(--on-signal);
+    }
 
-  .work:hover .work__key :global(svg) {
-    transform: translateX(2px);
+    .work:hover .work__key :global(svg) {
+      transform: translateX(2px);
+    }
   }
 
   /* Two bays per row; hairlines between them, like the grid of a drawer */

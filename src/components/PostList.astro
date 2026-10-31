@@ -114,9 +114,11 @@ const Heading = `h${headingLevel}` as const;
       color var(--dur-2) var(--ease);
   }
 
-  .ledger__row:hover .ledger__no {
-    background: var(--signal);
-    color: var(--on-signal);
+  @media (hover: hover) {
+    .ledger__row:hover .ledger__no {
+      background: var(--signal);
+      color: var(--on-signal);
+    }
   }
 
   .ledger__title {
@@ -249,14 +251,16 @@ const Heading = `h${headingLevel}` as const;
       transition: transform var(--dur-2) var(--ease);
     }
 
-    .ledger__row:hover .ledger__key {
-      border-color: var(--edge);
-      background: var(--signal);
-      color: var(--on-signal);
-    }
+    @media (hover: hover) {
+      .ledger__row:hover .ledger__key {
+        border-color: var(--edge);
+        background: var(--signal);
+        color: var(--on-signal);
+      }
 
-    .ledger__row:hover .ledger__key :global(svg) {
-      transform: translateX(2px);
+      .ledger__row:hover .ledger__key :global(svg) {
+        transform: translateX(2px);
+      }
     }
 
     .ledger--arrow .ledger__draft {

@@ -584,7 +584,7 @@ const schema = [
     border-color: var(--fg);
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .pager__link:hover {
       box-shadow: var(--shadow-hard);
       transform: translate(-1px, -1px);

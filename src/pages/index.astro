@@ -96,7 +96,6 @@ const eyes = [
               quality={80}
               loading="eager"
               fetchpriority="high"
-              draggable="false"
             />
             <svg class="eyes" data-eyes viewBox="0 0 1254 1254" aria-hidden="true" focusable="false">
               <defs>
@@ -147,7 +146,6 @@ const eyes = [
         </div>
         <figcaption class="label intro__role">
           {site.jobTitle}
-          <span class="intro__sep" aria-hidden="true">·</span>
           <span class="intro__place">
             {site.city}
             <span data-clock={site.timeZone} hidden><span></span><span class="intro__colon">:</span><span></span></span>
@@ -159,7 +157,7 @@ const eyes = [
     <section class="part" aria-labelledby="work-title" data-reveal="rule">
       <header class="part__head">
         <h2 id="work-title">Projects</h2>
-        <p class="bar__meta intro__count">{projects.length} of {allProjects.length}</p>
+        <p class="bar__meta intro__count" data-md-skip>{projects.length} of {allProjects.length}</p>
         <a class="arrow-link" href="/projects/"><span>All projects</span><Icon name="arrow-right" /></a>
       </header>
       <div class="part__body part__body--flush">
@@ -246,12 +244,18 @@ const eyes = [
     display: block;
   }
 
-  /* The name sits on a block of signal orange, like a highlighter swipe */
+  /*
+   * The name sits on a block of signal orange, like a highlighter swipe. The
+   * block covers the whole glyph box: the name is ink, and ink above a
+   * shorter band would vanish on the dark plate. The name never breaks.
+   */
   .intro__name {
     color: var(--on-signal);
     padding-inline: 0.06em;
     margin-inline: -0.02em;
-    background: linear-gradient(var(--signal), var(--signal)) 0 88% / 100% 62% no-repeat;
+    white-space: nowrap;
+    background: linear-gradient(var(--signal), var(--signal)) 0 0 / 100% 100% no-repeat;
+    -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
   }
 
@@ -309,7 +313,6 @@ const eyes = [
     border: 1px solid var(--edge);
     border-radius: 50%;
     background: var(--bg-sunken);
-    user-select: none;
   }
 
   .portrait__frame img,
@@ -337,6 +340,12 @@ const eyes = [
 
   .eyes[data-on] {
     opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eyes[data-on] {
+      opacity: 0;
+    }
   }
 
   .eyes__iris {
@@ -422,12 +431,12 @@ const eyes = [
     text-align: center;
   }
 
-  .intro__sep {
-    margin-inline: var(--space-1);
-  }
-
-  /* Keep the city and its time on one line */
+  /*
+   * Two lines at every width: the role, then the city and its time. The
+   * column under the print is too narrow for one line with a separator.
+   */
   .intro__place {
+    display: block;
     white-space: nowrap;
   }
 
@@ -530,7 +539,8 @@ const eyes = [
       content: '';
       width: 2px;
       height: 1.1em;
-      margin-left: 2px;
+      /* Zero net width: the nav must not shift while the caret shows */
+      margin-inline: 2px -4px;
       background: var(--accent-mark);
       opacity: 0;
       animation:
@@ -661,7 +671,7 @@ const eyes = [
   /* The highlighter swipes in from the left */
   @keyframes home-swipe {
     from {
-      background-size: 0% 62%;
+      background-size: 0% 100%;
     }
   }
 

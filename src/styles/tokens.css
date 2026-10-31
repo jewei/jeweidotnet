@@ -27,12 +27,14 @@
   --shadow:
     0 1px 0 oklch(100% 0 0 / 0.7) inset, 0 1px 2px oklch(17% 0.005 60 / 0.08),
     0 12px 32px -18px oklch(17% 0.005 60 / 0.3);
-  /* A print lifted off the plate: the home sticker and the project covers */
-  --bg-paper: oklch(100% 0 0);
-  --shadow-lift: 0 1px 2px oklch(17% 0.005 60 / 0.1), 0 24px 48px -20px oklch(17% 0.005 60 / 0.4);
-  /* Ink edges: buttons and stickers have a 1px ink border and a hard shadow */
+  /*
+   * Ink edges: buttons, stickers, and the current topic chip have a 1px ink
+   * border and a hard shadow. A pressed key sits lower, a hovered one higher.
+   */
   --edge: oklch(17% 0.005 60);
-  --shadow-hard: 3px 3px 0 oklch(17% 0.005 60);
+  --shadow-hard: 3px 3px 0 var(--edge);
+  --shadow-press: 2px 2px 0 var(--edge);
+  --shadow-hover: 4px 4px 0 var(--edge);
 
   /* The signal: one orange. Fills carry --on-signal text (7:1). */
   --signal: oklch(71% 0.185 48);
@@ -106,7 +108,7 @@
   --radius-4: 14px;
   --hairline: 1px solid var(--line);
 
-  /* Motion. The long durations and the out and spring curves are for the home page's entrance. */
+  /* Motion. The long durations and the out and spring curves are for the home entrance, scroll reveals, and springy controls (the theme knob, cover zoom). */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -140,10 +142,7 @@
     --shadow:
       0 1px 0 oklch(100% 0 0 / 0.05) inset, 0 1px 2px oklch(0% 0 0 / 0.4),
       0 12px 32px -18px oklch(0% 0 0 / 0.8);
-    --bg-paper: oklch(27% 0.006 60);
-    --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.35), 0 24px 48px -20px oklch(0% 0 0 / 0.8);
     --edge: oklch(0% 0 0);
-    --shadow-hard: 3px 3px 0 oklch(0% 0 0);
     --screw: oklch(33% 0.005 60);
     --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.3 0 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
@@ -164,10 +163,7 @@
   --focus: oklch(95% 0.004 85);
   --shadow:
     0 1px 0 oklch(100% 0 0 / 0.05) inset, 0 1px 2px oklch(0% 0 0 / 0.4), 0 12px 32px -18px oklch(0% 0 0 / 0.8);
-  --bg-paper: oklch(27% 0.006 60);
-  --shadow-lift: 0 1px 2px oklch(0% 0 0 / 0.35), 0 24px 48px -20px oklch(0% 0 0 / 0.8);
   --edge: oklch(0% 0 0);
-  --shadow-hard: 3px 3px 0 oklch(0% 0 0);
   --screw: oklch(33% 0.005 60);
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.3 0 0 0 -0.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   color-scheme: dark;

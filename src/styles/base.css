@@ -258,16 +258,16 @@
     height: 1.3em;
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
     .button:hover {
       transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0 var(--edge);
+      box-shadow: var(--shadow-hover);
     }
   }
 
   .button:active {
     transform: translate(3px, 3px);
-    box-shadow: 0 0 0 var(--edge);
+    box-shadow: none;
   }
 
   .button--primary {
@@ -333,7 +333,11 @@
       radial-gradient(circle at calc(100% - var(--at)) calc(100% - var(--at)), var(--ring));
   }
 
-  /* The signal plate: orange, with ink text. Index pages and articles open with one. */
+  /*
+   * The signal plate: orange, with ink text. Index pages and articles open
+   * with one. Text, line, and surface tokens all turn to ink or orange here,
+   * so nothing inside keeps a theme colour (a dark surface or grey hairline).
+   */
   .plate--signal {
     --fg: var(--on-signal);
     --fg-2: var(--on-signal);
@@ -344,9 +348,18 @@
     --accent: var(--on-signal);
     --accent-mark: var(--on-signal);
     --screw: var(--on-signal);
+    --bg-raised: var(--signal);
+    --bg-sunken: var(--signal);
+    --hairline: 1px solid var(--line);
     border-color: var(--edge);
     background: var(--signal);
     color: var(--on-signal);
+  }
+
+  /* Selected text inverts: orange on ink (7:1), in both themes */
+  .plate--signal ::selection {
+    background: var(--on-signal);
+    color: var(--signal);
   }
 
   .plate--signal::after {
