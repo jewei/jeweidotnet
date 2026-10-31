@@ -264,6 +264,31 @@ const schema = [
     text-decoration-color: var(--line-strong);
   }
 
+  /*
+   * On screen, the company line is a 36px row, with or without a link, so
+   * every role keeps the same rhythm; a link fills the row. Print keeps the
+   * plain line.
+   */
+  @media screen {
+    .role__company {
+      display: flex;
+      align-items: center;
+      min-height: 36px;
+    }
+
+    .role__company a {
+      display: inline-flex;
+      align-self: stretch;
+      align-items: center;
+    }
+
+    .entry__more a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+    }
+  }
+
   .role__period {
     grid-row: 1;
     grid-column: 2;

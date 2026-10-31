@@ -51,13 +51,32 @@
 
 /* Permalink "#" after headings */
 .prose .anchor {
+  position: relative;
   margin-left: 0.35em;
-  padding-inline: 0.15em;
   color: var(--fg-3);
   font-weight: 400;
   text-decoration: none;
+  white-space: nowrap;
   opacity: 0;
   transition: opacity var(--dur-1) var(--ease);
+}
+
+/*
+ * The "#" stays an inline glyph, so the heading wraps as before. Its 36px
+ * target is a centred box around it (it only links to its own heading).
+ * The absolute box gives Chromium a line break inside the link: with
+ * inline padding or wrapping, the end can drop alone onto a new line, which
+ * adds an empty line under the heading and moves this box off the "#". So
+ * no inline padding, and no wrapping inside the link.
+ */
+.prose .anchor::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 36px;
+  height: 36px;
+  translate: -50% -50%;
 }
 
 .prose :is(h2, h3):hover .anchor,
@@ -308,8 +327,13 @@
   font-size: inherit;
 }
 
-.prose pre:focus-visible {
-  outline-offset: -2px;
+/*
+ * The code frame clips (overflow: hidden, for its rounded corners), so focus
+ * rings inside it are drawn inset, clear of the frame's edge and corners.
+ */
+.prose pre:focus-visible,
+.code__copy:focus-visible {
+  outline-offset: -4px;
 }
 
 /* Shiki dual themes (Astro adds class astro-code) (defaultColor: false) */
