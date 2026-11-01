@@ -403,8 +403,12 @@ describe('theme toggle', () => {
     const toggle = page.locator('[data-theme-toggle]');
     await expect.poll(() => toggle.getAttribute('aria-pressed')).toBe('false');
     await toggle.click();
-    // The theme changes inside a view transition, a frame after the click.
-    await expect.poll(() => page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
+    // The theme changes inside a view transition, once the browser has
+    // captured the page: a frame on a real device, but near a second in CI's
+    // software-rendered WebKit (the default 1s poll once ran out).
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.dataset.theme), { timeout: 5000 })
+      .toBe('dark');
     expect(await toggle.getAttribute('aria-pressed')).toBe('true');
     expect(await toggle.getAttribute('aria-label')).toBe('Switch to light theme');
     await page.goto(`${origin}/blog/`);
