@@ -689,6 +689,33 @@ describe('keyboard', () => {
     expect(outline).toBe('solid');
     await context.close();
   });
+
+  // Tab scrolls the next control into view. The page keeps a small scroll
+  // padding at the bottom, so the whole ring shows: it once stuck out under
+  // the lower edge of the window.
+  test.each(['/blog/', '/about/'])('%s: every Tab stop shows its whole ring', async (route) => {
+    const { page, context } = await open(route, 1280);
+    await page.setViewportSize({ width: 1280, height: 700 });
+    const tab = inWebKit && process.platform === 'darwin' ? 'Alt+Tab' : 'Tab';
+    const cut: string[] = [];
+    for (let stop = 0; stop < 40; stop++) {
+      await page.keyboard.press(tab);
+      const found = await page.evaluate(async () => {
+        await new Promise(requestAnimationFrame);
+        const el = document.activeElement;
+        if (!el || el === document.body) return '';
+        const style = getComputedStyle(el);
+        if (style.outlineStyle === 'none') return '';
+        const grow = parseFloat(style.outlineOffset) + parseFloat(style.outlineWidth);
+        const box = el.getBoundingClientRect();
+        const inside = box.top - grow >= -0.5 && box.bottom + grow <= innerHeight + 0.5;
+        return inside ? '' : `${el.tagName.toLowerCase()} "${el.textContent?.trim().slice(0, 24)}"`;
+      });
+      if (found) cut.push(found);
+    }
+    expect(cut).toEqual([]);
+    await context.close();
+  });
 });
 
 async function contrastOf(page: Page, selector: string) {
