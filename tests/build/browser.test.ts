@@ -604,8 +604,22 @@ describe('article contents', () => {
 });
 
 describe('article rail', () => {
-  // A rail taller than the window scrolls inside itself, so its last link
-  // can come into view (it once stayed below the window until the article end).
+  test('the contents list sticks beside the text; the facts scroll away', async () => {
+    const { page, context } = await open('/claude-code-tips/', 1280);
+    const placed = await page.evaluate(async () => {
+      scrollTo(0, document.documentElement.scrollHeight / 2);
+      await new Promise(requestAnimationFrame);
+      const toc = document.querySelector('.toc')?.getBoundingClientRect();
+      const facts = document.querySelector('.facts')?.getBoundingClientRect();
+      if (!toc || !facts) throw new Error('No contents list or facts');
+      return { tocAtTop: toc.top >= 0 && toc.top <= 64, factsGone: facts.bottom < 0 };
+    });
+    expect(placed).toEqual({ tocAtTop: true, factsGone: true });
+    await context.close();
+  });
+
+  // A contents list taller than the window scrolls inside itself, so its last
+  // link can come into view (it once stayed below the window until the article end).
   test('in a short window, the last contents link scrolls into view', async () => {
     const { page, context } = await open('/claude-code-tips/', 1280);
     await page.setViewportSize({ width: 1280, height: 600 });
@@ -613,16 +627,16 @@ describe('article rail', () => {
     await last.focus();
     const placed = await last.evaluate(async (el) => {
       await new Promise(requestAnimationFrame);
-      const rail = el.closest('.article__rail');
-      if (!rail) throw new Error('The link is not in the rail');
+      const list = el.closest('.toc ol');
+      if (!list) throw new Error('The link is not in the contents list');
       const box = el.getBoundingClientRect();
-      const top = rail.getBoundingClientRect().top + rail.clientTop;
+      const top = list.getBoundingClientRect().top + list.clientTop;
       return {
-        inRail: box.top >= top - 0.5 && box.bottom <= top + rail.clientHeight + 0.5,
+        inList: box.top >= top - 0.5 && box.bottom <= top + list.clientHeight + 0.5,
         inWindow: box.top >= 0 && box.bottom <= innerHeight,
       };
     });
-    expect(placed).toEqual({ inRail: true, inWindow: true });
+    expect(placed).toEqual({ inList: true, inWindow: true });
     await context.close();
   });
 });
