@@ -21,6 +21,8 @@
     text-size-adjust: none;
     hanging-punctuation: first last;
     scroll-padding-top: var(--space-6);
+    /* Tab scrolls a control into view with its focus ring, not just its box */
+    scroll-padding-bottom: var(--space-2);
   }
 
   img,
