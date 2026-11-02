@@ -183,11 +183,15 @@ const eyes = [
    * signal disc. The status is a sticker slapped on the print.
    */
   .intro {
+    /* The print's size; the sticker below 40rem reads it too */
+    --print: 13rem;
+
     display: grid;
     gap: var(--space-6);
     margin-top: var(--section);
     padding: var(--space-6) var(--plate-pad) var(--plate-pad);
     overflow: clip;
+    container-type: inline-size;
   }
 
   /*
@@ -282,18 +286,18 @@ const eyes = [
     margin-top: var(--space-6);
   }
 
-  /* The portrait column */
+  /* The portrait column. Below 40rem the sticker hangs under the print: room for it above the caption. */
   .intro__figure {
     order: -1;
     justify-self: start;
     display: grid;
     justify-items: center;
-    gap: var(--space-4);
+    gap: var(--space-7);
   }
 
   .portrait {
     position: relative;
-    width: 13rem;
+    width: var(--print);
     aspect-ratio: 1;
   }
 
@@ -374,11 +378,16 @@ const eyes = [
     stop-opacity: 0;
   }
 
-  /* The status sticker, slapped on the print */
+  /*
+   * The status sticker, slapped on the print. Below 40rem it keeps off the
+   * face: it hangs from the lower-right edge, as far right as the plate
+   * allows (the print sits at the left of the plate; 100cqi is the plate's
+   * width), up to just over half its width past the print.
+   */
   .sticker {
     position: absolute;
-    bottom: 4%;
-    right: -14%;
+    bottom: -10%;
+    right: max(-55%, calc(var(--print) + var(--space-2) - 100cqi));
     display: flex;
     align-items: flex-start;
     gap: var(--space-2);
@@ -441,6 +450,8 @@ const eyes = [
 
   @media (min-width: 40rem) {
     .intro {
+      --print: 15rem;
+
       grid-template-columns: minmax(0, 1fr) 17rem;
       align-items: center;
       padding-top: var(--plate-pad);
@@ -449,15 +460,12 @@ const eyes = [
     .intro__figure {
       order: 0;
       justify-self: center;
+      gap: var(--space-4);
     }
 
     .intro__paper {
       width: 140%;
       height: 227%;
-    }
-
-    .portrait {
-      width: 15rem;
     }
 
     .sticker {
@@ -469,13 +477,11 @@ const eyes = [
 
   @media (min-width: 64rem) {
     .intro {
+      --print: 19rem;
+
       grid-template-columns: minmax(0, 1fr) 22rem;
       gap: var(--space-8);
       padding-block: var(--space-9);
-    }
-
-    .portrait {
-      width: 19rem;
     }
 
     .intro__paper {
