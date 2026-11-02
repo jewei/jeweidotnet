@@ -286,7 +286,7 @@ const eyes = [
     margin-top: var(--space-6);
   }
 
-  /* The portrait column. Below 40rem the sticker hangs under the print: room for it above the caption. */
+  /* The portrait column. The sticker hangs under the print: room for it above the caption. */
   .intro__figure {
     order: -1;
     justify-self: start;
@@ -379,10 +379,10 @@ const eyes = [
   }
 
   /*
-   * The status sticker, slapped on the print. Below 40rem it keeps off the
-   * face: it hangs from the lower-right edge, as far right as the plate
-   * allows (the print sits at the left of the plate; 100cqi is the plate's
-   * width), up to just over half its width past the print.
+   * The status sticker, slapped on the print. It keeps off the face: it
+   * hangs from the lower-right edge. Below 40rem the print sits at the left
+   * of the plate, and the sticker reaches as far right as the plate allows
+   * (100cqi is the plate's width), up to just over half the print past it.
    */
   .sticker {
     position: absolute;
@@ -460,7 +460,6 @@ const eyes = [
     .intro__figure {
       order: 0;
       justify-self: center;
-      gap: var(--space-4);
     }
 
     .intro__paper {
@@ -469,8 +468,6 @@ const eyes = [
     }
 
     .sticker {
-      top: 2%;
-      bottom: auto;
       right: -16%;
     }
   }
@@ -490,8 +487,8 @@ const eyes = [
     }
 
     .sticker {
-      top: 0;
-      right: -6%;
+      bottom: -8%;
+      right: -10%;
       max-width: 12rem;
       font-size: var(--step--2);
     }
