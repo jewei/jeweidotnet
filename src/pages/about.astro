@@ -11,8 +11,8 @@ import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
 const page = pages.about;
 
-// The about portrait smiles and winks once, then rests on its last frame.
-// With reduced motion, the browser picks the still copy of that last frame.
+// The about portrait smiles and winks in a loop.
+// With reduced motion, the browser picks a still of its last frame.
 const [portraitMotion, portraitStill] = await Promise.all(
   [aboutPortrait, aboutPortraitStill].map((src) =>
     getImage({ src, widths: [176, 240, 360, 412], format: 'webp', layout: 'none' }),
