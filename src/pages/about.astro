@@ -1,13 +1,24 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import portrait from '../assets/jewei.jpg';
+import aboutPortrait from '../assets/jewei-about.webp';
+import aboutPortraitStill from '../assets/jewei-about-still.webp';
 import { ogPath, pages } from '../data/pages';
 import { site } from '../site.config';
 import { absolute, breadcrumbSchema, personSchema } from '../lib/seo';
 
 const page = pages.about;
+
+// The about portrait smiles and winks in a loop.
+// With reduced motion, the browser picks a still of its last frame.
+const [portraitMotion, portraitStill] = await Promise.all(
+  [aboutPortrait, aboutPortraitStill].map((src) =>
+    getImage({ src, widths: [176, 240, 360, 412], format: 'webp', layout: 'none' }),
+  ),
+);
+const portraitSizes = '(min-width: 64rem) 12rem, 5.5rem';
 
 const pursuits = [
   {
@@ -66,17 +77,21 @@ const schema = [
           I build backend systems and small tools, and I write notes for people who care how systems work.
         </p>
       </div>
-      <Image
-        class="intro__portrait"
-        src={portrait}
-        alt="Portrait of Jewei Mak."
-        widths={[176, 240, 360, 480]}
-        sizes="(min-width: 64rem) 12rem, 5.5rem"
-        layout="none"
-        format="webp"
-        loading="eager"
-        fetchpriority="high"
-      />
+      <picture>
+        <source media="(prefers-reduced-motion: reduce)" srcset={portraitStill.srcSet.attribute} sizes={portraitSizes} />
+        <img
+          class="intro__portrait"
+          src={portraitMotion.src}
+          srcset={portraitMotion.srcSet.attribute}
+          sizes={portraitSizes}
+          width={aboutPortrait.width}
+          height={aboutPortrait.height}
+          alt="Portrait of Jewei Mak."
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
     </header>
 
     <section class="part" aria-labelledby="work">
@@ -185,6 +200,11 @@ const schema = [
     gap: var(--space-5);
     margin-top: var(--section);
     padding: var(--space-7) var(--plate-pad) var(--plate-pad);
+  }
+
+  /* The portrait image, not its <picture>, is the grid item */
+  .intro picture {
+    display: contents;
   }
 
   h1 {
