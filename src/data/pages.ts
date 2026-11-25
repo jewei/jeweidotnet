@@ -78,7 +78,7 @@ export const pages = {
     title: 'Weekstory support',
     eyebrow: 'Weekstory',
     description:
-      'Help for Weekstory, the calm iPhone app that shows your life in weeks beside moments from world history: your data, purchases, and how to get in touch.',
+      'Help for Weekstory, the calm iPhone app that shows your life in weeks, with your moments beside world history: your data, purchases, and contact.',
     card: 'Your life in weeks, beside the world. Help and contact.',
   },
   weekstoryPrivacy: {

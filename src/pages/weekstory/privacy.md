@@ -11,7 +11,7 @@ This policy covers **Weekstory**, an iPhone app made by **Jewei Mak**. Weekstory
 ## What Weekstory stores
 
 - Your birthday and the horizon you choose.
-- The lines you write for weeks, and the chapters you name.
+- The moments you add to your weeks.
 - Your choice of light or dark, and which kinds of history moments to show.
 - Whether you have bought the one-time unlock.
 
