@@ -73,6 +73,22 @@ export const pages = {
       'What data jewei.net processes, why it is processed, which services are involved, and how to ask Jewei Mak a privacy question.',
     card: 'No accounts, no cookies, no ads. What this site processes, and why.',
   },
+  weekstory: {
+    path: '/weekstory/',
+    title: 'Weekstory support',
+    eyebrow: 'Weekstory',
+    description:
+      'Help for Weekstory, the calm iPhone app that shows your life in weeks beside moments from world history: your data, purchases, and how to get in touch.',
+    card: 'Your life in weeks, beside the world. Help and contact.',
+  },
+  weekstoryPrivacy: {
+    path: '/weekstory/privacy/',
+    title: 'Weekstory privacy policy',
+    eyebrow: 'Weekstory',
+    description:
+      'Weekstory keeps your story on your phone. No account, no analytics, no tracking. What the app stores, what it collects, and how purchases work.',
+    card: 'Your story stays on your phone. Nothing is collected.',
+  },
 } as const;
 
 export type PageKey = keyof typeof pages;
